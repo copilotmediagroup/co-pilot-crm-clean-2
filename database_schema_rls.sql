@@ -256,3 +256,30 @@ alter table accounts add column if not exists raw_data jsonb;
 -- MAPPED FIELDS DISPLAY PROGRESS FIX
 -- Ensures raw_data exists so the app can display every uploaded/source row field.
 alter table accounts add column if not exists raw_data jsonb;
+
+
+-- VISIBLE ALL FIELDS PANEL FIX V2
+-- These columns must exist for mapped store/bank/phone fields to save as real columns.
+-- raw_data also preserves the entire original uploaded row.
+alter table accounts add column if not exists raw_data jsonb;
+alter table accounts add column if not exists issuer_name text;
+alter table accounts add column if not exists occupation text;
+alter table accounts add column if not exists description text;
+alter table accounts add column if not exists account_receive_date text;
+alter table accounts add column if not exists orig_employer text;
+alter table accounts add column if not exists orig_store_name text;
+alter table accounts add column if not exists orig_store_city text;
+alter table accounts add column if not exists orig_store_state text;
+alter table accounts add column if not exists orig_bank_name text;
+alter table accounts add column if not exists orig_bank_acct_last4_digits text;
+alter table accounts add column if not exists orig_principal_balance numeric;
+alter table accounts add column if not exists orig_original_loan_amount numeric;
+alter table accounts add column if not exists orig_chargeoff_balance numeric;
+alter table accounts add column if not exists orig_loan_type text;
+alter table accounts add column if not exists orig_principal_loan_amount numeric;
+alter table accounts add column if not exists orig_interest_amount numeric;
+alter table accounts add column if not exists orig_return_fee numeric;
+alter table accounts add column if not exists phone7 text;
+alter table accounts add column if not exists phone8 text;
+alter table accounts add column if not exists phone9 text;
+alter table accounts add column if not exists phone10 text;

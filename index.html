@@ -44,6 +44,19 @@
 .progressSub{color:#64748b;font-size:13px;margin-top:6px}
 @media(max-width:1200px){.mappedGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){.mappedGrid{grid-template-columns:1fr}}
 
+
+.allFieldsTopPanel{border:2px solid #2563eb;background:#fff;box-shadow:0 8px 24px rgba(37,99,235,.12)}
+.allFieldsTopHeader{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.allFieldsTopTitle{font-size:18px;font-weight:1000;color:#0f172a}
+.allFieldsTopBadge{background:#dbeafe;color:#1e40af;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}
+.allFieldsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-height:300px;overflow:auto;padding-right:4px}
+.allFieldCard{border:1px solid #dbe3ef;border-radius:12px;background:#f8fafc;padding:10px;min-width:0}
+.allFieldKey{font-size:12px;font-weight:900;color:#334155;margin-bottom:5px;word-break:break-word}
+.allFieldVal{font-size:13px;color:#0f172a;word-break:break-word;white-space:pre-wrap}
+.allFieldVal a{color:#1d4ed8;font-weight:900;text-decoration:none}
+.allFieldsEmpty{padding:12px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-weight:800}
+@media(max-width:1200px){.allFieldsGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){.allFieldsGrid{grid-template-columns:1fr}}
+
     @media(max-width:1200px){.main{grid-template-columns:270px 1fr}.right{display:none}.phoneGrid,.dispoGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){body{overflow:auto}.app{height:auto;display:block}.main{display:block}.sidebar,.center,.right{overflow:visible;margin-bottom:14px}.accountCard{grid-template-columns:1fr}.bottom{position:sticky;bottom:0}.grid{grid-template-columns:1fr}.two,.full{grid-column:1}}
   </style>
 </head>
@@ -86,7 +99,7 @@
 
 <div class="app">
   <header>
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">Clean employee login. Supabase config hidden from login screen. Real database saves.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">VISIBLE ALL FIELDS FIX v2 — mapped + raw imported fields show on every account.</p></div></div>
     <div class="progressBlock"><div class="progressTitle" id="accountProgress">Account 1 of 0</div><div class="progressBar"><div class="progressFill" id="progressFill"></div></div></div>
     <div class="topActions">
       <span class="roleBadge" id="roleBadge">Not logged in</span>
@@ -117,6 +130,17 @@
         <div><div class="name" id="accountName">No Account</div><div class="fieldLabel">Account #</div><div class="fieldVal" id="accountNumber">—</div><div class="fieldLabel">State</div><div class="fieldVal" id="state">—</div></div>
         <div><div class="fieldLabel">Portfolio / Creditor</div><div class="fieldVal" id="creditor">—</div><div class="fieldLabel">SSN</div><div class="fieldVal" id="ssn">—</div></div>
         <div><div class="fieldLabel">Balance</div><div class="fieldVal" id="balance">$0.00</div><div class="fieldLabel">Status</div><div class="fieldVal" id="statusDisplay">—</div><div class="fieldLabel">Email</div><div class="fieldVal" id="email">—</div></div>
+      </section>
+
+      <section class="panel allFieldsTopPanel">
+        <div class="allFieldsTopHeader">
+          <div>
+            <div class="allFieldsTopTitle">All Imported / Mapped Fields</div>
+            <div class="hint">Store name, store city, store state, bank fields, phone source/status/note, and source row values show here.</div>
+          </div>
+          <span class="allFieldsTopBadge" id="allFieldsCount">0 fields</span>
+        </div>
+        <div id="allFieldsGrid" class="allFieldsGrid"></div>
       </section>
 
       <section class="panel phonePanel"><div class="panelTitle"><h3>Phone Numbers</h3><button class="outline" onclick="renderPhones(getCurrent())">Refresh Numbers</button></div><div class="hint">Click any number to open your default softphone/dialer using tel: links.</div><div class="phoneGrid" id="phoneGrid"></div></section>
@@ -216,10 +240,29 @@ function queue(){let q=document.getElementById('search')?.value.toLowerCase()||'
 function onQueueFilterChange(){let q=queue();if(q[0]&&!q.some(a=>a.id===currentAccountId))currentAccountId=q[0].id;render()}function setCurrent(id){currentAccountId=id;document.getElementById('agentNote').value='';currentDisposition='';render();loadHistory(id)}function getCurrent(){return queue().find(a=>a.id===currentAccountId)||queue()[0]||accounts[0]}
 function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}function normPhone(p){return String(p||'').replace(/\D/g,'')}function fmtPhone(p){let d=normPhone(p);return d.length===10?'('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6):(p||'')}function acctNo(a){return a?.accountNumber||a?.clientAccountNumber||a?.accountId||''}function nameOf(a){return a?.fullName||[a?.firstName,a?.middleName,a?.lastName].filter(Boolean).join(' ')||'Unknown Account'}function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'--'}function creditor(a){return a?.originalCreditor||a?.accountDescription||a?.portfolio||'—'}function phones(a){return[a?.phone1,a?.phone2,a?.phone3,a?.phone4,a?.phone5,a?.phone6,a?.phone7,a?.phone8,a?.phone9,a?.phone10].filter(Boolean)}
 function rawObj(a){return a?.rawData||a?.raw_data||{}}
+
+const EXTRA_FIELD_LABELS={
+ issuerName:'Issuer Name',
+ accountReceiveDate:'Account Receive Date',
+ origEmployer:'Orig Employer',
+ origStoreName:'Orig Store Name',
+ origStoreCity:'Orig Store City',
+ origStoreState:'Orig Store State',
+ origBankName:'Orig Bank Name',
+ origBankAcctLast4Digits:'Orig Bank Acct Last 4',
+ origPrincipalBalance:'Orig Principal Balance',
+ origOriginalLoanAmount:'Orig Original Loan Amount',
+ origChargeOffBalance:'Orig Chargeoff Balance',
+ origLoanType:'Orig Loan Type',
+ origPrincipalLoanAmount:'Orig Principal Loan Amount',
+ origInterestAmount:'Orig Interest Amount',
+ origReturnFee:'Orig Return Fee'
+};
+
 function titleFromField(k){
  let labels={};
  try{(MANUAL_FIELDS||[]).forEach(([field,label])=>labels[field]=label)}catch{}
- return labels[k]||String(k).replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
+ return EXTRA_FIELD_LABELS[k]||labels[k]||String(k).replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
 }
 function displayVal(k,v,a){
  if(v==null||v==='')return '';
@@ -231,17 +274,55 @@ function displayVal(k,v,a){
 }
 function mappedEntries(a){
  let skip=new Set(['id','status','disposition','lastContactNumber','rawData']);
- let out=[];
+ let out=[], seen=new Set();
  FIELDS.forEach(k=>{
    if(skip.has(k))return;
    let v=a?.[k];
-   if(v!==undefined && v!==null && String(v).trim()!=='')out.push([titleFromField(k),k,v,'mapped']);
+   if(v!==undefined && v!==null && String(v).trim()!==''){
+     let label=titleFromField(k);
+     let sig=label+'|'+String(v);
+     if(!seen.has(sig)){out.push([label,k,v,'mapped']);seen.add(sig)}
+   }
  });
  let raw=rawObj(a);
  Object.entries(raw).forEach(([k,v])=>{
-   if(v!==undefined && v!==null && String(v).trim()!=='')out.push(['Source: '+k,k,v,'raw']);
+   if(v!==undefined && v!==null && String(v).trim()!==''){
+     let sig='Source: '+k+'|'+String(v);
+     if(!seen.has(sig)){out.push(['Source: '+k,k,v,'raw']);seen.add(sig)}
+   }
  });
  return out;
+}
+
+function renderAllImportedFields(a){
+ let grid=document.getElementById('allFieldsGrid'),count=document.getElementById('allFieldsCount');
+ if(!grid)return;
+ if(!a){grid.innerHTML='<div class="allFieldsEmpty">No account selected.</div>';if(count)count.textContent='0 fields';return}
+ let entries=[];
+ try{entries=mappedEntries(a)}catch(e){entries=[]}
+ if(!entries.length){
+   let raw=rawObj(a);
+   entries=Object.entries(raw||{}).filter(([k,v])=>String(v??'').trim()!=='').map(([k,v])=>['Source: '+k,k,v,'raw']);
+ }
+ if(count)count.textContent=entries.length+' fields';
+ if(!entries.length){
+   grid.innerHTML='<div class="allFieldsEmpty">No extra fields were saved on this account. Run the updated SQL, clear accounts, and re-import so store/bank/raw_data fields are saved.</div>';
+   return;
+ }
+ grid.innerHTML=entries.map(([label,k,v,type])=>{
+   if(v==null || String(v).trim()==='')return '';
+   let shown='';
+   let val=String(v);
+   let phones=[];
+   try{phones=extractPhones(val)}catch(e){phones=[]}
+   if(phones.length && /phone|tel|mobile|cell/i.test(String(label)+' '+String(k))){
+     shown=phones.map(p=>`<a href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')">${fmtPhone(p)}</a>`).join(', ');
+   }else{
+     shown=displayVal(k,v,a);
+   }
+   if(!shown)return '';
+   return `<div class="allFieldCard"><div class="allFieldKey">${esc(label)}</div><div class="allFieldVal">${shown}</div></div>`;
+ }).join('');
 }
 function renderMappedFields(a){
  let grid=document.getElementById('mappedFields'),count=document.getElementById('mappedFieldCount');
@@ -258,7 +339,7 @@ function renderMappedFields(a){
 function render(){let q=queue(),cur=getCurrent();updatePortfolioFilter(accounts);renderQueue(q,cur);renderCurrent(cur,q);renderDispos(cur);if(cur)loadHistory(cur.id)}
 function updatePortfolioFilter(all){let sel=document.getElementById('portfolioFilter'),v=sel.value,names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();sel.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');sel.value=names.includes(v)?v:''}
 function renderQueue(q,cur){let idx=q.findIndex(a=>a.id===cur?.id);if(idx<0)idx=0;let start=Math.max(0,idx-1),next=q.slice(start,start+5);document.getElementById('queueList').innerHTML=next.map((a,i)=>`<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${start+i+1}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div></div><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div>`).join('')||'<div class="muted" style="padding:12px">No accounts in queue.</div>';document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts`}
-function renderCurrent(a,q){if(!a)return;let idx=q.findIndex(x=>x.id===a.id)+1,total=q.length;document.getElementById('accountProgress').textContent=`Account ${idx||1} of ${total}`;document.getElementById('progressFill').style.width=total?Math.round((idx/total)*100)+'%':'0%';document.getElementById('avatar').textContent=initials(a);document.getElementById('accountName').innerHTML=esc(nameOf(a))+` <span class="badge">${esc(a.disposition||a.status||'New')}</span>`;document.getElementById('accountNumber').textContent=acctNo(a)||'—';document.getElementById('state').textContent=a.state||'—';document.getElementById('creditor').textContent=creditor(a);document.getElementById('ssn').textContent=a.ssn||'—';document.getElementById('balance').textContent=money(a.currentBalance||a.principal||a.originalBalance);document.getElementById('statusDisplay').innerHTML=`<span class="badge">${esc(a.disposition||a.status||'New')}</span>`;document.getElementById('email').textContent=a.email||'—';renderPhones(a);renderMappedFields(a)}
+function renderCurrent(a,q){if(!a)return;let idx=q.findIndex(x=>x.id===a.id)+1,total=q.length;document.getElementById('accountProgress').textContent=`Account ${idx||1} of ${total}`;document.getElementById('progressFill').style.width=total?Math.round((idx/total)*100)+'%':'0%';document.getElementById('avatar').textContent=initials(a);document.getElementById('accountName').innerHTML=esc(nameOf(a))+` <span class="badge">${esc(a.disposition||a.status||'New')}</span>`;document.getElementById('accountNumber').textContent=acctNo(a)||'—';document.getElementById('state').textContent=a.state||'—';document.getElementById('creditor').textContent=creditor(a);document.getElementById('ssn').textContent=a.ssn||'—';document.getElementById('balance').textContent=money(a.currentBalance||a.principal||a.originalBalance);document.getElementById('statusDisplay').innerHTML=`<span class="badge">${esc(a.disposition||a.status||'New')}</span>`;document.getElementById('email').textContent=a.email||'—';renderAllImportedFields(a);renderPhones(a);renderMappedFields(a)}
 function renderPhones(a){let ps=phones(a);document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alt'}</div></div></a>`).join('')||'<div class="muted">No phone numbers on this account.</div>'}
 function renderDispos(a){document.getElementById('selectedDisposition').textContent=currentDisposition||a?.disposition||'Select one';document.getElementById('dispoGrid').innerHTML=DISPOS.map(d=>`<button class="dispo ${d==='Disputed'?'orangeText':['Promise to Pay','Settled'].includes(d)?'greenText':['Bad Number','DNC'].includes(d)?'redText':d==='Callback'?'purpleText':''} ${(currentDisposition||a?.disposition)===d?'selected':''}" onclick="selectDisposition('${d}')">${d}</button>`).join('')}
 async function selectDisposition(d){let cur=getCurrent();if(!cur)return;currentDisposition=d;let old=cur.status,newStatus=d==='Disputed'?'Disputed':d;let updated=(await dbFetch(`/accounts?id=eq.${cur.id}`,{method:'PATCH',body:JSON.stringify({status:newStatus,disposition:d,updated_at:new Date().toISOString()})}))[0];await insertActivity(cur.id,'Status Updated','Disposition set to '+d,'',old,newStatus);let i=accounts.findIndex(a=>a.id===cur.id);if(i>=0)accounts[i]=toCamel(updated);render()}
