@@ -271,6 +271,29 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 .manualEmployeeRow input{flex:1}
 .assignmentNoMatch{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:10px;font-size:12px;font-weight:900;margin:10px 0}
 
+
+/* EMPLOYEE APPROVAL WORKFLOW */
+.pendingScreenContent{text-align:center;max-width:560px;margin:auto}
+.pendingIcon{width:72px;height:72px;border-radius:20px;background:#eef2ff;color:#1d4ed8;display:grid;place-items:center;font-size:34px;margin:0 auto 18px;font-weight:1000}
+.pendingTitle{font-size:26px;font-weight:1000;color:#0f172a;margin-bottom:10px}
+.pendingText{font-size:15px;color:#475569;line-height:1.5;margin-bottom:18px}
+.employeeAdminBox{max-width:1050px}
+.employeeTableWrap{border:1px solid #e2e8f0;border-radius:14px;overflow:auto;max-height:460px;background:#fff}
+.employeeTable{width:100%;border-collapse:collapse;font-size:13px}
+.employeeTable th{position:sticky;top:0;background:#f8fafc;text-align:left;padding:10px;border-bottom:1px solid #e2e8f0;color:#334155;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+.employeeTable td{padding:9px 10px;border-bottom:1px solid #edf2f8;vertical-align:middle}
+.employeeStatus{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900}
+.statusApproved{background:#dcfce7;color:#166534}
+.statusPending{background:#fff7ed;color:#9a3412}
+.statusRejected{background:#fee2e2;color:#991b1b}
+.statusAdmin{background:#dbeafe;color:#1d4ed8}
+.empActions{display:flex;gap:7px;flex-wrap:wrap}
+.empActions button{height:32px;border-radius:8px;padding:0 9px;font-size:11px}
+.employeeAdminTop{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.employeeAdminStats{display:flex;gap:8px;flex-wrap:wrap}
+.employeeAdminStat{border:1px solid #e2e8f0;border-radius:999px;background:#f8fbff;padding:6px 10px;font-size:12px;font-weight:900;color:#334155}
+.assignNoManualNotice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:12px;padding:10px;font-size:12px;font-weight:850;margin:8px 0}
+
 </style>
 </head>
 <body>
@@ -312,9 +335,10 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">EMPLOYEE DROPDOWN ASSIGNMENT FIX — admin selects signed-up users from dropdown.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">EMPLOYEE APPROVAL READY — signed-up users require admin approval before app access.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
+      <button class="gray adminOnly hidden" onclick="openEmployeeAdminModal()">✅ Manage Employees</button>
       <button class="gray adminOnly hidden" onclick="openAssignModal()">👥 Assign Accounts</button>
       <label class="fileBtn gray adminOnly hidden">⇩ Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label>
       <button class="purple adminOnly hidden" onclick="downloadTemplate()">⇩ Template CSV</button>
@@ -525,16 +549,10 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
         <label>Select Employee(s)</label>
         <select id="assignEmployeeSelect" class="employeeSelect" multiple size="6" onchange="previewAssignment()"></select>
         <div class="employeeHelper">Admin can select one or multiple signed-up employees. Hold Command on Mac or Ctrl on Windows to select multiple.</div>
-        <div id="employeeEmptyNotice" class="employeeEmpty hidden">No employee users found yet. Run the updated SQL, or have employees sign up/log in once so they appear here.</div>
+        <div class="assignNoManualNotice">Employees must appear here from real signup + admin approval. Manual employee entry is disabled.</div>
+        <div id="employeeEmptyNotice" class="employeeEmpty hidden">No approved employees yet. Employees must sign up first, then admin must approve them in Manage Employees.</div>
       </div>
-      <div class="assignHalf">
-        <label>Manual Add To Dropdown</label>
-        <div class="manualEmployeeRow">
-          <input id="assignManualEmail" placeholder="employee@email.com">
-          <button class="outline" onclick="addManualEmployeeOption()" type="button">Add</button>
-        </div>
-        <div class="employeeHelper">Use only if the employee has not shown in the dropdown yet.</div>
-      </div>
+      
 
       <div>
         <label>Assignment Count</label>
@@ -626,6 +644,43 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
   </div>
 </div></div>
 
+
+<div id="pendingScreen" class="modal"><div class="modalbox">
+  <div class="modalbody pendingScreenContent">
+    <div class="pendingIcon">✓</div>
+    <div class="pendingTitle">Thank you for signing up</div>
+    <div class="pendingText">
+      Your account was created successfully, but access is pending admin approval.
+      Someone will be in touch with you shortly.
+    </div>
+    <button class="gray" onclick="logout()">Return to Login</button>
+  </div>
+</div></div>
+
+<div id="employeeAdminModal" class="modal"><div class="modalbox employeeAdminBox">
+  <div class="modalhead"><h2>Manage Employees</h2><button class="gray" onclick="closeModal('employeeAdminModal')">Close</button></div>
+  <div class="modalbody">
+    <div class="employeeAdminTop">
+      <div>
+        <b>Employee Approval</b>
+        <div class="hint">Employees can sign up, but they cannot access the app until admin approves them.</div>
+      </div>
+      <div class="employeeAdminStats">
+        <span class="employeeAdminStat" id="empStatAll">0 users</span>
+        <span class="employeeAdminStat" id="empStatPending">0 pending</span>
+        <span class="employeeAdminStat" id="empStatApproved">0 approved</span>
+      </div>
+      <button class="outline" onclick="loadEmployeeAdminList()">Refresh</button>
+    </div>
+    <div class="employeeTableWrap">
+      <table class="employeeTable">
+        <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Active</th><th>Created</th><th>Last Seen</th><th>Actions</th></tr></thead>
+        <tbody id="employeeAdminBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+
 <script src="config.js"></script>
 <script>
 const ADMIN_EMAIL='afinch2678@gmail.com';
@@ -660,24 +715,28 @@ function fillConnection(){showConnectionNotice()}
 async function authFetch(path,body){if(!connectionIsReady())throw new Error('System connection is not configured. Admin must update config.js with the Supabase Project URL and Publishable Key.');let res=await fetch(url()+path,{method:'POST',headers:{apikey:pubKey(),'Content-Type':'application/json'},body:JSON.stringify(body)});let data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.msg||data.message||data.error_description||data.error||'Auth failed');return data}
 async function dbFetch(path,opt={}){if(!token())throw new Error('Not logged in.');let res=await fetch(url()+'/rest/v1'+path,{...opt,headers:{apikey:pubKey(),Authorization:'Bearer '+token(),'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});let text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!res.ok)throw new Error(data?.message||data?.hint||data||'Database failed');return data}
 async function login(){try{clearLoginError();let data=await authFetch('/auth/v1/token?grant_type=password',{email:val('loginEmail'),password:val('loginPassword')});storeSession(data);await boot()}catch(e){showLoginError(e.message)}}
-async function signup(){try{clearLoginError();let data=await authFetch('/auth/v1/signup',{email:val('loginEmail'),password:val('loginPassword')});if(data.access_token){storeSession(data);await boot()}else showLoginError('Signup created. If email confirmation is enabled, check email, then log in.')}catch(e){showLoginError(e.message)}}
-function storeSession(data){localStorage.setItem(TOKEN_KEY,data.access_token||'');localStorage.setItem(REFRESH_KEY,data.refresh_token||'')}
-function logout(){localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(REFRESH_KEY);location.reload()}
-function showLoginError(msg){let el=document.getElementById('loginError');el.textContent=msg;el.classList.remove('hidden')}function clearLoginError(){document.getElementById('loginError').classList.add('hidden')}
-async function boot(){fillConnection();if(!connectionIsReady()){document.getElementById('loginScreen').classList.add('open');return}if(!token()){document.getElementById('loginScreen').classList.add('open');return}try{let user=await getUser();currentUser={email:(user.email||'').toLowerCase(),isAdmin:(user.email||'').toLowerCase()===ADMIN_EMAIL};await upsertCurrentUser();document.getElementById('loginScreen').classList.remove('open');applyRoleUI();await loadAccounts()}catch(e){showLoginError(e.message);document.getElementById('loginScreen').classList.add('open')}}
-async function getUser(){let res=await fetch(url()+'/auth/v1/user',{headers:{apikey:pubKey(),Authorization:'Bearer '+token()}});let data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.msg||data.message||'Login expired. Log in again.');return data}
-function applyRoleUI(){document.getElementById('roleBadge').textContent=(currentUser.isAdmin?'Admin: ':'Employee: ')+currentUser.email;document.querySelectorAll('.adminOnly').forEach(el=>el.classList.toggle('hidden',!currentUser.isAdmin))}
-async function upsertCurrentUser(){
- if(!currentUser.email)return;
+async function signup(){
+ let email=document.getElementById('email').value.trim().toLowerCase(),password=document.getElementById('password').value;
+ if(!email||!password)return alert('Enter email and password.');
  try{
-   await dbFetch('/app_users?on_conflict=email',{
-     method:'POST',
-     headers:{Prefer:'resolution=merge-duplicates,return=representation'},
-     body:JSON.stringify([{email:currentUser.email,role:currentUser.isAdmin?'admin':'employee',last_seen_at:new Date().toISOString()}])
-   });
- }catch(err){
-   console.warn('Could not update app_users profile. Run updated SQL if employee dropdown is empty.',err);
- }
+   let res=await fetch(API.auth+'/signup',{method:'POST',headers:{apikey:API.key,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+   let data=await res.json();
+   if(!res.ok)throw new Error(data.msg||data.error_description||data.error||'Signup failed');
+   currentUser={email,isAdmin:email===ADMIN_EMAIL};
+   await upsertCurrentUser();
+   document.getElementById('loginScreen').classList.remove('open');
+   if(currentUser.isAdmin){
+     applyRoleUI();
+     await loadAccounts();
+   }else{
+     document.getElementById('pendingScreen').classList.add('open');
+   }
+ }catch(e){document.getElementById('loginErr').textContent=e.message}
+}
+function isUserApproved(profile){
+ if(currentUser.isAdmin)return true;
+ if(!profile)return false;
+ return profile.isApproved===true || profile.is_approved===true || profile.approvalStatus==='approved' || profile.approval_status==='approved';
 }
 async function loadAppUsers(){
  try{
@@ -929,33 +988,17 @@ function selectedEmployeeEmails(){
  return [...new Set(selected.filter(e=>e!==ADMIN_EMAIL))];
 }
 function parseAssignEmails(){return selectedEmployeeEmails()}
-function addManualEmployeeOption(){
- let input=document.getElementById('assignManualEmail');
- let email=(input?.value||'').trim().toLowerCase();
- if(!validEmail(email))return alert('Enter a valid employee email.');
- if(email===ADMIN_EMAIL)return alert('Admin does not need to be assigned employee accounts.');
- let sel=document.getElementById('assignEmployeeSelect');
- if(!sel)return;
- let existing=[...sel.options].some(o=>o.value===email);
- if(!existing){
-   let opt=document.createElement('option');
-   opt.value=email;
-   opt.textContent=email+' (manual)';
-   sel.appendChild(opt);
- }
- [...sel.options].forEach(o=>{if(o.value===email)o.selected=true});
- input.value='';
- previewAssignment();
-}
+function addManualEmployeeOption(){alert('Manual employee add is disabled. Employees must sign up and be approved by admin.')}
 function employeeSuggestions(){
  let set=new Set();
  appUsers.forEach(u=>{
    let email=(u.email||'').toLowerCase();
    let role=(u.role||'employee').toLowerCase();
-   if(email&&email!==ADMIN_EMAIL&&role!=='admin'&&u.isActive!==false)set.add(email);
+   let approved=(u.isApproved===true || u.is_approved===true || u.approvalStatus==='approved' || u.approval_status==='approved');
+   let active=(u.isActive!==false && u.is_active!==false);
+   if(email&&validEmail(email)&&email!==ADMIN_EMAIL&&role!=='admin'&&approved&&active)set.add(email);
  });
- accounts.forEach(a=>{if(assignedEmail(a))set.add(assignedEmail(a))});
- return [...set].filter(validEmail).sort();
+ return [...set].sort();
 }
 function populateEmployeeSelect(){
  let sel=document.getElementById('assignEmployeeSelect'), notice=document.getElementById('employeeEmptyNotice');
@@ -1074,7 +1117,7 @@ function previewAssignment(){
  let box=document.getElementById('assignPreview'); if(!box)return;
  let rows=built.assignments.slice(0,200);
  if(!built.assignments.length){
-   let msg=!built.employees.length?'Select at least one employee from the dropdown.':(!built.rows.length?'No matching accounts. Clear filters or uncheck Only unassigned / enable Allow reassignment.':'No assignments built. Check assignment count.');
+   let msg=!built.employees.length?'Select at least one approved employee from the dropdown. If none appear, approve employees in Manage Employees first.':(!built.rows.length?'No matching accounts. Clear filters or uncheck Only unassigned / enable Allow reassignment.':'No assignments built. Check assignment count.');
    box.innerHTML=`<div class="assignmentNoMatch">${esc(msg)}</div>`;
    return;
  }
@@ -1140,6 +1183,72 @@ async function clearAssignmentsForFiltered(){
  alert('Assignments cleared for '+ids.length+' account(s).');
  await loadAccounts();
  previewAssignment();
+}
+
+
+async function openEmployeeAdminModal(){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ document.getElementById('employeeAdminModal').classList.add('open');
+ await loadEmployeeAdminList();
+}
+function userApprovalStatus(u){
+ if((u.email||'').toLowerCase()===ADMIN_EMAIL)return 'admin';
+ return (u.approvalStatus||u.approval_status||'pending').toLowerCase();
+}
+async function loadEmployeeAdminList(){
+ await loadAppUsers();
+ let body=document.getElementById('employeeAdminBody');
+ if(!body)return;
+ let users=appUsers.slice().sort((a,b)=>{
+   let sa=userApprovalStatus(a), sb=userApprovalStatus(b);
+   let order={pending:0,approved:1,rejected:2,admin:3};
+   return (order[sa]??9)-(order[sb]??9)||String(a.email||'').localeCompare(String(b.email||''));
+ });
+ let pending=users.filter(u=>userApprovalStatus(u)==='pending').length;
+ let approved=users.filter(u=>userApprovalStatus(u)==='approved').length;
+ document.getElementById('empStatAll').textContent=users.length+' users';
+ document.getElementById('empStatPending').textContent=pending+' pending';
+ document.getElementById('empStatApproved').textContent=approved+' approved';
+ body.innerHTML=users.map(u=>{
+   let email=(u.email||'').toLowerCase();
+   let status=userApprovalStatus(u);
+   let statusClass=status==='approved'?'statusApproved':status==='admin'?'statusAdmin':status==='rejected'?'statusRejected':'statusPending';
+   let active=(u.isActive!==false && u.is_active!==false);
+   let actions=email===ADMIN_EMAIL
+     ? '<span class="muted">Admin account</span>'
+     : `<div class="empActions">
+          <button class="green" onclick="setEmployeeApproval('${esc(email)}','approved')">Approve</button>
+          <button class="gray" onclick="setEmployeeApproval('${esc(email)}','pending')">Pending</button>
+          <button class="red" onclick="setEmployeeApproval('${esc(email)}','rejected')">Reject</button>
+          <button class="outline" onclick="toggleEmployeeActive('${esc(email)}',${active?'false':'true'})">${active?'Deactivate':'Activate'}</button>
+        </div>`;
+   return `<tr>
+     <td><b>${esc(email)}</b></td>
+     <td>${esc(u.role||'employee')}</td>
+     <td><span class="employeeStatus ${statusClass}">${esc(status)}</span></td>
+     <td>${active?'Yes':'No'}</td>
+     <td>${esc(String(u.createdAt||u.created_at||'').slice(0,19))}</td>
+     <td>${esc(String(u.lastSeenAt||u.last_seen_at||'').slice(0,19))}</td>
+     <td>${actions}</td>
+   </tr>`;
+ }).join('')||'<tr><td colspan="7">No signed-up users yet.</td></tr>';
+ populateEmployeeSelect();
+ previewAssignment();
+}
+async function setEmployeeApproval(email,status){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ email=String(email||'').toLowerCase();
+ if(email===ADMIN_EMAIL)return alert('Cannot change admin approval.');
+ let body={approval_status:status,is_approved:status==='approved',is_active:status==='approved',updated_at:new Date().toISOString()};
+ await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{method:'PATCH',body:JSON.stringify(body)});
+ await loadEmployeeAdminList();
+}
+async function toggleEmployeeActive(email,active){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ email=String(email||'').toLowerCase();
+ if(email===ADMIN_EMAIL)return alert('Cannot deactivate admin.');
+ await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{method:'PATCH',body:JSON.stringify({is_active:active,updated_at:new Date().toISOString()})});
+ await loadEmployeeAdminList();
 }
 
 let paymentPlanCache={};
