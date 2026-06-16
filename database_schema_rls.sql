@@ -525,3 +525,97 @@ set approval_status = coalesce(approval_status,'pending'),
     is_approved = case when lower(email) = 'afinch2678@gmail.com' then true else coalesce(is_approved,false) end,
     is_active = case when lower(email) = 'afinch2678@gmail.com' then true else (coalesce(is_approved,false) and coalesce(is_active,false)) end
 where true;
+
+
+-- LOGIN + EMPLOYEE APPROVAL SECURITY FIX
+create table if not exists app_users (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  role text default 'employee',
+  full_name text,
+  approval_status text default 'pending',
+  is_approved boolean default false,
+  is_active boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  last_seen_at timestamptz default now()
+);
+
+alter table app_users add column if not exists role text default 'employee';
+alter table app_users add column if not exists full_name text;
+alter table app_users add column if not exists approval_status text default 'pending';
+alter table app_users add column if not exists is_approved boolean default false;
+alter table app_users add column if not exists is_active boolean default false;
+alter table app_users add column if not exists created_at timestamptz default now();
+alter table app_users add column if not exists updated_at timestamptz default now();
+alter table app_users add column if not exists last_seen_at timestamptz default now();
+
+alter table app_users enable row level security;
+
+drop policy if exists "app_users_select_admin_or_self" on app_users;
+drop policy if exists "app_users_insert_self" on app_users;
+drop policy if exists "app_users_update_admin_or_self" on app_users;
+drop policy if exists "app_users_select_admin_or_self_approval" on app_users;
+drop policy if exists "app_users_insert_self_approval" on app_users;
+drop policy if exists "app_users_update_admin_or_self_approval" on app_users;
+drop policy if exists "app_users_select_login_fix" on app_users;
+drop policy if exists "app_users_insert_self_pending_login_fix" on app_users;
+drop policy if exists "app_users_update_admin_only_login_fix" on app_users;
+
+create policy "app_users_select_login_fix"
+on app_users for select
+to authenticated
+using (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(email) = lower(auth.jwt() ->> 'email')
+);
+
+create policy "app_users_insert_self_pending_login_fix"
+on app_users for insert
+to authenticated
+with check (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or (
+    lower(email) = lower(auth.jwt() ->> 'email')
+    and coalesce(role,'employee') = 'employee'
+    and coalesce(approval_status,'pending') = 'pending'
+    and coalesce(is_approved,false) = false
+    and coalesce(is_active,false) = false
+  )
+);
+
+create policy "app_users_update_admin_only_login_fix"
+on app_users for update
+to authenticated
+using (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com')
+with check (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com');
+
+-- Sync existing Supabase Auth users into app_users.
+insert into app_users (email, role, approval_status, is_approved, is_active, created_at, updated_at, last_seen_at)
+select lower(email),
+       case when lower(email) = 'afinch2678@gmail.com' then 'admin' else 'employee' end,
+       case when lower(email) = 'afinch2678@gmail.com' then 'approved' else 'pending' end,
+       case when lower(email) = 'afinch2678@gmail.com' then true else false end,
+       case when lower(email) = 'afinch2678@gmail.com' then true else false end,
+       now(),
+       now(),
+       now()
+from auth.users
+where email is not null
+on conflict (email) do nothing;
+
+-- Force admin approved.
+update app_users
+set role='admin', approval_status='approved', is_approved=true, is_active=true, updated_at=now()
+where lower(email)='afinch2678@gmail.com';
+
+-- Employees stay blocked unless admin approves them.
+update app_users
+set approval_status=coalesce(approval_status,'pending'),
+    is_approved=case when approval_status='approved' then true else false end,
+    is_active=case when approval_status='approved' then coalesce(is_active,true) else false end,
+    updated_at=now()
+where lower(email)<>'afinch2678@gmail.com';
+
+create index if not exists idx_app_users_email on app_users(lower(email));
+create index if not exists idx_app_users_approval on app_users(approval_status, is_approved, is_active);

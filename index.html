@@ -335,7 +335,7 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">EMPLOYEE APPROVAL READY — signed-up users require admin approval before app access.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">LOGIN FIX + EMPLOYEE APPROVAL — admin login restored; employees require approval.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray adminOnly hidden" onclick="openEmployeeAdminModal()">✅ Manage Employees</button>
@@ -716,23 +716,114 @@ async function authFetch(path,body){if(!connectionIsReady())throw new Error('Sys
 async function dbFetch(path,opt={}){if(!token())throw new Error('Not logged in.');let res=await fetch(url()+'/rest/v1'+path,{...opt,headers:{apikey:pubKey(),Authorization:'Bearer '+token(),'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});let text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!res.ok)throw new Error(data?.message||data?.hint||data||'Database failed');return data}
 async function login(){try{clearLoginError();let data=await authFetch('/auth/v1/token?grant_type=password',{email:val('loginEmail'),password:val('loginPassword')});storeSession(data);await boot()}catch(e){showLoginError(e.message)}}
 async function signup(){
- let email=document.getElementById('email').value.trim().toLowerCase(),password=document.getElementById('password').value;
- if(!email||!password)return alert('Enter email and password.');
  try{
-   let res=await fetch(API.auth+'/signup',{method:'POST',headers:{apikey:API.key,'Content-Type':'application/json'},body:JSON.stringify({email,password})});
-   let data=await res.json();
-   if(!res.ok)throw new Error(data.msg||data.error_description||data.error||'Signup failed');
+   clearLoginError();
+   let email=val('loginEmail').toLowerCase(), password=val('loginPassword');
+   if(!email||!password)throw new Error('Enter email and password.');
+   let data=await authFetch('/auth/v1/signup',{email,password});
    currentUser={email,isAdmin:email===ADMIN_EMAIL};
-   await upsertCurrentUser();
-   document.getElementById('loginScreen').classList.remove('open');
-   if(currentUser.isAdmin){
-     applyRoleUI();
-     await loadAccounts();
+
+   if(data.access_token){
+     storeSession(data);
+     let profile=await upsertCurrentUser();
+     document.getElementById('loginScreen').classList.remove('open');
+     if(currentUser.isAdmin || isUserApproved(profile)){
+       document.getElementById('pendingScreen').classList.remove('open');
+       applyRoleUI();
+       await loadAccounts();
+     }else{
+       document.getElementById('pendingScreen').classList.add('open');
+     }
    }else{
+     document.getElementById('loginScreen').classList.remove('open');
      document.getElementById('pendingScreen').classList.add('open');
    }
- }catch(e){document.getElementById('loginErr').textContent=e.message}
+ }catch(e){showLoginError(e.message)}
 }
+
+function storeSession(data){localStorage.setItem(TOKEN_KEY,data.access_token||'');localStorage.setItem(REFRESH_KEY,data.refresh_token||'')}
+function logout(){localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(REFRESH_KEY);location.reload()}
+function showLoginError(msg){let el=document.getElementById('loginError');if(!el)return alert(msg);el.textContent=msg;el.classList.remove('hidden')}
+function clearLoginError(){let el=document.getElementById('loginError');if(el){el.textContent='';el.classList.add('hidden')}}
+
+async function getUser(){
+ let res=await fetch(url()+'/auth/v1/user',{headers:{apikey:pubKey(),Authorization:'Bearer '+token()}});
+ let data=await res.json().catch(()=>({}));
+ if(!res.ok)throw new Error(data.msg||data.message||'Login expired. Log in again.');
+ return data;
+}
+
+async function upsertCurrentUser(){
+ if(!currentUser.email)return null;
+ try{
+   let existing=await dbFetch('/app_users?email=eq.'+encodeURIComponent(currentUser.email)+'&select=*').catch(()=>[]);
+   if(existing&&existing[0]){
+     let profile=toCamel(existing[0]);
+     if(currentUser.isAdmin){
+       let rows=await dbFetch('/app_users?email=eq.'+encodeURIComponent(currentUser.email),{
+         method:'PATCH',
+         body:JSON.stringify({role:'admin',approval_status:'approved',is_approved:true,is_active:true,last_seen_at:new Date().toISOString(),updated_at:new Date().toISOString()})
+       }).catch(()=>null);
+       return rows&&rows[0]?toCamel(rows[0]):{...profile,role:'admin',approvalStatus:'approved',isApproved:true,isActive:true};
+     }
+     return profile;
+   }
+
+   let row={
+     email:currentUser.email,
+     role:currentUser.isAdmin?'admin':'employee',
+     approval_status:currentUser.isAdmin?'approved':'pending',
+     is_approved:currentUser.isAdmin,
+     is_active:currentUser.isAdmin,
+     created_at:new Date().toISOString(),
+     updated_at:new Date().toISOString(),
+     last_seen_at:new Date().toISOString()
+   };
+   let rows=await dbFetch('/app_users',{method:'POST',body:JSON.stringify([row])}).catch(async err=>{
+     let retry=await dbFetch('/app_users?email=eq.'+encodeURIComponent(currentUser.email)+'&select=*').catch(()=>[]);
+     return retry;
+   });
+   return rows&&rows[0]?toCamel(rows[0]):(currentUser.isAdmin?{email:currentUser.email,approvalStatus:'approved',isApproved:true,isActive:true,role:'admin'}:null);
+ }catch(err){
+   console.warn('Could not load/create app user profile. Run updated SQL.',err);
+   if(currentUser.isAdmin)return {email:currentUser.email,approvalStatus:'approved',isApproved:true,isActive:true,role:'admin'};
+   return null;
+ }
+}
+
+async function boot(){
+ fillConnection();
+ if(!connectionIsReady()){
+   document.getElementById('loginScreen').classList.add('open');
+   return;
+ }
+ if(!token()){
+   document.getElementById('loginScreen').classList.add('open');
+   return;
+ }
+ try{
+   clearLoginError();
+   let user=await getUser();
+   currentUser={email:(user.email||'').toLowerCase(),isAdmin:(user.email||'').toLowerCase()===ADMIN_EMAIL};
+   let profile=await upsertCurrentUser();
+
+   if(!isUserApproved(profile)){
+     document.getElementById('loginScreen').classList.remove('open');
+     document.getElementById('pendingScreen').classList.add('open');
+     return;
+   }
+
+   document.getElementById('pendingScreen').classList.remove('open');
+   document.getElementById('loginScreen').classList.remove('open');
+   applyRoleUI();
+   await loadAccounts();
+ }catch(e){
+   showLoginError(e.message);
+   document.getElementById('pendingScreen').classList.remove('open');
+   document.getElementById('loginScreen').classList.add('open');
+ }
+}
+
 function isUserApproved(profile){
  if(currentUser.isAdmin)return true;
  if(!profile)return false;
