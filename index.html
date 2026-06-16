@@ -6,56 +6,61 @@
   <title>Co Pilot Collections Manager</title>
   <style>
     *{box-sizing:border-box}
-    :root{
-      --blue:#1d4ed8;--blue2:#0f2f86;--dark:#0f172a;--muted:#64748b;--line:#dbe3ef;--bg:#eef3f9;
-      --card:#fff;--green:#16a34a;--red:#dc2626;--orange:#ea580c;--purple:#7c3aed;
-    }
+    :root{--blue:#1d4ed8;--dark:#0f172a;--muted:#64748b;--line:#dbe3ef;--bg:#eef3f9;--green:#16a34a;--red:#dc2626;--purple:#7c3aed}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--dark);height:100vh;overflow:hidden}
     button,.fileBtn{border:0;border-radius:10px;padding:11px 14px;font-weight:800;cursor:pointer;background:#2563eb;color:white;font-size:14px;display:inline-flex;align-items:center;gap:8px}
-    button:hover,.fileBtn:hover{filter:brightness(.96)}.gray{background:#334155}.red{background:#dc2626}.green{background:#16a34a}.purple{background:#7c3aed}.outline{background:white;color:#1d4ed8;border:1px solid #bcd0ff}.fileBtn input{display:none}
-    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;background:white}
-    label{display:block;font-size:13px;font-weight:800;color:#334155;margin-bottom:6px}
-    .app{height:100vh;display:grid;grid-template-rows:74px 1fr 74px}
+    .gray{background:#334155}.red{background:#dc2626}.green{background:#16a34a}.purple{background:#7c3aed}.outline{background:white;color:#1d4ed8;border:1px solid #bcd0ff}.fileBtn input{display:none}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;background:white}label{display:block;font-size:13px;font-weight:800;color:#334155;margin-bottom:6px}
+    .app{height:100vh;display:grid;grid-template-rows:74px 1fr 74px}.hidden{display:none!important}
     header{background:linear-gradient(135deg,#0f172a,#1d4ed8);color:white;display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:18px}
     .brand{display:flex;align-items:center;gap:14px}.logo{width:44px;height:44px;border-radius:12px;background:white;color:#1d4ed8;font-size:31px;font-weight:900;display:grid;place-items:center;font-style:italic}
     h1{margin:0;font-size:23px;letter-spacing:-.4px}.sub{margin:4px 0 0;color:#dbeafe;font-size:13px}
-    .progressBlock{text-align:center;min-width:320px}.progressTitle{font-weight:900;font-size:17px}.progressBar{height:8px;background:rgba(255,255,255,.28);border-radius:999px;margin-top:8px;overflow:hidden}.progressFill{height:100%;background:white;border-radius:999px;width:0%}.topActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.agent{display:flex;align-items:center;gap:8px;font-weight:800}.dot{width:9px;height:9px;border-radius:999px;background:#22c55e}
-    .main{min-height:0;display:grid;grid-template-columns:310px 1fr 360px;gap:14px;padding:14px;overflow:hidden}
-    .sidebar,.center,.right{min-height:0;overflow:auto}.panel{background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(15,23,42,.06)}
-    .sidebar{display:flex;flex-direction:column;gap:12px}.sideHead{padding:16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.sideHead h2{font-size:18px;margin:0}
-    .filters{padding:12px;display:grid;grid-template-columns:1fr;gap:10px}.queueList{padding:8px;display:flex;flex-direction:column;gap:8px}
-    .qItem{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:white;display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center}
-    .qItem.active{border:2px solid #2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.qNum{width:32px;height:32px;border-radius:999px;background:#e2e8f0;display:grid;place-items:center;font-weight:900;color:#475569}.qItem.active .qNum{background:#2563eb;color:white}
-    .qName{font-weight:900}.qAcct{font-size:12px;color:#64748b;margin-top:3px}.qBal{font-weight:900;text-align:right;font-size:13px}.qMeta{text-align:right}.remaining{padding:12px;color:#64748b;font-size:13px;border-top:1px solid var(--line)}
-    .center{display:flex;flex-direction:column;gap:12px}
-    .accountCard{padding:20px;display:grid;grid-template-columns:78px 1fr 1fr 1fr;gap:18px;align-items:start}.avatar{width:70px;height:70px;border-radius:999px;background:#dbeafe;color:#1d4ed8;display:grid;place-items:center;font-size:24px;font-weight:900}
-    .name{font-size:24px;font-weight:900}.badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;margin-left:6px;background:#ede9fe;color:#5b21b6}.fieldLabel{color:#64748b;font-size:12px;font-weight:800;margin-bottom:4px}.fieldVal{font-weight:900;margin-bottom:14px}
-    .phonePanel,.dispoPanel,.notePanel{padding:16px}.panelTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panelTitle h3{margin:0;font-size:17px}.hint{font-size:12px;color:#64748b;margin-top:-6px;margin-bottom:12px}
-    .phoneGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.phoneChip{text-decoration:none;color:#0f172a;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;background:white}.phoneChip:hover{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
-    .phoneIcon{width:36px;height:36px;border-radius:999px;background:#2563eb;color:white;display:grid;place-items:center;font-weight:900}.phoneNum{font-weight:900}.phoneType{font-size:12px;color:#64748b;margin-top:3px}
-    .dispoGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.dispo{background:white;color:#0f172a;border:1px solid var(--line);height:62px;justify-content:center}.dispo.selected{border:2px solid #2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);color:#1d4ed8}.dispo.redText{color:#dc2626}.dispo.greenText{color:#166534}.dispo.orangeText{color:#ea580c}.dispo.purpleText{color:#7c3aed}
-    textarea{min-height:96px;resize:vertical}.counter{text-align:right;color:#64748b;font-size:12px;margin-top:5px}
-    .right{display:flex;flex-direction:column;gap:12px}.softphone{padding:14px}.softTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.connected{font-size:13px;color:#166534;font-weight:900}.ready{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:12px;padding:12px;margin-bottom:12px;font-size:14px}
-    .dialer{display:grid;grid-template-columns:1fr 1fr;gap:12px}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.key{background:white;color:#0f172a;border:1px solid var(--line);padding:10px;border-radius:9px;display:block;text-align:center}.callBox{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.callNumber{font-weight:900;margin:12px 0;color:#1d4ed8}
-    .activity{padding:14px;overflow:auto}.timeline{display:flex;flex-direction:column;gap:10px}.event{border-left:4px solid #2563eb;background:#f8fafc;border-radius:10px;padding:10px}.eventTitle{font-weight:900;font-size:13px}.eventMeta{color:#64748b;font-size:12px;margin-top:4px}
-    .bottom{background:white;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;gap:10px}.bottom .rightBtns{display:flex;gap:12px}.big{min-width:170px;justify-content:center}.primaryBig{background:#1d4ed8;min-width:210px;justify-content:center}
-    .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open{display:flex}.modalbox{background:white;border-radius:16px;max-width:980px;width:100%;max-height:92vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:16px 20px;position:sticky;top:0;background:white;z-index:2}.modalbody{padding:20px}
-    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.full{grid-column:1/-1}.two{grid-column:span 2}.sectionTitle{grid-column:1/-1;background:#f1f5f9;padding:10px;border-radius:10px;font-weight:900;color:#334155;margin-top:8px}
-    @media(max-width:1200px){.main{grid-template-columns:270px 1fr}.right{display:none}.phoneGrid,.dispoGrid{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:850px){body{overflow:auto}.app{height:auto;display:block}.main{display:block}.sidebar,.center,.right{overflow:visible;margin-bottom:14px}.stats{grid-template-columns:1fr}.accountCard{grid-template-columns:1fr}.bottom{position:sticky;bottom:0}.grid{grid-template-columns:1fr}.two,.full{grid-column:1}}
+    .progressBlock{text-align:center;min-width:290px}.progressTitle{font-weight:900;font-size:17px}.progressBar{height:8px;background:rgba(255,255,255,.28);border-radius:999px;margin-top:8px;overflow:hidden}.progressFill{height:100%;background:white;border-radius:999px;width:0%}
+    .topActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.roleBadge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);border-radius:999px;padding:8px 12px;font-weight:900;font-size:13px}.dot{width:9px;height:9px;border-radius:999px;background:#22c55e;display:inline-block}
+    .main{min-height:0;display:grid;grid-template-columns:310px 1fr 360px;gap:14px;padding:14px;overflow:hidden}.sidebar,.center,.right{min-height:0;overflow:auto}.panel{background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(15,23,42,.06)}
+    .sidebar{display:flex;flex-direction:column;gap:12px}.sideHead{padding:16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.sideHead h2{font-size:18px;margin:0}.filters{padding:12px;display:grid;gap:10px}.queueList{padding:8px;display:flex;flex-direction:column;gap:8px}
+    .qItem{border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;background:white;display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center}.qItem.active{border:2px solid #2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.qNum{width:32px;height:32px;border-radius:999px;background:#e2e8f0;display:grid;place-items:center;font-weight:900;color:#475569}.qItem.active .qNum{background:#2563eb;color:white}.qName{font-weight:900}.qAcct{font-size:12px;color:#64748b;margin-top:3px}.qBal{font-weight:900;text-align:right;font-size:13px}.remaining{padding:12px;color:#64748b;font-size:13px;border-top:1px solid var(--line)}
+    .center{display:flex;flex-direction:column;gap:12px}.accountCard{padding:20px;display:grid;grid-template-columns:78px 1fr 1fr 1fr;gap:18px;align-items:start}.avatar{width:70px;height:70px;border-radius:999px;background:#dbeafe;color:#1d4ed8;display:grid;place-items:center;font-size:24px;font-weight:900}.name{font-size:24px;font-weight:900}.badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900;margin-left:6px;background:#ede9fe;color:#5b21b6}.fieldLabel{color:#64748b;font-size:12px;font-weight:800;margin-bottom:4px}.fieldVal{font-weight:900;margin-bottom:14px}
+    .phonePanel,.dispoPanel,.notePanel{padding:16px}.panelTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.panelTitle h3{margin:0;font-size:17px}.hint{font-size:12px;color:#64748b;margin-top:-6px;margin-bottom:12px}.phoneGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.phoneChip{text-decoration:none;color:#0f172a;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;background:white}.phoneChip:hover{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.phoneIcon{width:36px;height:36px;border-radius:999px;background:#2563eb;color:white;display:grid;place-items:center;font-weight:900}.phoneNum{font-weight:900}.phoneType{font-size:12px;color:#64748b;margin-top:3px}
+    .dispoGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.dispo{background:white;color:#0f172a;border:1px solid var(--line);height:62px;justify-content:center}.dispo.selected{border:2px solid #2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);color:#1d4ed8}.dispo.redText{color:#dc2626}.dispo.greenText{color:#166534}.dispo.orangeText{color:#ea580c}.dispo.purpleText{color:#7c3aed}textarea{min-height:96px;resize:vertical}.counter{text-align:right;color:#64748b;font-size:12px;margin-top:5px}
+    .right{display:flex;flex-direction:column;gap:12px}.softphone{padding:14px}.softTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.connected{font-size:13px;color:#166534;font-weight:900}.ready{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;border-radius:12px;padding:12px;margin-bottom:12px;font-size:14px}.dialer{display:grid;grid-template-columns:1fr 1fr;gap:12px}.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.key{background:white;color:#0f172a;border:1px solid var(--line);padding:10px;border-radius:9px;display:block;text-align:center}.callBox{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}.callNumber{font-weight:900;margin:12px 0;color:#1d4ed8}.activity{padding:14px;overflow:auto}.timeline{display:flex;flex-direction:column;gap:10px}.event{border-left:4px solid #2563eb;background:#f8fafc;border-radius:10px;padding:10px}.eventTitle{font-weight:900;font-size:13px}.eventMeta{color:#64748b;font-size:12px;margin-top:4px}
+    .bottom{background:white;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 22px;gap:10px}.rightBtns{display:flex;gap:12px}.big{min-width:160px;justify-content:center}.primaryBig{background:#1d4ed8;min-width:210px;justify-content:center}
+    .modal,.loginScreen{display:none;position:fixed;inset:0;background:rgba(15,23,42,.72);align-items:center;justify-content:center;padding:20px;z-index:20}.modal.open,.loginScreen.open{display:flex}.modalbox{background:white;border-radius:16px;max-width:980px;width:100%;max-height:92vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:16px 20px;position:sticky;top:0;background:white;z-index:2}.modalbody{padding:20px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.sectionTitle{grid-column:1/-1;background:#f1f5f9;padding:10px;border-radius:10px;font-weight:900;color:#334155;margin-top:8px}.full{grid-column:1/-1}.two{grid-column:span 2}
+    .loginBox{background:white;width:min(460px,100%);border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.35)}.loginBox h2{margin:0 0 8px}.loginBox p{color:#64748b;margin-top:0}.error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:10px;padding:10px;margin:10px 0}.notice{background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:10px;padding:10px;margin:10px 0;font-size:13px}
+    @media(max-width:1200px){.main{grid-template-columns:270px 1fr}.right{display:none}.phoneGrid,.dispoGrid{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){body{overflow:auto}.app{height:auto;display:block}.main{display:block}.sidebar,.center,.right{overflow:visible;margin-bottom:14px}.accountCard{grid-template-columns:1fr}.bottom{position:sticky;bottom:0}.grid{grid-template-columns:1fr}.two,.full{grid-column:1}}
   </style>
 </head>
 <body>
+<div id="loginScreen" class="loginScreen open">
+  <div class="loginBox">
+    <h2>Co Pilot Login</h2>
+    <p>Sign in to use the database-backed CRM. Admin: <b>afinch2678@gmail.com</b></p>
+    <div id="loginError" class="error hidden"></div>
+    <div id="setupNotice" class="notice hidden"></div>
+    <label>Email</label><input id="loginEmail" autocomplete="email">
+    <br><br><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password">
+    <br><br>
+    <div style="display:flex;gap:10px"><button onclick="login()">Login</button><button class="gray" onclick="signup()">Sign Up</button></div>
+  </div>
+</div>
+
 <div class="app">
   <header>
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">One-account workflow. Queue auto-updates when filters/status change.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">Bolt Database version. Real login. Real account save. Admin controls locked.</p></div></div>
     <div class="progressBlock"><div class="progressTitle" id="accountProgress">Account 1 of 0</div><div class="progressBar"><div class="progressFill" id="progressFill"></div></div></div>
-    <div class="topActions"><label class="fileBtn gray">Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label><button class="purple" onclick="downloadTemplate()">Template CSV</button><button class="gray" onclick="exportCSV()">Export CSV</button><span class="agent"><span class="dot"></span> Available</span></div>
+    <div class="topActions">
+      <span class="roleBadge" id="roleBadge">Not logged in</span>
+      <label class="fileBtn gray adminOnly hidden">Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label>
+      <button class="purple adminOnly hidden" onclick="downloadTemplate()">Template CSV</button>
+      <button class="gray adminOnly hidden" onclick="exportCSV()">Export CSV</button>
+      <button class="red" onclick="logout()">Logout</button>
+      <span><span class="dot"></span> Available</span>
+    </div>
   </header>
 
   <div class="main">
     <aside class="sidebar panel">
-      <div class="sideHead"><h2>Queue</h2><button class="outline" onclick="render()">↻</button></div>
+      <div class="sideHead"><h2>Queue</h2><button class="outline" onclick="loadAccounts()">↻</button></div>
       <div class="filters">
         <div><label>Portfolio</label><select id="portfolioFilter" onchange="onQueueFilterChange()"><option value="">All Portfolios</option></select></div>
         <div><label>Status</label><select id="statusFilter" onchange="onQueueFilterChange()"><option value="">All Statuses</option><option>New</option><option>Active</option><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Disputed</option><option>Callback</option><option>Settled</option><option>DNC</option><option>Bad Number</option><option>Closed</option></select></div>
@@ -74,7 +79,7 @@
       </section>
 
       <section class="panel phonePanel">
-        <div class="panelTitle"><h3>Phone Numbers</h3><button class="outline" onclick="refreshPhonePanel()">Refresh Numbers</button></div>
+        <div class="panelTitle"><h3>Phone Numbers</h3><button class="outline" onclick="renderPhones(getCurrent())">Refresh Numbers</button></div>
         <div class="hint">Click any number to open your default softphone/dialer using tel: links.</div>
         <div class="phoneGrid" id="phoneGrid"></div>
       </section>
@@ -85,7 +90,7 @@
       </section>
 
       <section class="panel notePanel">
-        <div class="panelTitle"><h3>Agent Notes</h3><span class="muted">Saved to this account</span></div>
+        <div class="panelTitle"><h3>Agent Notes</h3><span class="muted">Saved to database</span></div>
         <textarea id="agentNote" placeholder="Type call notes, promise to pay details, dispute reason, callback time, wrong number info..."></textarea>
         <div class="counter" id="noteCounter">0 / 2000</div>
       </section>
@@ -96,24 +101,19 @@
         <div class="softTop"><b>Softphone</b><span class="connected">● Connected</span></div>
         <div class="ready"><b>Ready to call</b><br><span id="lastDialed">Click a number to dial</span></div>
         <div class="dialer">
-          <div class="keys">
-            <button class="key">1</button><button class="key">2<br><small>ABC</small></button><button class="key">3<br><small>DEF</small></button>
-            <button class="key">4<br><small>GHI</small></button><button class="key">5<br><small>JKL</small></button><button class="key">6<br><small>MNO</small></button>
-            <button class="key">7<br><small>PQRS</small></button><button class="key">8<br><small>TUV</small></button><button class="key">9<br><small>WXYZ</small></button>
-            <button class="key">*</button><button class="key">0</button><button class="key">#</button>
-          </div>
+          <div class="keys"><button class="key">1</button><button class="key">2<br><small>ABC</small></button><button class="key">3<br><small>DEF</small></button><button class="key">4<br><small>GHI</small></button><button class="key">5<br><small>JKL</small></button><button class="key">6<br><small>MNO</small></button><button class="key">7<br><small>PQRS</small></button><button class="key">8<br><small>TUV</small></button><button class="key">9<br><small>WXYZ</small></button><button class="key">*</button><button class="key">0</button><button class="key">#</button></div>
           <div class="callBox"><div>No active call</div><div class="callNumber" id="callNumber">—</div><button class="green" onclick="callPrimary()">Call</button><br><br><button class="red" onclick="endCall()">End Call</button></div>
         </div>
       </section>
       <section class="panel activity">
-        <div class="panelTitle"><h3>History / Activity</h3><button class="outline" onclick="viewCurrent()">View Full</button></div>
+        <div class="panelTitle"><h3>History / Activity</h3><button class="outline" onclick="loadHistory(getCurrent()?.id)">Refresh</button></div>
         <div class="timeline" id="activityList"></div>
       </section>
     </aside>
   </div>
 
   <div class="bottom">
-    <button class="gray" onclick="openModal()">+ Add Account</button>
+    <button class="gray adminOnly hidden" onclick="openModal()">+ Add Account</button>
     <div class="rightBtns"><button class="outline big" onclick="skipAccount()">Skip</button><button class="outline big" onclick="saveCurrent()">Save</button><button class="primaryBig" onclick="saveAndNext()">Save & Next</button><button class="outline big" onclick="nextAccount()">Next Account</button></div>
   </div>
 </div>
@@ -126,27 +126,17 @@
         <input type="hidden" id="id">
         <div class="grid">
           <div class="sectionTitle">Account / Portfolio</div>
-          <div><label>Portfolio</label><input id="portfolio"></div>
-          <div><label>Account Description</label><input id="accountDescription"></div>
-          <div><label>Original Creditor</label><input id="originalCreditor"></div>
-          <div><label>Account Number</label><input id="accountNumberInput"></div>
-          <div><label>Client Account Number</label><input id="clientAccountNumber"></div>
-          <div><label>Account ID</label><input id="accountId"></div>
-          <div><label>Type of Debt</label><input id="typeOfDebt"></div>
-          <div><label>Status</label><select id="statusInput"><option>New</option><option>Active</option><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Disputed</option><option>Callback</option><option>Settled</option><option>DNC</option><option>Bad Number</option><option>Closed</option></select></div>
+          <div><label>Portfolio</label><input id="portfolio"></div><div><label>Account Description</label><input id="accountDescription"></div><div><label>Original Creditor</label><input id="originalCreditor"></div>
+          <div><label>Account Number</label><input id="accountNumberInput"></div><div><label>Client Account Number</label><input id="clientAccountNumber"></div><div><label>Account ID</label><input id="accountId"></div>
+          <div><label>Type of Debt</label><input id="typeOfDebt"></div><div><label>Status</label><select id="statusInput"><option>New</option><option>Active</option><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Disputed</option><option>Callback</option><option>Settled</option><option>DNC</option><option>Bad Number</option><option>Closed</option></select></div>
           <div class="sectionTitle">Consumer</div>
           <div><label>First Name</label><input id="firstName"></div><div><label>Middle Name</label><input id="middleName"></div><div><label>Last Name</label><input id="lastName"></div>
           <div><label>Full Name</label><input id="fullName"></div><div><label>SSN</label><input id="ssnInput"></div><div><label>DOB</label><input id="dob"></div>
-          <div class="two"><label>Address</label><input id="address"></div><div><label>Address 2</label><input id="address2"></div>
-          <div><label>City</label><input id="city"></div><div><label>State</label><input id="stateInput"></div><div><label>ZIP</label><input id="zip"></div>
-          <div><label>Employer</label><input id="employer"></div><div class="two"><label>Email</label><input id="emailInput"></div>
+          <div class="two"><label>Address</label><input id="address"></div><div><label>Address 2</label><input id="address2"></div><div><label>City</label><input id="city"></div><div><label>State</label><input id="stateInput"></div><div><label>ZIP</label><input id="zip"></div><div><label>Employer</label><input id="employer"></div><div class="two"><label>Email</label><input id="emailInput"></div>
           <div class="sectionTitle">Phones</div>
-          <div><label>Phone 1 / custom11</label><input id="phone1"></div><div><label>Phone 2 / custom12</label><input id="phone2"></div><div><label>Phone 3 / custom13</label><input id="phone3"></div>
-          <div><label>Phone 4 / custom14</label><input id="phone4"></div><div><label>Phone 5 / custom15</label><input id="phone5"></div><div><label>Phone 6 / custom16</label><input id="phone6"></div>
+          <div><label>Phone 1 / custom11</label><input id="phone1"></div><div><label>Phone 2 / custom12</label><input id="phone2"></div><div><label>Phone 3 / custom13</label><input id="phone3"></div><div><label>Phone 4 / custom14</label><input id="phone4"></div><div><label>Phone 5 / custom15</label><input id="phone5"></div><div><label>Phone 6 / custom16</label><input id="phone6"></div>
           <div class="sectionTitle">Balances / Dates</div>
-          <div><label>Original Balance</label><input id="originalBalance" type="number" step="0.01"></div><div><label>Principal</label><input id="principal" type="number" step="0.01"></div><div><label>Current Balance / COPrincipal</label><input id="currentBalance" type="number" step="0.01"></div>
-          <div><label>Open Date</label><input id="openDate"></div><div><label>Date Account Opened</label><input id="dateAccountOpened"></div><div><label>Delinquency Date</label><input id="delinquencyDate"></div>
-          <div><label>Charge Off Date</label><input id="chargeOffDate"></div><div><label>Last Payment Date</label><input id="lastPaymentDate"></div><div><label>Last Payment Amount</label><input id="lastPaymentAmount" type="number" step="0.01"></div>
+          <div><label>Original Balance</label><input id="originalBalance" type="number" step="0.01"></div><div><label>Principal</label><input id="principal" type="number" step="0.01"></div><div><label>Current Balance / COPrincipal</label><input id="currentBalance" type="number" step="0.01"></div><div><label>Open Date</label><input id="openDate"></div><div><label>Date Account Opened</label><input id="dateAccountOpened"></div><div><label>Delinquency Date</label><input id="delinquencyDate"></div><div><label>Charge Off Date</label><input id="chargeOffDate"></div><div><label>Last Payment Date</label><input id="lastPaymentDate"></div><div><label>Last Payment Amount</label><input id="lastPaymentAmount" type="number" step="0.01"></div>
           <div class="sectionTitle">Sensitive Bank Fields</div>
           <div><label>Bank Routing Number</label><input id="bankRoutingNumber"></div><div><label>Bank Account Number</label><input id="bankAccountNumber"></div>
         </div>
@@ -156,216 +146,189 @@
   </div>
 </div>
 
-<div id="detailModal" class="modal">
-  <div class="modalbox">
-    <div class="modalhead"><h2 id="detailTitle">Account Details</h2><button class="gray" onclick="closeModal('detailModal')">Close</button></div>
-    <div class="modalbody" id="detailBody"></div>
-  </div>
-</div>
-
 <script>
-const KEY='coPilotPortfolioAccountsV2';
-const CURRENT='coPilotCurrentAccountIdV1';
+const ADMIN_EMAIL='afinch2678@gmail.com';
+const TOKEN_KEY='coPilotDbToken';
+const ROLE_KEY='coPilotDbRole';
+const EMAIL_KEY='coPilotDbEmail';
+let accounts=[], currentAccountId='', currentDisposition='', currentPhone='', currentUser={email:'',role:'employee',isAdmin:false};
 const DISPOS=['No Answer','Left Voicemail','Promise to Pay','Disputed','Bad Number','Callback','Settled','DNC'];
 const FIELDS=['portfolio','accountDescription','clientAccountNumber','accountId','accountNumber','firstName','middleName','lastName','fullName','ssn','dob','address','address2','city','state','zip','employer','email','originalCreditor','typeOfDebt','originalBalance','principal','currentBalance','openDate','dateAccountOpened','delinquencyDate','chargeOffDate','origLastPmtDate','lastPaymentDate','lastPaymentAmount','bankRoutingNumber','bankAccountNumber','phone1','phone2','phone3','phone4','phone5','phone6','status'];
-const demo=[
- {id:crypto.randomUUID(),portfolio:'PlainGreen LLC',accountDescription:'PlainGreen LLC',clientAccountNumber:'36972835',accountId:'13242556',accountNumber:'36972835',firstName:'DELVIN',middleName:'',lastName:'MARTES',fullName:'DELVIN MARTES',ssn:'***-**-8280',dob:'11/05/1973',address:'1751 DOGWOOD RD APT 6-3',address2:'',city:'CHARLESTON',state:'SC',zip:'29414',employer:'',email:'martesdelvin3@gmail.com',originalCreditor:'PlainGreen LLC',typeOfDebt:'installment loan',originalBalance:'',principal:'',currentBalance:2976.01,openDate:'05/08/2019',dateAccountOpened:'',delinquencyDate:'',chargeOffDate:'05/22/2019',origLastPmtDate:'',lastPaymentDate:'',lastPaymentAmount:0,bankRoutingNumber:'',bankAccountNumber:'',phone1:'847-890-3937',phone2:'404-242-7600',phone3:'770-337-2973',phone4:'770-234-2666',phone5:'229-289-1652',phone6:'',status:'New',disposition:'',lastContactNumber:'',notes:[{date:new Date().toLocaleString(),text:'Demo Plain Green format.'}],activity:[{date:new Date().toLocaleString(),type:'System',text:'Account added to queue'}],createdAt:Date.now()},
- {id:crypto.randomUUID(),portfolio:'Barclays',accountDescription:'',clientAccountNumber:'',accountId:'',accountNumber:'5140219002524220',firstName:'DIDIER',middleName:'F',lastName:'MIAWAMA',fullName:'DIDIER F MIAWAMA',ssn:'627-32-3918',dob:'',address:'12295 CLAIRMONTE AVE',address2:'',city:'ALPHARETTA',state:'GA',zip:'3000983139',employer:'',email:'',originalCreditor:'APPLE CREDIT CARD - BARCLAY-CREDITSHOP',typeOfDebt:'credit card',originalBalance:3263.95,principal:3263.95,currentBalance:3263.95,openDate:'',dateAccountOpened:'8/21/2006',delinquencyDate:'',chargeOffDate:'11/22/2013',origLastPmtDate:'',lastPaymentDate:'',lastPaymentAmount:'',bankRoutingNumber:'',bankAccountNumber:'',phone1:'847-890-3937',phone2:'',phone3:'404-242-7600',phone4:'770-337-2973',phone5:'770-234-2666',phone6:'229-289-1652',status:'New',disposition:'',lastContactNumber:'',notes:[{date:new Date().toLocaleString(),text:'Demo Barclays format.'}],activity:[{date:new Date().toLocaleString(),type:'System',text:'Account added to queue'}],createdAt:Date.now()-1000}
-];
-let currentDisposition='', currentPhone='';
+const idMap={accountNumber:'accountNumberInput',status:'statusInput',ssn:'ssnInput',state:'stateInput',email:'emailInput'};
 
-function load(){let raw=localStorage.getItem(KEY); if(!raw){localStorage.setItem(KEY,JSON.stringify(demo)); localStorage.setItem(CURRENT,demo[0].id); return demo;} try{return JSON.parse(raw)}catch{return []}}
-function save(list){localStorage.setItem(KEY,JSON.stringify(list))}
+function token(){return localStorage.getItem(TOKEN_KEY)||''}
+function authHeaders(){return {'Content-Type':'application/json','Authorization':'Bearer '+token()}}
+async function api(path, options={}){
+ const res=await fetch(path,{...options,headers:{...authHeaders(),...(options.headers||{})}});
+ const data=await res.json().catch(()=>({}));
+ if(!res.ok) throw new Error(data.error||'Request failed');
+ return data;
+}
+async function login(){
+ clearLoginError();
+ try{
+  const email=val('loginEmail'), password=val('loginPassword');
+  const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error||'Login failed');
+  localStorage.setItem(TOKEN_KEY,data.access_token);
+  await boot();
+ }catch(e){showLoginError(e.message)}
+}
+async function signup(){
+ clearLoginError();
+ try{
+  const email=val('loginEmail'), password=val('loginPassword');
+  const res=await fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+  const data=await res.json();
+  if(!res.ok) throw new Error(data.error||'Signup failed');
+  showLoginError('Signup created. Check email if confirmation is enabled, then log in.');
+ }catch(e){showLoginError(e.message)}
+}
+function logout(){localStorage.removeItem(TOKEN_KEY);location.reload()}
+function showLoginError(msg){let el=document.getElementById('loginError');el.textContent=msg;el.classList.remove('hidden')}
+function clearLoginError(){document.getElementById('loginError').classList.add('hidden')}
+function showSetup(msg){let el=document.getElementById('setupNotice');el.textContent=msg;el.classList.remove('hidden')}
+
+async function boot(){
+ if(!token()){document.getElementById('loginScreen').classList.add('open');return}
+ try{
+  currentUser=await api('/api/me');
+  localStorage.setItem(ROLE_KEY,currentUser.role); localStorage.setItem(EMAIL_KEY,currentUser.email);
+  document.getElementById('loginScreen').classList.remove('open');
+  applyRoleUI();
+  await loadAccounts();
+ }catch(e){
+  if(String(e.message).includes('Database secrets')) showSetup(e.message);
+  else showLoginError(e.message);
+  document.getElementById('loginScreen').classList.add('open');
+ }
+}
+function applyRoleUI(){
+ let admin=currentUser.isAdmin;
+ document.getElementById('roleBadge').textContent=(admin?'Admin: ':'Employee: ')+currentUser.email;
+ document.querySelectorAll('.adminOnly').forEach(el=>el.classList.toggle('hidden',!admin));
+}
+
+async function loadAccounts(){
+ accounts=await api('/api/accounts');
+ if(!currentAccountId && accounts[0]) currentAccountId=accounts[0].id;
+ render();
+}
+function queue(){
+ let q=document.getElementById('search')?.value.toLowerCase()||'', st=document.getElementById('statusFilter')?.value||'', pf=document.getElementById('portfolioFilter')?.value||'';
+ return accounts.filter(a=>{
+  let text=FIELDS.map(k=>a[k]).join(' ').toLowerCase()+' '+String(a.ssn||'');
+  return (!q||text.includes(q)) && (!st||a.status===st) && (!pf||a.portfolio===pf);
+ });
+}
+function onQueueFilterChange(){let q=queue(); if(q[0]&&!q.some(a=>a.id===currentAccountId)) currentAccountId=q[0].id; render()}
+function setCurrent(id){currentAccountId=id;document.getElementById('agentNote').value='';currentDisposition='';render();loadHistory(id)}
+function getCurrent(){return queue().find(a=>a.id===currentAccountId)||queue()[0]||accounts[0]}
 function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}
 function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
 function normPhone(p){return String(p||'').replace(/\D/g,'')}
 function fmtPhone(p){let d=normPhone(p); if(d.length===10)return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6); return p||''}
-function last4(s){let d=String(s||'').replace(/\D/g,''); return d ? d.slice(-4) : ''}
-function maskSSN(s){let l=last4(s); return l ? '***-**-'+l : '—'}
-function acctNo(a){return a.accountNumber || a.clientAccountNumber || a.accountId || ''}
-function nameOf(a){return a.fullName || [a.firstName,a.middleName,a.lastName].filter(Boolean).join(' ') || 'Unknown Account'}
-function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase() || '--'}
-function creditor(a){return a.originalCreditor||a.accountDescription||a.portfolio||'—'}
-function phones(a){return [a.phone1,a.phone2,a.phone3,a.phone4,a.phone5,a.phone6].filter(Boolean)}
+function acctNo(a){return a?.accountNumber||a?.clientAccountNumber||a?.accountId||''}
+function nameOf(a){return a?.fullName||[a?.firstName,a?.middleName,a?.lastName].filter(Boolean).join(' ')||'Unknown Account'}
+function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'--'}
+function creditor(a){return a?.originalCreditor||a?.accountDescription||a?.portfolio||'—'}
+function phones(a){return [a?.phone1,a?.phone2,a?.phone3,a?.phone4,a?.phone5,a?.phone6].filter(Boolean)}
 function statusClass(s){return String(s||'new').toLowerCase().replaceAll(' ','-')}
-function currentId(){return localStorage.getItem(CURRENT)}
-function getCurrent(){let list=queue(); let id=currentId(); return list.find(a=>a.id===id) || list[0] || load()[0]}
-function setCurrent(id){localStorage.setItem(CURRENT,id); document.getElementById('agentNote').value=''; currentDisposition=''; render()}
-function queue(){
- let q=document.getElementById('search')?.value.toLowerCase()||'', st=document.getElementById('statusFilter')?.value||'', pf=document.getElementById('portfolioFilter')?.value||'';
- return load().filter(a=>{
-  let text=FIELDS.map(k=>a[k]).join(' ').toLowerCase()+' '+last4(a.ssn);
-  return (!q||text.includes(q)) && (!st||a.status===st) && (!pf||a.portfolio===pf);
- });
-}
-function setCurrentFromQueue(reset=true){
- let q=queue();
- if(reset && q[0]) localStorage.setItem(CURRENT,q[0].id);
- render();
-}
-
-function onQueueFilterChange(){
- let q=queue();
- let current=getCurrent();
- if(!current || !q.some(a=>a.id===current.id)){
-   if(q[0]) localStorage.setItem(CURRENT,q[0].id);
- }
- render();
-}
 
 function render(){
- let all=load(), q=queue(), cur=getCurrent();
- updatePortfolioFilter(all);
- renderQueue(q,cur);
- renderCurrent(cur,q,all);
- renderDispos(cur);
- renderActivity(cur);
+ let all=accounts, q=queue(), cur=getCurrent();
+ updatePortfolioFilter(all); renderQueue(q,cur); renderCurrent(cur,q); renderDispos(cur); loadHistory(cur?.id);
 }
 function updatePortfolioFilter(all){
- let sel=document.getElementById('portfolioFilter'), val=sel.value;
- let names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();
- sel.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
- sel.value=names.includes(val)?val:'';
+ let sel=document.getElementById('portfolioFilter'), v=sel.value, names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();
+ sel.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join(''); sel.value=names.includes(v)?v:'';
 }
 function renderQueue(q,cur){
  let idx=q.findIndex(a=>a.id===cur?.id); if(idx<0)idx=0;
- let start=Math.max(0,idx-1), next=q.slice(start,start+5);
+ let next=q.slice(Math.max(0,idx-1),Math.max(0,idx-1)+5);
  document.getElementById('queueList').innerHTML=next.map((a,i)=>{
-  let real=start+i+1;
-  return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${real}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div></div><div class="qMeta"><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div></div>`;
+  let real=Math.max(0,idx-1)+i+1;
+  return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${real}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div></div><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div>`;
  }).join('') || '<div class="muted" style="padding:12px">No accounts in queue.</div>';
  document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts`;
 }
-function renderCurrent(a,q,all){
+function renderCurrent(a,q){
  if(!a)return;
- let idx=q.findIndex(x=>x.id===a.id)+1, total=q.length;
+ let idx=q.findIndex(x=>x.id===a.id)+1,total=q.length;
  document.getElementById('accountProgress').textContent=`Account ${idx||1} of ${total}`;
- document.getElementById('progressFill').style.width= total ? Math.round((idx/total)*100)+'%' : '0%';
+ document.getElementById('progressFill').style.width=total?Math.round((idx/total)*100)+'%':'0%';
  document.getElementById('avatar').textContent=initials(a);
  document.getElementById('accountName').innerHTML=esc(nameOf(a))+` <span class="badge">${esc(a.disposition||a.status||'New')}</span>`;
- document.getElementById('accountNumber').textContent=acctNo(a)||'—';
- document.getElementById('state').textContent=a.state||'—';
- document.getElementById('creditor').textContent=creditor(a);
- document.getElementById('ssn').textContent=maskSSN(a.ssn);
- document.getElementById('balance').textContent=money(a.currentBalance||a.principal||a.originalBalance);
- document.getElementById('statusDisplay').innerHTML=`<span class="badge">${esc(a.disposition||a.status||'New')}</span>`;
- document.getElementById('email').textContent=a.email||'—';
+ document.getElementById('accountNumber').textContent=acctNo(a)||'—'; document.getElementById('state').textContent=a.state||'—'; document.getElementById('creditor').textContent=creditor(a);
+ document.getElementById('ssn').textContent=a.ssn||'—'; document.getElementById('balance').textContent=money(a.currentBalance||a.principal||a.originalBalance);
+ document.getElementById('statusDisplay').innerHTML=`<span class="badge">${esc(a.disposition||a.status||'New')}</span>`; document.getElementById('email').textContent=a.email||'—';
  renderPhones(a);
 }
 function renderPhones(a){
  let ps=phones(a);
- document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alt'}</div></div></a>`).join('') || '<div class="muted">No phone numbers on this account.</div>';
-}
-function recordDial(id,phone){
- currentPhone=phone; document.getElementById('callNumber').textContent=fmtPhone(phone); document.getElementById('lastDialed').textContent='Dialing '+fmtPhone(phone);
- let list=load(), a=list.find(x=>x.id===id); if(!a)return;
- a.lastContactNumber=phone; a.activity=a.activity||[]; a.activity.push({date:new Date().toLocaleString(),type:'Outbound call',text:'Clicked phone number '+fmtPhone(phone)});
- save(list); setTimeout(render,250);
+ document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alt'}</div></div></a>`).join('')||'<div class="muted">No phone numbers on this account.</div>';
 }
 function renderDispos(a){
- document.getElementById('selectedDisposition').textContent=currentDisposition || a?.disposition || 'Select one';
- document.getElementById('dispoGrid').innerHTML=DISPOS.map(d=>{
-  let cls=d==='Disputed'?'orangeText':d==='Promise to Pay'||d==='Settled'?'greenText':d==='Bad Number'||d==='DNC'?'redText':d==='Callback'?'purpleText':'';
-  let selected=(currentDisposition||a?.disposition)===d?'selected':'';
-  return `<button class="dispo ${cls} ${selected}" onclick="selectDisposition('${d}')">${iconFor(d)} ${d}</button>`;
- }).join('');
+ document.getElementById('selectedDisposition').textContent=currentDisposition||a?.disposition||'Select one';
+ document.getElementById('dispoGrid').innerHTML=DISPOS.map(d=>`<button class="dispo ${(['Disputed'].includes(d)?'orangeText':['Promise to Pay','Settled'].includes(d)?'greenText':['Bad Number','DNC'].includes(d)?'redText':d==='Callback'?'purpleText':'')} ${(currentDisposition||a?.disposition)===d?'selected':''}" onclick="selectDisposition('${d}')">${d}</button>`).join('');
 }
-function iconFor(d){return {'No Answer':'☎','Left Voicemail':'▣','Promise to Pay':'💵','Disputed':'!','Bad Number':'✖','Callback':'◴','Settled':'✓','DNC':'⊘'}[d]||''}
-function selectDisposition(d){
+async function selectDisposition(d){
+ let cur=getCurrent(); if(!cur)return;
  currentDisposition=d;
- let cur=getCurrent();
- if(!cur)return;
- let list=load(), item=list.find(x=>x.id===cur.id);
- if(!item)return;
- item.disposition=d;
- item.status=d==='Disputed'?'Disputed':d;
- item.activity=item.activity||[];
- item.activity.push({date:new Date().toLocaleString(),type:'Status Updated',text:'Disposition set to '+d});
- save(list);
- localStorage.setItem(CURRENT,item.id);
- document.getElementById('selectedDisposition').textContent=d;
+ let updated=await api(`/api/accounts/${cur.id}/status`,{method:'PATCH',body:JSON.stringify({disposition:d,status:d==='Disputed'?'Disputed':d})});
+ let i=accounts.findIndex(a=>a.id===cur.id); if(i>=0)accounts[i]=updated;
  render();
 }
-function renderActivity(a){
- let events=(a.activity||[]).concat((a.notes||[]).map(n=>({date:n.date,type:'Note',text:n.text}))).slice(-8).reverse();
- document.getElementById('activityList').innerHTML=events.map(e=>`<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${esc(e.date)}</div></div>`).join('') || '<div class="muted">No activity yet.</div>';
+async function recordDial(id,phone){
+ currentPhone=phone; document.getElementById('callNumber').textContent=fmtPhone(phone); document.getElementById('lastDialed').textContent='Dialing '+fmtPhone(phone);
+ await api(`/api/accounts/${id}/dial`,{method:'POST',body:JSON.stringify({phoneNumber:phone})}).catch(()=>{});
 }
-document.getElementById('agentNote').addEventListener('input',()=>{let v=document.getElementById('agentNote').value; document.getElementById('noteCounter').textContent=v.length+' / 2000'});
+async function loadHistory(id){
+ if(!id)return;
+ try{
+  let h=await api(`/api/accounts/${id}/history`);
+  let events=[...(h.activity||[]).map(x=>({date:x.created_at,type:x.action_type,text:x.action_text})),...(h.notes||[]).map(x=>({date:x.created_at,type:'Note',text:x.note}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);
+  document.getElementById('activityList').innerHTML=events.map(e=>`<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${new Date(e.date).toLocaleString()}</div></div>`).join('')||'<div class="muted">No activity yet.</div>';
+ }catch{}
+}
+document.getElementById('agentNote').addEventListener('input',()=>{let v=document.getElementById('agentNote').value;document.getElementById('noteCounter').textContent=v.length+' / 2000'});
 
-function saveCurrent(){
+async function saveCurrent(){
  let a=getCurrent(); if(!a)return;
- let note=document.getElementById('agentNote').value.trim(), list=load(), item=list.find(x=>x.id===a.id);
- if(!item)return;
- let finalDisposition=currentDisposition || item.disposition || item.status || 'New';
- if(finalDisposition){
-   item.disposition=finalDisposition;
-   item.status=finalDisposition==='Disputed'?'Disputed':finalDisposition;
- }
- if(note){
-   item.notes=item.notes||[];
-   item.notes.push({date:new Date().toLocaleString(),text:note});
- }
- item.activity=item.activity||[];
- item.activity.push({date:new Date().toLocaleString(),type:'Saved',text:'Account saved with status '+(item.status||'New')});
- save(list);
- document.getElementById('agentNote').value='';
- currentDisposition='';
- render();
+ let note=document.getElementById('agentNote').value.trim();
+ if(note) await api(`/api/accounts/${a.id}/notes`,{method:'POST',body:JSON.stringify({note})});
+ document.getElementById('agentNote').value=''; await loadAccounts();
 }
-function saveAndNext(){saveCurrent(); nextAccount()}
+async function saveAndNext(){await saveCurrent(); nextAccount()}
 function nextAccount(){let q=queue(), cur=getCurrent(), idx=q.findIndex(a=>a.id===cur?.id); if(q[idx+1])setCurrent(q[idx+1].id)}
-function skipAccount(){let a=getCurrent(), list=load(), item=list.find(x=>x.id===a?.id); if(item){item.activity=item.activity||[]; item.activity.push({date:new Date().toLocaleString(),type:'Skipped',text:'Agent skipped account'}); save(list)} nextAccount()}
+function skipAccount(){nextAccount()}
 function callPrimary(){let p=phones(getCurrent())[0]; if(p) window.location.href='tel:'+normPhone(p)}
-function endCall(){document.getElementById('lastDialed').textContent='Call ended'; document.getElementById('callNumber').textContent='—'}
-function refreshPhonePanel(){renderPhones(getCurrent())}
-function viewCurrent(){viewAccount(getCurrent()?.id)}
+function endCall(){document.getElementById('lastDialed').textContent='Call ended';document.getElementById('callNumber').textContent='—'}
 
+function val(id){return document.getElementById(id).value.trim()}function setVal(id,v){document.getElementById(id).value=v??''}
+function inputId(k){return {accountNumber:'accountNumberInput',status:'statusInput',ssn:'ssnInput',state:'stateInput',email:'emailInput'}[k]||k}
 function openModal(){document.querySelector('#modal form').reset();document.getElementById('id').value='';document.getElementById('modalTitle').textContent='Add Account';document.getElementById('modal').classList.add('open')}
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-function val(id){return document.getElementById(id).value.trim()}
-function setVal(id,v){document.getElementById(id).value=v??''}
-const idMap={accountNumber:'accountNumberInput',status:'statusInput',ssn:'ssnInput',state:'stateInput',email:'emailInput'};
-function inputId(k){return idMap[k]||k}
-function saveAccount(e){
- e.preventDefault(); let list=load(), id=val('id')||crypto.randomUUID(), old=list.find(a=>a.id===id), acct={id,notes:old?.notes||[],activity:old?.activity||[],createdAt:old?.createdAt||Date.now(),disposition:old?.disposition||'',lastContactNumber:old?.lastContactNumber||''};
- FIELDS.forEach(k=>acct[k]=val(inputId(k))); acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' '); acct.portfolio=acct.portfolio||acct.accountDescription||acct.originalCreditor||'Imported Portfolio';
- acct.activity.push({date:new Date().toLocaleString(),type:'Manual Save',text:'Account saved from edit form'});
- let i=list.findIndex(a=>a.id===id); if(i>=0)list[i]=acct; else list.push(acct);
- save(list); localStorage.setItem(CURRENT,acct.id); closeModal('modal'); render();
+async function saveAccount(e){
+ e.preventDefault(); let id=val('id'), acct={}; FIELDS.forEach(k=>acct[k]=val(inputId(k))); acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' ');
+ if(id) await api(`/api/accounts/${id}`,{method:'PATCH',body:JSON.stringify(acct)}); else await api('/api/accounts',{method:'POST',body:JSON.stringify(acct)});
+ closeModal('modal'); await loadAccounts();
 }
-function editAccount(id){let a=load().find(x=>x.id===id); if(!a)return; openModal(); document.getElementById('modalTitle').textContent='Edit Account'; setVal('id',a.id); FIELDS.forEach(k=>setVal(inputId(k),a[k]))}
-function deleteAccount(id){if(confirm('Delete this account?')){let list=load().filter(a=>a.id!==id);save(list); if(load().length)localStorage.setItem(CURRENT,load()[0].id); render()}}
-function viewAccount(id){
- let a=load().find(x=>x.id===id); if(!a)return;
- document.getElementById('detailTitle').textContent=nameOf(a)+' — '+acctNo(a);
- let groups=[
-  ['Account / Balance',['portfolio','accountDescription','clientAccountNumber','accountId','accountNumber','originalCreditor','typeOfDebt','originalBalance','principal','currentBalance','openDate','dateAccountOpened','delinquencyDate','chargeOffDate','lastPaymentDate','lastPaymentAmount','status','disposition']],
-  ['Consumer',['firstName','middleName','lastName','fullName','ssn','dob','address','address2','city','state','zip','employer','email']],
-  ['Phones',['phone1','phone2','phone3','phone4','phone5','phone6']],
-  ['Bank Fields masked',['bankRoutingNumber','bankAccountNumber']]
- ];
- document.getElementById('detailBody').innerHTML=groups.map(g=>`<div class="panel" style="padding:14px;margin-bottom:12px"><h3>${g[0]}</h3>${g[1].map(k=>`<p><b>${label(k)}:</b> ${k==='ssn'?esc(maskSSN(a[k])):k.includes('bank')?esc(a[k]?'***'+last4(a[k]):''):esc(a[k]||'')}</p>`).join('')}</div>`).join('');
- document.getElementById('detailModal').classList.add('open');
-}
-function label(k){return k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase())}
-function clearAll(){if(confirm('Clear all accounts from this browser?')){localStorage.removeItem(KEY);localStorage.removeItem(CURRENT);render()}}
+
 function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
 const MAP={portfolio:['portfolio'],accountDescription:['accountdescription'],clientAccountNumber:['clientaccountnumber'],accountId:['accountid'],accountNumber:['accountnumber'],firstName:['firstname'],middleName:['middlename'],lastName:['lastname'],fullName:['fullname'],ssn:['ssn','socialsecuritynumber'],dob:['dob'],address:['address'],address2:['address2'],city:['city'],state:['state'],zip:['zip'],employer:['employer'],email:['email'],originalCreditor:['originalcreditor'],typeOfDebt:['typeofdebt'],originalBalance:['originalbalance'],principal:['principal','coprincipal'],currentBalance:['currentbalance','coprincipal'],openDate:['opendate'],dateAccountOpened:['dateaccountopened'],delinquencyDate:['delinquencydate'],chargeOffDate:['chargeoffdate','datechargedoff'],origLastPmtDate:['origlastpmtdate'],lastPaymentDate:['lastpaymentdate'],lastPaymentAmount:['lastpaymentamount'],bankRoutingNumber:['bankroutingnumber'],bankAccountNumber:['bankaccountnumber'],phone1:['custom11','phone','phone1'],phone2:['custom12','phone2'],phone3:['custom13','phone3'],phone4:['custom14','phone4'],phone5:['custom15','phone5'],phone6:['custom16','phone6']};
-function importCSV(e){
- let file=e.target.files[0]; if(!file)return; let reader=new FileReader();
- reader.onload=()=>{let rows=parseCSV(String(reader.result)); if(rows.length<2){alert('CSV needs headers and rows.');return} let headers=rows[0].map(norm), existing=load(), imported=[];
-  rows.slice(1).forEach(cells=>{if(cells.every(c=>!String(c).trim()))return; let acct={id:crypto.randomUUID(),notes:[{date:new Date().toLocaleString(),text:'Imported from CSV: '+file.name}],activity:[{date:new Date().toLocaleString(),type:'Import',text:'Imported from '+file.name}],createdAt:Date.now(),status:'New',disposition:'',lastContactNumber:''};
-   for(let field in MAP){let idx=headers.findIndex(h=>MAP[field].includes(h)); acct[field]=idx>=0?cells[idx]:''}
-   acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' '); acct.accountNumber=acct.accountNumber||acct.clientAccountNumber||acct.accountId; acct.portfolio=acct.portfolio||acct.accountDescription||acct.originalCreditor||file.name.replace(/\.csv$/i,''); acct.originalCreditor=acct.originalCreditor||acct.accountDescription||acct.portfolio; acct.currentBalance=toNumber(acct.currentBalance||acct.principal||acct.originalBalance); acct.principal=toNumber(acct.principal); acct.originalBalance=toNumber(acct.originalBalance); acct.lastPaymentAmount=toNumber(acct.lastPaymentAmount); imported.push(acct);
-  }); save(existing.concat(imported)); if(imported[0])localStorage.setItem(CURRENT,imported[0].id); alert('Imported '+imported.length+' accounts.'); e.target.value=''; render();
- }; reader.readAsText(file);
+async function importCSV(e){
+ let file=e.target.files[0]; if(!file)return; let text=await file.text(), rows=parseCSV(text); if(rows.length<2)return alert('CSV needs headers and rows.');
+ let headers=rows[0].map(norm), imported=[];
+ rows.slice(1).forEach(cells=>{if(cells.every(c=>!String(c).trim()))return; let acct={status:'New'}; for(let field in MAP){let idx=headers.findIndex(h=>MAP[field].includes(h)); acct[field]=idx>=0?cells[idx]:''} acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' '); acct.accountNumber=acct.accountNumber||acct.clientAccountNumber||acct.accountId; acct.portfolio=acct.portfolio||acct.accountDescription||acct.originalCreditor||file.name.replace(/\.csv$/i,''); imported.push(acct)});
+ let res=await api('/api/accounts/import',{method:'POST',body:JSON.stringify({accounts:imported})}); alert('Imported '+res.imported+' accounts.'); e.target.value=''; await loadAccounts();
 }
-function toNumber(v){let n=Number(String(v||'').replace(/[$,]/g,'')); return isNaN(n)?'':n}
 function parseCSV(text){let rows=[],row=[],cell='',q=false;for(let i=0;i<text.length;i++){let ch=text[i],nx=text[i+1];if(ch=='"'&&q&&nx=='"'){cell+='"';i++}else if(ch=='"'){q=!q}else if(ch==','&&!q){row.push(cell);cell=''}else if((ch=='\n'||ch=='\r')&&!q){if(ch=='\r'&&nx=='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=ch}if(cell||row.length){row.push(cell);rows.push(row)}return rows}
-function exportCSV(){let headers=FIELDS.concat(['disposition','lastContactNumber']),rows=[headers.join(',')].concat(load().map(a=>headers.map(h=>`"${String(a[h]??'').replaceAll('"','""')}"`).join(',')));download('co-pilot-accounts-export.csv',rows.join('\n'),'text/csv')}
+async function exportCSV(){let res=await fetch('/api/export',{headers:{Authorization:'Bearer '+token()}}); if(!res.ok){let d=await res.json().catch(()=>({}));return alert(d.error||'Export failed')} let blob=await res.blob(),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='co-pilot-accounts-export.csv';a.click();URL.revokeObjectURL(url)}
 function downloadTemplate(){let headers=FIELDS,sample=['PlainGreen LLC','PlainGreen LLC','36972835','13242556','36972835','John','','Doe','John Doe','123-45-6789','01/01/1980','123 Main St','','Las Vegas','NV','89101','Employer','email@example.com','PlainGreen LLC','installment loan','','',1000,'01/01/2020','','','02/01/2020','','','0','','','702-555-1111','','','','','','New'];download('co-pilot-import-template.csv',headers.join(',')+'\n'+sample.map(v=>`"${String(v).replaceAll('"','""')}"`).join(','),'text/csv')}
 function download(name,text,type){let blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
-render();
+boot();
 </script>
 </body>
 </html>
