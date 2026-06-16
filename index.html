@@ -219,7 +219,7 @@ function renderQueue(q,cur){
  let start=Math.max(0,idx-1), next=q.slice(start,start+5);
  document.getElementById('queueList').innerHTML=next.map((a,i)=>{
   let real=start+i+1;
-  return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${real}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.status||'New')}</span></div></div><div class="qMeta"><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div></div>`;
+  return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${real}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div></div><div class="qMeta"><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div></div>`;
  }).join('') || '<div class="muted" style="padding:12px">No accounts in queue.</div>';
  document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts`;
 }
@@ -229,7 +229,7 @@ function renderCurrent(a,q,all){
  document.getElementById('accountProgress').textContent=`Account ${idx||1} of ${total}`;
  document.getElementById('progressFill').style.width= total ? Math.round((idx/total)*100)+'%' : '0%';
  document.getElementById('avatar').textContent=initials(a);
- document.getElementById('accountName').innerHTML=esc(nameOf(a))+` <span class="badge">${esc(a.status||'New')}</span>`;
+ document.getElementById('accountName').innerHTML=esc(nameOf(a))+` <span class="badge">${esc(a.disposition||a.status||'New')}</span>`;
  document.getElementById('accountNumber').textContent=acctNo(a)||'—';
  document.getElementById('state').textContent=a.state||'—';
  document.getElementById('creditor').textContent=creditor(a);
@@ -258,7 +258,20 @@ function renderDispos(a){
  }).join('');
 }
 function iconFor(d){return {'No Answer':'☎','Left Voicemail':'▣','Promise to Pay':'💵','Disputed':'!','Bad Number':'✖','Callback':'◴','Settled':'✓','DNC':'⊘'}[d]||''}
-function selectDisposition(d){currentDisposition=d; document.getElementById('selectedDisposition').textContent=d; renderDispos(getCurrent())}
+function selectDisposition(d){
+ currentDisposition=d;
+ let cur=getCurrent();
+ if(!cur)return;
+ let list=load(), item=list.find(x=>x.id===cur.id);
+ if(!item)return;
+ item.disposition=d;
+ item.status=d==='Disputed'?'Disputed':d;
+ item.activity=item.activity||[];
+ item.activity.push({date:new Date().toLocaleString(),type:'Status Updated',text:'Disposition set to '+d});
+ save(list);
+ document.getElementById('selectedDisposition').textContent=d;
+ render();
+}
 function renderActivity(a){
  let events=(a.activity||[]).concat((a.notes||[]).map(n=>({date:n.date,type:'Note',text:n.text}))).slice(-8).reverse();
  document.getElementById('activityList').innerHTML=events.map(e=>`<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${esc(e.date)}</div></div>`).join('') || '<div class="muted">No activity yet.</div>';
@@ -269,10 +282,21 @@ function saveCurrent(){
  let a=getCurrent(); if(!a)return;
  let note=document.getElementById('agentNote').value.trim(), list=load(), item=list.find(x=>x.id===a.id);
  if(!item)return;
- if(currentDisposition){item.disposition=currentDisposition; item.status=currentDisposition==='Disputed'?'Disputed':currentDisposition;}
- if(note){item.notes=item.notes||[]; item.notes.push({date:new Date().toLocaleString(),text:note});}
- item.activity=item.activity||[]; item.activity.push({date:new Date().toLocaleString(),type:'Saved',text:'Account saved'+(currentDisposition?' with disposition '+currentDisposition:'')});
- save(list); document.getElementById('agentNote').value=''; currentDisposition=''; render();
+ let finalDisposition=currentDisposition || item.disposition || item.status || 'New';
+ if(finalDisposition){
+   item.disposition=finalDisposition;
+   item.status=finalDisposition==='Disputed'?'Disputed':finalDisposition;
+ }
+ if(note){
+   item.notes=item.notes||[];
+   item.notes.push({date:new Date().toLocaleString(),text:note});
+ }
+ item.activity=item.activity||[];
+ item.activity.push({date:new Date().toLocaleString(),type:'Saved',text:'Account saved with status '+(item.status||'New')});
+ save(list);
+ document.getElementById('agentNote').value='';
+ currentDisposition='';
+ render();
 }
 function saveAndNext(){saveCurrent(); nextAccount()}
 function nextAccount(){let q=queue(), cur=getCurrent(), idx=q.findIndex(a=>a.id===cur?.id); if(q[idx+1])setCurrent(q[idx+1].id)}
