@@ -48,7 +48,7 @@
 <body>
 <div class="app">
   <header>
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">One-account-at-a-time collector workflow. Click phone numbers to call. Save & Next.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">One-account workflow. Queue auto-updates when filters/status change.</p></div></div>
     <div class="progressBlock"><div class="progressTitle" id="accountProgress">Account 1 of 0</div><div class="progressBar"><div class="progressFill" id="progressFill"></div></div></div>
     <div class="topActions"><label class="fileBtn gray">Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label><button class="purple" onclick="downloadTemplate()">Template CSV</button><button class="gray" onclick="exportCSV()">Export CSV</button><span class="agent"><span class="dot"></span> Available</span></div>
   </header>
@@ -57,9 +57,9 @@
     <aside class="sidebar panel">
       <div class="sideHead"><h2>Queue</h2><button class="outline" onclick="render()">↻</button></div>
       <div class="filters">
-        <div><label>Portfolio</label><select id="portfolioFilter" onchange="setCurrentFromQueue()"><option value="">All Portfolios</option></select></div>
-        <div><label>Status</label><select id="statusFilter" onchange="setCurrentFromQueue()"><option value="">All Statuses</option><option>New</option><option>Active</option><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Disputed</option><option>Callback</option><option>Settled</option><option>DNC</option><option>Bad Number</option><option>Closed</option></select></div>
-        <div><label>Search Queue</label><input id="search" placeholder="Name, account #, phone, state..." oninput="setCurrentFromQueue(false)"></div>
+        <div><label>Portfolio</label><select id="portfolioFilter" onchange="onQueueFilterChange()"><option value="">All Portfolios</option></select></div>
+        <div><label>Status</label><select id="statusFilter" onchange="onQueueFilterChange()"><option value="">All Statuses</option><option>New</option><option>Active</option><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Disputed</option><option>Callback</option><option>Settled</option><option>DNC</option><option>Bad Number</option><option>Closed</option></select></div>
+        <div><label>Search Queue</label><input id="search" placeholder="Name, account #, phone, state..." oninput="onQueueFilterChange()"></div>
       </div>
       <div class="queueList" id="queueList"></div>
       <div class="remaining" id="remainingText">Showing queue</div>
@@ -198,7 +198,20 @@ function queue(){
   return (!q||text.includes(q)) && (!st||a.status===st) && (!pf||a.portfolio===pf);
  });
 }
-function setCurrentFromQueue(reset=True){let q=queue(); if(reset && q[0]) localStorage.setItem(CURRENT,q[0].id); render()}
+function setCurrentFromQueue(reset=true){
+ let q=queue();
+ if(reset && q[0]) localStorage.setItem(CURRENT,q[0].id);
+ render();
+}
+
+function onQueueFilterChange(){
+ let q=queue();
+ let current=getCurrent();
+ if(!current || !q.some(a=>a.id===current.id)){
+   if(q[0]) localStorage.setItem(CURRENT,q[0].id);
+ }
+ render();
+}
 
 function render(){
  let all=load(), q=queue(), cur=getCurrent();
@@ -269,6 +282,7 @@ function selectDisposition(d){
  item.activity=item.activity||[];
  item.activity.push({date:new Date().toLocaleString(),type:'Status Updated',text:'Disposition set to '+d});
  save(list);
+ localStorage.setItem(CURRENT,item.id);
  document.getElementById('selectedDisposition').textContent=d;
  render();
 }
