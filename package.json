@@ -1,5 +1,5 @@
 {
-  "name": "co-pilot-crm-bolt-database",
+  "name": "co-pilot-crm-supabase-browser-no-secrets",
   "version": "1.0.0",
   "private": true,
   "type": "module",
