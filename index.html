@@ -7,47 +7,59 @@
   <style>
     *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef2f7;color:#0f172a}
     header{background:linear-gradient(135deg,#0f172a,#1d4ed8);color:white;padding:24px 30px;display:flex;justify-content:space-between;gap:15px;align-items:center}
-    h1{margin:0;font-size:28px}header p{margin:6px 0 0;color:#cbd5e1}.wrap{padding:24px;max-width:1350px;margin:auto}
-    button{border:0;background:#2563eb;color:white;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}.gray{background:#334155}.red{background:#dc2626}.green{background:#16a34a}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.07)}
-    .card span{display:block;color:#64748b;font-size:13px;margin-bottom:7px}.card strong{font-size:25px}
-    .panel{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.07);margin-bottom:18px}
-    .toolbar{display:grid;grid-template-columns:1fr 200px auto;gap:12px;align-items:center}
-    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px}
-    table{width:100%;border-collapse:collapse;min-width:850px}th{background:#f1f5f9;text-align:left;padding:12px;border-bottom:1px solid #e2e8f0}td{padding:12px;border-bottom:1px solid #e2e8f0}tr:hover td{background:#f8fafc}.tablewrap{overflow:auto}
-    .status{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800}.active{background:#dcfce7;color:#166534}.disputed{background:#fee2e2;color:#991b1b}.settled{background:#dbeafe;color:#1d4ed8}.closed{background:#e2e8f0;color:#334155}.payment-plan{background:#fef3c7;color:#92400e}
-    .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modalbox{background:white;border-radius:16px;max-width:850px;width:100%;max-height:92vh;overflow:auto}
-    .modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:16px 20px}.modalbody{padding:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.full{grid-column:1/-1}label{display:block;font-size:13px;font-weight:700;color:#334155;margin-bottom:6px}
-    .actions{display:flex;gap:7px;flex-wrap:wrap}.small{padding:8px 10px;font-size:12px}.note{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:10px}.muted{color:#64748b}
-    @media(max-width:800px){header{flex-direction:column;align-items:flex-start}.stats,.toolbar,.grid{grid-template-columns:1fr}}
+    h1{margin:0;font-size:28px}.sub{margin:6px 0 0;color:#cbd5e1}.wrap{padding:24px;max-width:1500px;margin:auto}
+    button,.fileBtn{border:0;background:#2563eb;color:white;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer;font-size:14px;display:inline-block}.gray{background:#334155}.red{background:#dc2626}.green{background:#16a34a}.purple{background:#7c3aed}
+    .fileBtn input{display:none}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}.card{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.07)}
+    .card span{display:block;color:#64748b;font-size:13px;margin-bottom:7px}.card strong{font-size:24px}
+    .panel{background:white;border-radius:14px;padding:18px;box-shadow:0 4px 14px rgba(0,0,0,.07);margin-bottom:18px}.toolbar{display:grid;grid-template-columns:1fr 210px 210px auto;gap:12px;align-items:center}
+    input,select,textarea{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;background:white}label{display:block;font-size:13px;font-weight:700;color:#334155;margin-bottom:6px}
+    table{width:100%;border-collapse:collapse;min-width:1100px}th{background:#f1f5f9;text-align:left;padding:12px;border-bottom:1px solid #e2e8f0;font-size:13px}td{padding:12px;border-bottom:1px solid #e2e8f0;font-size:14px;vertical-align:top}tr:hover td{background:#f8fafc}.tablewrap{overflow:auto}
+    .status{display:inline-block;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:800}.active{background:#dcfce7;color:#166534}.disputed{background:#fee2e2;color:#991b1b}.settled{background:#dbeafe;color:#1d4ed8}.closed{background:#e2e8f0;color:#334155}.payment-plan{background:#fef3c7;color:#92400e}.new{background:#ede9fe;color:#5b21b6}
+    .flag{display:inline-block;background:#fef2f2;color:#991b1b;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800;margin:2px}
+    .actions{display:flex;gap:7px;flex-wrap:wrap}.small{padding:8px 10px;font-size:12px}.muted{color:#64748b}.pill{display:inline-block;background:#e0f2fe;color:#075985;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:800}
+    .modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.65);align-items:center;justify-content:center;padding:20px;z-index:10}.modal.open{display:flex}.modalbox{background:white;border-radius:16px;max-width:1100px;width:100%;max-height:92vh;overflow:auto}.modalhead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;padding:16px 20px;position:sticky;top:0;background:white;z-index:2}.modalbody{padding:20px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.full{grid-column:1/-1}.two{grid-column:span 2}.sectionTitle{grid-column:1/-1;background:#f1f5f9;padding:10px;border-radius:10px;font-weight:800;color:#334155;margin-top:8px}
+    .detailGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:13px;padding:14px}.box h3{margin:0 0 10px}.note{background:white;border:1px solid #e2e8f0;border-radius:10px;padding:10px;margin-top:8px}.notice{background:#fffbeb;color:#92400e;border:1px solid #fde68a;border-radius:12px;padding:12px;font-size:14px}
+    @media(max-width:1000px){header{flex-direction:column;align-items:flex-start}.stats{grid-template-columns:repeat(2,1fr)}.toolbar,.grid,.detailGrid{grid-template-columns:1fr}.two{grid-column:1}.full{grid-column:1}}
   </style>
 </head>
 <body>
 <header>
-  <div><h1>Co Pilot Collections Manager</h1><p>Simple account-holder CRM. No install. No React. No tokens.</p></div>
-  <div><button onclick="openModal()">+ Add Account</button> <button class="gray" onclick="exportCSV()">Export CSV</button></div>
+  <div><h1>Co Pilot Collections Manager</h1><p class="sub">Built for your Plain Green + Barclays portfolio headers. No install. No React. No tokens.</p></div>
+  <div class="actions">
+    <button onclick="openModal()">+ Add Account</button>
+    <label class="fileBtn gray">Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label>
+    <button class="purple" onclick="downloadTemplate()">Template CSV</button>
+    <button class="gray" onclick="exportCSV()">Export CSV</button>
+  </div>
 </header>
 
 <div class="wrap">
+  <div class="notice">For Excel uploads: open your XLSX, choose <b>File → Save As → CSV</b>, then import the CSV here. This no-install version avoids npm and avoids the Bolt freeze problem.</div>
+  <br>
   <div class="stats">
     <div class="card"><span>Total Accounts</span><strong id="total">0</strong></div>
     <div class="card"><span>Total Balance</span><strong id="balance">$0.00</strong></div>
+    <div class="card"><span>Total Principal</span><strong id="principal">$0.00</strong></div>
     <div class="card"><span>Active</span><strong id="active">0</strong></div>
     <div class="card"><span>Disputed</span><strong id="disputed">0</strong></div>
   </div>
 
   <div class="panel toolbar">
-    <input id="search" placeholder="Search name, account number, phone, creditor..." oninput="render()">
-    <select id="filter" onchange="render()">
-      <option value="">All statuses</option><option>Active</option><option>Disputed</option><option>Payment Plan</option><option>Settled</option><option>Closed</option>
-    </select>
+    <input id="search" placeholder="Search account #, name, phone, creditor, SSN last 4, city, state..." oninput="render()">
+    <select id="filter" onchange="render()"><option value="">All statuses</option><option>New</option><option>Active</option><option>Disputed</option><option>Payment Plan</option><option>Settled</option><option>Closed</option></select>
+    <select id="portfolioFilter" onchange="render()"><option value="">All portfolios</option></select>
     <button class="red" onclick="clearAll()">Clear All</button>
   </div>
 
   <div class="panel">
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Account #</th><th>Name</th><th>Phone</th><th>Creditor</th><th>Balance</th><th>Status</th><th>Last Note</th><th>Actions</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Portfolio</th><th>Account #</th><th>Name</th><th>Creditor</th><th>Type</th><th>Balance</th><th>State</th><th>Primary Phone</th><th>Email</th><th>Status</th><th>Flags</th><th>Actions</th>
+          </tr>
+        </thead>
         <tbody id="rows"></tbody>
       </table>
     </div>
@@ -56,24 +68,61 @@
 
 <div id="modal" class="modal">
   <div class="modalbox">
-    <div class="modalhead"><h2 id="modalTitle">Add Account</h2><button class="gray" onclick="closeModal()">Close</button></div>
+    <div class="modalhead"><h2 id="modalTitle">Add Account</h2><button class="gray" onclick="closeModal('modal')">Close</button></div>
     <div class="modalbody">
       <form onsubmit="saveAccount(event)">
         <input type="hidden" id="id">
         <div class="grid">
-          <div><label>Account Number</label><input id="accountNumber" required></div>
-          <div><label>Status</label><select id="status"><option>Active</option><option>Disputed</option><option>Payment Plan</option><option>Settled</option><option>Closed</option></select></div>
-          <div><label>First Name</label><input id="firstName" required></div>
-          <div><label>Last Name</label><input id="lastName" required></div>
-          <div><label>Phone</label><input id="phone"></div>
-          <div><label>Email</label><input id="email"></div>
-          <div><label>Original Creditor</label><input id="creditor"></div>
-          <div><label>Balance</label><input id="currentBalance" type="number" step="0.01"></div>
-          <div class="full"><label>Address</label><input id="address"></div>
+          <div class="sectionTitle">Account / Portfolio</div>
+          <div><label>Portfolio</label><input id="portfolio"></div>
+          <div><label>Account Description</label><input id="accountDescription"></div>
+          <div><label>Original Creditor</label><input id="originalCreditor"></div>
+          <div><label>Account Number</label><input id="accountNumber"></div>
+          <div><label>Client Account Number</label><input id="clientAccountNumber"></div>
+          <div><label>Account ID</label><input id="accountId"></div>
+          <div><label>Type of Debt</label><input id="typeOfDebt"></div>
+          <div><label>Status</label><select id="status"><option>New</option><option>Active</option><option>Disputed</option><option>Payment Plan</option><option>Settled</option><option>Closed</option></select></div>
+
+          <div class="sectionTitle">Consumer</div>
+          <div><label>First Name</label><input id="firstName"></div>
+          <div><label>Middle Name</label><input id="middleName"></div>
+          <div><label>Last Name</label><input id="lastName"></div>
+          <div><label>Full Name</label><input id="fullName"></div>
+          <div><label>SSN</label><input id="ssn"></div>
+          <div><label>DOB</label><input id="dob"></div>
+          <div class="two"><label>Address</label><input id="address"></div>
+          <div><label>Address 2</label><input id="address2"></div>
           <div><label>City</label><input id="city"></div>
           <div><label>State</label><input id="state"></div>
           <div><label>ZIP</label><input id="zip"></div>
-          <div class="full"><label>Note</label><textarea id="note" rows="3"></textarea></div>
+          <div><label>Employer</label><input id="employer"></div>
+          <div><label>Email</label><input id="email"></div>
+
+          <div class="sectionTitle">Phones</div>
+          <div><label>Phone 1 / custom11</label><input id="phone1"></div>
+          <div><label>Phone 2 / custom12</label><input id="phone2"></div>
+          <div><label>Phone 3 / custom13</label><input id="phone3"></div>
+          <div><label>Phone 4 / custom14</label><input id="phone4"></div>
+          <div><label>Phone 5 / custom15</label><input id="phone5"></div>
+          <div><label>Phone 6 / custom16</label><input id="phone6"></div>
+
+          <div class="sectionTitle">Balances / Dates</div>
+          <div><label>Original Balance</label><input id="originalBalance" type="number" step="0.01"></div>
+          <div><label>Principal</label><input id="principal" type="number" step="0.01"></div>
+          <div><label>Current Balance / COPrincipal</label><input id="currentBalance" type="number" step="0.01"></div>
+          <div><label>Open Date</label><input id="openDate"></div>
+          <div><label>Date Account Opened</label><input id="dateAccountOpened"></div>
+          <div><label>Delinquency Date</label><input id="delinquencyDate"></div>
+          <div><label>Charge Off Date</label><input id="chargeOffDate"></div>
+          <div><label>Last Payment Date</label><input id="lastPaymentDate"></div>
+          <div><label>Last Payment Amount</label><input id="lastPaymentAmount" type="number" step="0.01"></div>
+
+          <div class="sectionTitle">Sensitive Bank Fields</div>
+          <div><label>Bank Routing Number</label><input id="bankRoutingNumber"></div>
+          <div><label>Bank Account Number</label><input id="bankAccountNumber"></div>
+
+          <div class="sectionTitle">Notes</div>
+          <div class="full"><label>New Note</label><textarea id="note" rows="3"></textarea></div>
         </div>
         <div style="margin-top:16px;text-align:right"><button class="green" type="submit">Save Account</button></div>
       </form>
@@ -81,81 +130,169 @@
   </div>
 </div>
 
+<div id="detailModal" class="modal">
+  <div class="modalbox">
+    <div class="modalhead"><h2 id="detailTitle">Account Details</h2><button class="gray" onclick="closeModal('detailModal')">Close</button></div>
+    <div class="modalbody" id="detailBody"></div>
+  </div>
+</div>
+
 <script>
-const KEY='coPilotCrmAccounts';
+const KEY='coPilotPortfolioAccountsV2';
+const FIELDS=['portfolio','accountDescription','clientAccountNumber','accountId','accountNumber','firstName','middleName','lastName','fullName','ssn','dob','address','address2','city','state','zip','employer','email','originalCreditor','typeOfDebt','originalBalance','principal','currentBalance','openDate','dateAccountOpened','delinquencyDate','chargeOffDate','origLastPmtDate','lastPaymentDate','lastPaymentAmount','bankRoutingNumber','bankAccountNumber','phone1','phone2','phone3','phone4','phone5','phone6','status'];
+
 const demo=[
- {id:crypto.randomUUID(),accountNumber:'10001',firstName:'John',lastName:'Doe',phone:'555-555-5555',email:'john@example.com',creditor:'Capital One',currentBalance:1250.75,status:'Active',address:'',city:'Las Vegas',state:'NV',zip:'',notes:[{text:'Demo account created',date:new Date().toLocaleString()}],createdAt:Date.now()},
- {id:crypto.randomUUID(),accountNumber:'10002',firstName:'Jane',lastName:'Smith',phone:'555-222-1111',email:'jane@example.com',creditor:'Synchrony Bank',currentBalance:875.50,status:'Disputed',address:'',city:'Henderson',state:'NV',zip:'',notes:[{text:'Consumer disputed account',date:new Date().toLocaleString()}],createdAt:Date.now()-1000}
+ {id:crypto.randomUUID(),portfolio:'PlainGreen LLC',accountDescription:'PlainGreen LLC',clientAccountNumber:'36972835',accountId:'13242556',accountNumber:'36972835',firstName:'DELVIN',middleName:'',lastName:'MARTES',fullName:'DELVIN MARTES',ssn:'***-**-8280',dob:'11/05/1973',address:'1751 DOGWOOD RD APT 6-3',address2:'',city:'CHARLESTON',state:'SC',zip:'29414',employer:'',email:'martesdelvin3@gmail.com',originalCreditor:'PlainGreen LLC',typeOfDebt:'installment loan',originalBalance:'',principal:'',currentBalance:2976.01,openDate:'05/08/2019',dateAccountOpened:'',delinquencyDate:'',chargeOffDate:'05/22/2019',origLastPmtDate:'',lastPaymentDate:'',lastPaymentAmount:0,bankRoutingNumber:'',bankAccountNumber:'',phone1:'',phone2:'',phone3:'',phone4:'',phone5:'',phone6:'',status:'New',notes:[{date:new Date().toLocaleString(),text:'Demo Plain Green format.'}],createdAt:Date.now()},
+ {id:crypto.randomUUID(),portfolio:'Barclays',accountDescription:'',clientAccountNumber:'',accountId:'',accountNumber:'5140219002524220',firstName:'DIDIER',middleName:'F',lastName:'MIAWAMA',fullName:'DIDIER F MIAWAMA',ssn:'627-32-3918',dob:'',address:'12295 CLAIRMONTE AVE',address2:'',city:'ALPHARETTA',state:'GA',zip:'3000983139',employer:'',email:'',originalCreditor:'APPLE CREDIT CARD - BARCLAY-CREDITSHOP',typeOfDebt:'credit card',originalBalance:3263.95,principal:3263.95,currentBalance:3263.95,openDate:'',dateAccountOpened:'8/21/2006',delinquencyDate:'',chargeOffDate:'11/22/2013',origLastPmtDate:'',lastPaymentDate:'',lastPaymentAmount:'',bankRoutingNumber:'',bankAccountNumber:'',phone1:'847-890-3937',phone2:'',phone3:'404-242-7600',phone4:'770-337-2973',phone5:'770-234-2666',phone6:'229-289-1652',status:'New',notes:[{date:new Date().toLocaleString(),text:'Demo Barclays format.'}],createdAt:Date.now()-1000}
 ];
 
 function load(){let raw=localStorage.getItem(KEY); if(!raw){localStorage.setItem(KEY,JSON.stringify(demo)); return demo;} try{return JSON.parse(raw)}catch{return []}}
 function save(list){localStorage.setItem(KEY,JSON.stringify(list))}
 function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}
 function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-function statusClass(s){return String(s||'').toLowerCase().replaceAll(' ','-')}
+function statusClass(s){return String(s||'new').toLowerCase().replaceAll(' ','-')}
+function acctNo(a){return a.accountNumber || a.clientAccountNumber || a.accountId || ''}
+function nameOf(a){return a.fullName || [a.firstName,a.middleName,a.lastName].filter(Boolean).join(' ')}
+function primaryPhone(a){return [a.phone1,a.phone2,a.phone3,a.phone4,a.phone5,a.phone6].find(Boolean)||''}
+function last4(s){let d=String(s||'').replace(/\D/g,''); return d ? d.slice(-4) : ''}
+function maskSSN(s){let l=last4(s); return l ? '***-**-'+l : ''}
+function flagList(a){let f=[]; if(a.status==='Disputed')f.push('Dispute'); if(a.bankRoutingNumber||a.bankAccountNumber)f.push('Bank Data'); if(a.ssn)f.push('SSN'); return f}
 
 function render(){
- let q=document.getElementById('search').value.toLowerCase();
- let f=document.getElementById('filter').value;
- let list=load().filter(a=>{
-  let text=[a.accountNumber,a.firstName,a.lastName,a.phone,a.email,a.creditor,a.status].join(' ').toLowerCase();
-  return (!q || text.includes(q)) && (!f || a.status===f);
+ let q=document.getElementById('search').value.toLowerCase(), st=document.getElementById('filter').value, pf=document.getElementById('portfolioFilter').value;
+ let all=load(); updatePortfolioFilter(all);
+ let list=all.filter(a=>{
+   let text=FIELDS.map(k=>a[k]).join(' ').toLowerCase()+' '+last4(a.ssn);
+   return (!q||text.includes(q)) && (!st||a.status===st) && (!pf||a.portfolio===pf);
  });
- let all=load();
  document.getElementById('total').textContent=all.length;
  document.getElementById('balance').textContent=money(all.reduce((s,a)=>s+Number(a.currentBalance||0),0));
- document.getElementById('active').textContent=all.filter(a=>a.status==='Active').length;
+ document.getElementById('principal').textContent=money(all.reduce((s,a)=>s+Number(a.principal||0),0));
+ document.getElementById('active').textContent=all.filter(a=>a.status==='Active'||a.status==='New').length;
  document.getElementById('disputed').textContent=all.filter(a=>a.status==='Disputed').length;
  document.getElementById('rows').innerHTML=list.map(a=>{
-  let last=a.notes?.length?a.notes[a.notes.length-1].text:'';
   return `<tr>
-   <td><b>${esc(a.accountNumber)}</b></td>
-   <td>${esc(a.firstName)} ${esc(a.lastName)}</td>
-   <td>${esc(a.phone)}</td>
-   <td>${esc(a.creditor)}</td>
-   <td><b>${money(a.currentBalance)}</b></td>
-   <td><span class="status ${statusClass(a.status)}">${esc(a.status)}</span></td>
-   <td>${esc(last).slice(0,80)}</td>
-   <td><div class="actions"><button class="small" onclick="editAccount('${a.id}')">Edit</button><button class="small gray" onclick="addNote('${a.id}')">Note</button><button class="small red" onclick="deleteAccount('${a.id}')">Delete</button></div></td>
-  </tr>`
- }).join('') || '<tr><td colspan="8" class="muted">No accounts found.</td></tr>';
+   <td><span class="pill">${esc(a.portfolio||a.accountDescription||'Portfolio')}</span></td>
+   <td><b>${esc(acctNo(a))}</b><br><span class="muted">${esc(a.accountId||'')}</span></td>
+   <td>${esc(nameOf(a))}<br><span class="muted">SSN ${maskSSN(a.ssn)}</span></td>
+   <td>${esc(a.originalCreditor||a.accountDescription||'')}</td>
+   <td>${esc(a.typeOfDebt||'')}</td>
+   <td><b>${money(a.currentBalance||a.principal||a.originalBalance)}</b></td>
+   <td>${esc(a.state||'')}</td>
+   <td>${esc(primaryPhone(a))}</td>
+   <td>${esc(a.email||'')}</td>
+   <td><span class="status ${statusClass(a.status)}">${esc(a.status||'New')}</span></td>
+   <td>${flagList(a).map(x=>`<span class="flag">${x}</span>`).join('')}</td>
+   <td><div class="actions"><button class="small gray" onclick="viewAccount('${a.id}')">View</button><button class="small" onclick="editAccount('${a.id}')">Edit</button><button class="small red" onclick="deleteAccount('${a.id}')">Delete</button></div></td>
+  </tr>`;
+ }).join('') || '<tr><td colspan="12" class="muted">No accounts found.</td></tr>';
 }
 
-function openModal(){document.querySelector('form').reset();document.getElementById('id').value='';document.getElementById('modalTitle').textContent='Add Account';document.getElementById('modal').classList.add('open')}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+let portfolioUpdating=false;
+function updatePortfolioFilter(all){
+ if(portfolioUpdating)return; portfolioUpdating=true;
+ let select=document.getElementById('portfolioFilter'), current=select.value;
+ let names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();
+ select.innerHTML='<option value="">All portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
+ select.value=names.includes(current)?current:'';
+ portfolioUpdating=false;
+}
+
+function openModal(){document.querySelector('#modal form').reset();document.getElementById('id').value='';document.getElementById('modalTitle').textContent='Add Account';document.getElementById('modal').classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
 function val(id){return document.getElementById(id).value.trim()}
-function set(id,v){document.getElementById(id).value=v??''}
+function setVal(id,v){document.getElementById(id).value=v??''}
 
 function saveAccount(e){
- e.preventDefault();
- let list=load(), id=val('id')||crypto.randomUUID(), old=list.find(a=>a.id===id), note=val('note');
- let acct={id,accountNumber:val('accountNumber'),firstName:val('firstName'),lastName:val('lastName'),phone:val('phone'),email:val('email'),creditor:val('creditor'),currentBalance:Number(val('currentBalance')||0),status:val('status'),address:val('address'),city:val('city'),state:val('state'),zip:val('zip'),notes:old?.notes||[],createdAt:old?.createdAt||Date.now()};
- if(note) acct.notes.push({text:note,date:new Date().toLocaleString()});
- let i=list.findIndex(a=>a.id===id); if(i>=0) list[i]=acct; else list.push(acct);
- save(list); closeModal(); render();
+ e.preventDefault(); let list=load(), id=val('id')||crypto.randomUUID(), old=list.find(a=>a.id===id), acct={id,notes:old?.notes||[],createdAt:old?.createdAt||Date.now()};
+ FIELDS.forEach(k=>acct[k]=val(k)); acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' '); acct.portfolio=acct.portfolio||acct.accountDescription||acct.originalCreditor||'Imported Portfolio';
+ let note=val('note'); if(note) acct.notes.push({date:new Date().toLocaleString(),text:note});
+ let i=list.findIndex(a=>a.id===id); if(i>=0)list[i]=acct; else list.push(acct);
+ save(list); closeModal('modal'); render();
 }
-
-function editAccount(id){
+function editAccount(id){let a=load().find(x=>x.id===id); if(!a)return; openModal(); document.getElementById('modalTitle').textContent='Edit Account'; setVal('id',a.id); FIELDS.forEach(k=>setVal(k,a[k])); setVal('note','')}
+function deleteAccount(id){if(confirm('Delete this account?')){save(load().filter(a=>a.id!==id)); render()}}
+function clearAll(){if(confirm('Clear all accounts from this browser?')){localStorage.removeItem(KEY); render()}}
+function viewAccount(id){
  let a=load().find(x=>x.id===id); if(!a)return;
- document.getElementById('modalTitle').textContent='Edit Account';
- ['id','accountNumber','firstName','lastName','phone','email','creditor','currentBalance','status','address','city','state','zip'].forEach(k=>set(k,a[k]));
- set('note',''); document.getElementById('modal').classList.add('open');
+ document.getElementById('detailTitle').textContent=nameOf(a)+' — '+acctNo(a);
+ let accountFields=['portfolio','accountDescription','clientAccountNumber','accountId','accountNumber','originalCreditor','typeOfDebt','originalBalance','principal','currentBalance','openDate','dateAccountOpened','delinquencyDate','chargeOffDate','origLastPmtDate','lastPaymentDate','lastPaymentAmount'];
+ let consumerFields=['firstName','middleName','lastName','fullName','ssn','dob','address','address2','city','state','zip','employer','email'];
+ let phoneFields=['phone1','phone2','phone3','phone4','phone5','phone6'];
+ let bankFields=['bankRoutingNumber','bankAccountNumber'];
+ const fieldRows=(arr)=>arr.map(k=>`<p><b>${label(k)}:</b> ${k==='ssn'?esc(maskSSN(a[k])):esc(a[k]||'')}</p>`).join('');
+ document.getElementById('detailBody').innerHTML=`
+  <div class="detailGrid">
+   <div class="box"><h3>Account / Balance</h3>${fieldRows(accountFields)}</div>
+   <div class="box"><h3>Consumer</h3>${fieldRows(consumerFields)}</div>
+   <div class="box"><h3>Phones</h3>${fieldRows(phoneFields)}</div>
+   <div class="box"><h3>Bank Fields (masked)</h3><p><b>Routing:</b> ${a.bankRoutingNumber?'***'+last4(a.bankRoutingNumber):''}</p><p><b>Account:</b> ${a.bankAccountNumber?'***'+last4(a.bankAccountNumber):''}</p></div>
+  </div>
+  <div class="box" style="margin-top:14px"><h3>Add Note</h3><textarea id="newNote" rows="3"></textarea><br><br><button onclick="addNote('${a.id}')">Save Note</button>${(a.notes||[]).slice().reverse().map(n=>`<div class="note"><b>${esc(n.date)}</b><br>${esc(n.text)}</div>`).join('')||'<p class="muted">No notes yet.</p>'}</div>`;
+ document.getElementById('detailModal').classList.add('open');
 }
+function addNote(id){let t=document.getElementById('newNote').value.trim(); if(!t)return; let list=load(), a=list.find(x=>x.id===id); a.notes=a.notes||[]; a.notes.push({date:new Date().toLocaleString(),text:t}); save(list); viewAccount(id); render()}
 
-function addNote(id){
- let text=prompt('Enter note / call result:'); if(!text)return;
- let list=load(), a=list.find(x=>x.id===id); if(!a)return;
- a.notes=a.notes||[]; a.notes.push({text,date:new Date().toLocaleString()}); save(list); render();
+function label(k){return k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase())}
+
+function norm(s){return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'')}
+const MAP={
+ portfolio:['portfolio'], accountDescription:['accountdescription'], clientAccountNumber:['clientaccountnumber'], accountId:['accountid'],
+ accountNumber:['accountnumber'], firstName:['firstname'], middleName:['middlename'], lastName:['lastname'], fullName:['fullname'],
+ ssn:['ssn','socialsecuritynumber'], dob:['dob'], address:['address'], address2:['address2'], city:['city'], state:['state'], zip:['zip'],
+ employer:['employer'], email:['email'], originalCreditor:['originalcreditor'], typeOfDebt:['typeofdebt'],
+ originalBalance:['originalbalance'], principal:['principal','coprincipal'], currentBalance:['currentbalance','coprincipal'], openDate:['opendate'], dateAccountOpened:['dateaccountopened'],
+ delinquencyDate:['delinquencydate'], chargeOffDate:['chargeoffdate','datechargedoff'], origLastPmtDate:['origlastpmtdate'], lastPaymentDate:['lastpaymentdate'], lastPaymentAmount:['lastpaymentamount'],
+ bankRoutingNumber:['bankroutingnumber'], bankAccountNumber:['bankaccountnumber'], phone1:['custom11','phone','phone1'], phone2:['custom12','phone2'], phone3:['custom13','phone3'], phone4:['custom14','phone4'], phone5:['custom15','phone5'], phone6:['custom16','phone6']
+};
+
+function importCSV(e){
+ let file=e.target.files[0]; if(!file)return;
+ let reader=new FileReader();
+ reader.onload=()=>{
+  let rows=parseCSV(String(reader.result)); if(rows.length<2){alert('CSV needs headers and rows.');return}
+  let headers=rows[0].map(norm), existing=load(), imported=[];
+  rows.slice(1).forEach(cells=>{
+    if(cells.every(c=>!String(c).trim()))return;
+    let acct={id:crypto.randomUUID(),notes:[{date:new Date().toLocaleString(),text:'Imported from CSV: '+file.name}],createdAt:Date.now(),status:'New'};
+    for(let field in MAP){
+      let idx=headers.findIndex(h=>MAP[field].includes(h));
+      acct[field]=idx>=0 ? cells[idx] : '';
+    }
+    acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' ');
+    acct.accountNumber=acct.accountNumber||acct.clientAccountNumber||acct.accountId;
+    acct.portfolio=acct.portfolio||acct.accountDescription||acct.originalCreditor||file.name.replace(/\\.csv$/i,'');
+    acct.originalCreditor=acct.originalCreditor||acct.accountDescription||acct.portfolio;
+    acct.currentBalance=toNumber(acct.currentBalance||acct.principal||acct.originalBalance);
+    acct.principal=toNumber(acct.principal);
+    acct.originalBalance=toNumber(acct.originalBalance);
+    acct.lastPaymentAmount=toNumber(acct.lastPaymentAmount);
+    imported.push(acct);
+  });
+  save(existing.concat(imported)); alert('Imported '+imported.length+' accounts.'); e.target.value=''; render();
+ };
+ reader.readAsText(file);
 }
-
-function deleteAccount(id){if(confirm('Delete this account?')){save(load().filter(a=>a.id!==id));render()}}
-function clearAll(){if(confirm('Clear all accounts from this browser?')){localStorage.removeItem(KEY);render()}}
+function toNumber(v){let n=Number(String(v||'').replace(/[$,]/g,'')); return isNaN(n)?'':n}
+function parseCSV(text){
+ let rows=[], row=[], cell='', q=false;
+ for(let i=0;i<text.length;i++){let ch=text[i], nx=text[i+1];
+  if(ch=='"'&&q&&nx=='"'){cell+='"';i++} else if(ch=='"'){q=!q}
+  else if(ch==','&&!q){row.push(cell);cell=''}
+  else if((ch=='\n'||ch=='\r')&&!q){if(ch=='\r'&&nx=='\n')i++; row.push(cell); rows.push(row); row=[]; cell=''}
+  else cell+=ch;
+ }
+ if(cell||row.length){row.push(cell);rows.push(row)} return rows;
+}
 function exportCSV(){
- let headers=['accountNumber','firstName','lastName','phone','email','creditor','currentBalance','status','address','city','state','zip'];
- let rows=[headers.join(',')].concat(load().map(a=>headers.map(h=>`"${String(a[h]??'').replaceAll('"','""')}"`).join(',')));
- let blob=new Blob([rows.join('\n')],{type:'text/csv'}), url=URL.createObjectURL(blob), a=document.createElement('a');
- a.href=url; a.download='co-pilot-accounts.csv'; a.click(); URL.revokeObjectURL(url);
+ let headers=FIELDS, rows=[headers.join(',')].concat(load().map(a=>headers.map(h=>`"${String(a[h]??'').replaceAll('"','""')}"`).join(',')));
+ download('co-pilot-accounts-export.csv',rows.join('\n'),'text/csv');
 }
+function downloadTemplate(){
+ let headers=FIELDS, sample=['PlainGreen LLC','PlainGreen LLC','36972835','13242556','36972835','John','','Doe','John Doe','123-45-6789','01/01/1980','123 Main St','','Las Vegas','NV','89101','Employer','email@example.com','PlainGreen LLC','installment loan','','',1000,'01/01/2020','','','02/01/2020','','','0','','','702-555-1111','','','','','','New'];
+ download('co-pilot-import-template.csv',headers.join(',')+'\n'+sample.map(v=>`"${String(v).replaceAll('"','""')}"`).join(','),'text/csv');
+}
+function download(name,text,type){let blob=new Blob([text],{type}), url=URL.createObjectURL(blob), a=document.createElement('a'); a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url)}
 render();
 </script>
 </body>
