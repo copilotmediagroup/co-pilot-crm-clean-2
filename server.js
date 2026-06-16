@@ -70,9 +70,23 @@ function dbConfig() {
   return { url, anon, service };
 }
 
+function hasAuthConfig() {
+  const c = dbConfig();
+  return Boolean(c.url && c.anon);
+}
+
 function hasDbConfig() {
   const c = dbConfig();
   return Boolean(c.url && c.anon && c.service);
+}
+
+function missingConfigMessage() {
+  const c = dbConfig();
+  const missing = [];
+  if (!c.url) missing.push("SUPABASE_URL");
+  if (!c.anon) missing.push("SUPABASE_ANON_KEY");
+  if (!c.service) missing.push("SUPABASE_SERVICE_ROLE_KEY");
+  return "Database secrets missing: " + missing.join(", ") + ". Add them in Bolt Database -> Secrets, then restart the app.";
 }
 
 function json(res, status, data) {
@@ -139,7 +153,7 @@ async function dbFetch(path, options = {}) {
 }
 
 async function getUserAndProfile(req) {
-  if (!hasDbConfig()) throw new Error("Database is not configured. Add SUPABASE_URL, SUPABASE_ANON_KEY, and SUPABASE_SERVICE_ROLE_KEY secrets.");
+  if (!hasDbConfig()) throw new Error(missingConfigMessage());
   const token = getBearer(req);
   if (!token) {
     const err = new Error("Missing login token");
@@ -236,11 +250,22 @@ async function insertActivity(accountId, ctx, action_type, action_text, extra = 
 
 async function handleApi(req, res, url) {
   try {
-    if (!hasDbConfig() && !url.pathname.startsWith("/api/auth")) {
-      return json(res, 500, {
-        error: "Database secrets missing",
-        needed: ["SUPABASE_URL", "SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY"]
+    if (url.pathname === "/api/config-check" && req.method === "GET") {
+      const c = dbConfig();
+      return json(res, 200, {
+        hasUrl: Boolean(c.url),
+        hasAnonKey: Boolean(c.anon),
+        hasServiceRoleKey: Boolean(c.service),
+        ready: hasDbConfig()
       });
+    }
+
+    if ((url.pathname === "/api/auth/login" || url.pathname === "/api/auth/signup") && !hasAuthConfig()) {
+      return json(res, 500, { error: missingConfigMessage() });
+    }
+
+    if (!hasDbConfig() && !url.pathname.startsWith("/api/auth")) {
+      return json(res, 500, { error: missingConfigMessage() });
     }
 
     if (url.pathname === "/api/auth/login" && req.method === "POST") {
