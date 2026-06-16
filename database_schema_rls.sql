@@ -338,3 +338,40 @@ create policy "payment_plan_payments_select_authenticated" on payment_plan_payme
 create policy "payment_plan_payments_insert_authenticated" on payment_plan_payments for insert to authenticated with check (true);
 create policy "payment_plan_payments_update_authenticated" on payment_plan_payments for update to authenticated using (true) with check (true);
 create policy "payment_plan_payments_delete_authenticated" on payment_plan_payments for delete to authenticated using (true);
+
+
+-- SMART ACCOUNT ASSIGNMENT
+alter table accounts add column if not exists assigned_to_email text;
+alter table accounts add column if not exists assigned_by_email text;
+alter table accounts add column if not exists assigned_at timestamptz;
+alter table accounts add column if not exists assignment_method text;
+alter table accounts add column if not exists assignment_group_id uuid;
+
+create index if not exists idx_accounts_assigned_to_email on accounts(lower(assigned_to_email));
+create index if not exists idx_accounts_assignment_group_id on accounts(assignment_group_id);
+create index if not exists idx_accounts_state_city_balance on accounts(state, city, current_balance);
+
+-- Tighten account visibility:
+-- Admin sees all accounts. Employees only see accounts assigned to their email.
+drop policy if exists "accounts_select_authenticated" on accounts;
+drop policy if exists "accounts_update_authenticated" on accounts;
+
+create policy "accounts_select_authenticated"
+on accounts for select
+to authenticated
+using (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(coalesce(assigned_to_email,'')) = lower(auth.jwt() ->> 'email')
+);
+
+create policy "accounts_update_authenticated"
+on accounts for update
+to authenticated
+using (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(coalesce(assigned_to_email,'')) = lower(auth.jwt() ->> 'email')
+)
+with check (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(coalesce(assigned_to_email,'')) = lower(auth.jwt() ->> 'email')
+);

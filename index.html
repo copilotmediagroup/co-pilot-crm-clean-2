@@ -234,6 +234,33 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 .paymentPreviewValue.danger{color:#dc2626}
 .paymentPreviewValue.good{color:#166534}
 
+
+/* SMART ACCOUNT ASSIGNMENT */
+.assignModalBox{max-width:1120px}
+.assignGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.assignGrid label{font-size:12px;font-weight:900;color:#334155;display:block;margin-bottom:5px}
+.assignGrid input,.assignGrid select,.assignGrid textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font:inherit;background:white}
+.assignGrid textarea{min-height:88px;resize:vertical}
+.assignWide{grid-column:1/-1}
+.assignHalf{grid-column:span 2}
+.assignOptions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
+.assignCheck{border:1px solid #e2e8f0;border-radius:12px;background:#f8fbff;padding:10px;font-size:12px;font-weight:850;color:#334155}
+.assignCheck input{margin-right:6px}
+.assignStats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+.assignStat{border:1px solid #e2e8f0;border-radius:12px;background:#f8fbff;padding:10px}
+.assignStatLabel{font-size:10px;font-weight:900;color:#64748b;text-transform:uppercase;margin-bottom:4px}
+.assignStatValue{font-size:16px;font-weight:1000;color:#0f172a}
+.assignPreview{max-height:280px;overflow:auto;border:1px solid #e2e8f0;border-radius:12px;background:#fff}
+.assignPreview table{width:100%;border-collapse:collapse;font-size:12px}
+.assignPreview th{position:sticky;top:0;background:#f8fafc;text-align:left;padding:8px;border-bottom:1px solid #e2e8f0;color:#334155;font-size:10px;text-transform:uppercase}
+.assignPreview td{padding:7px 8px;border-bottom:1px solid #edf2f8;vertical-align:top}
+.assignTag{display:inline-block;border-radius:999px;background:#eef2ff;color:#1e40af;padding:3px 7px;font-size:10px;font-weight:900}
+.assignWarning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px;font-size:12px;font-weight:850;margin:10px 0}
+.assignedPill{display:inline-block;margin-top:4px;border-radius:999px;background:#e0f2fe;color:#075985;padding:3px 7px;font-size:10px;font-weight:900;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unassignedPill{display:inline-block;margin-top:4px;border-radius:999px;background:#f1f5f9;color:#475569;padding:3px 7px;font-size:10px;font-weight:900}
+@media(max-width:1450px){.assignGrid,.assignOptions,.assignStats{grid-template-columns:repeat(2,1fr)}.assignHalf{grid-column:span 1}}
+@media(max-width:850px){.assignGrid,.assignOptions,.assignStats{grid-template-columns:1fr}.assignHalf{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -275,9 +302,10 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">STRICT PAYMENT PLAN FIX — cannot exceed balance; count/amount auto-calculate.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">SMART ASSIGNMENT READY — admin can distribute accounts by employee, count, state, city, balance, or random.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
+      <button class="gray adminOnly hidden" onclick="openAssignModal()">👥 Assign Accounts</button>
       <label class="fileBtn gray adminOnly hidden">⇩ Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label>
       <button class="purple adminOnly hidden" onclick="downloadTemplate()">⇩ Template CSV</button>
       <button class="gray adminOnly hidden" onclick="exportCSV()">⇩ Export CSV</button>
@@ -474,6 +502,110 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
   <div class="modalbody"><div id="docsBody"></div></div>
 </div></div>
 
+
+<div id="assignModal" class="modal"><div class="modalbox assignModalBox">
+  <div class="modalhead"><h2>Smart Account Assignment</h2><button class="gray" onclick="closeModal('assignModal')">Close</button></div>
+  <div class="modalbody">
+    <div class="assignWarning">
+      Admin only. Choose employees, choose how many accounts to assign, then filter/sort by state, city, balance, portfolio, status, or random distribution.
+    </div>
+
+    <div class="assignGrid">
+      <div class="assignWide">
+        <label>Employee Emails</label>
+        <textarea id="assignEmployees" placeholder="employee1@email.com, employee2@email.com, employee3@email.com"></textarea>
+      </div>
+
+      <div>
+        <label>Assignment Count</label>
+        <input id="assignCount" type="number" min="1" value="100" oninput="previewAssignment()">
+      </div>
+      <div>
+        <label>Count Mode</label>
+        <select id="assignCountMode" onchange="previewAssignment()">
+          <option value="total">Total accounts split across employees</option>
+          <option value="each">This many accounts per employee</option>
+        </select>
+      </div>
+      <div>
+        <label>Smart Method</label>
+        <select id="assignMethod" onchange="previewAssignment()">
+          <option value="random">Random distribution</option>
+          <option value="state">Group by state</option>
+          <option value="city">Group by city</option>
+          <option value="balanceHigh">Highest balances first</option>
+          <option value="balanceLow">Lowest balances first</option>
+          <option value="queue">Current queue order</option>
+        </select>
+      </div>
+      <div>
+        <label>Assignment Style</label>
+        <select id="assignStyle" onchange="previewAssignment()">
+          <option value="roundRobin">Rotate evenly between employees</option>
+          <option value="block">Block assign chunks per employee</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Portfolio Filter</label>
+        <select id="assignPortfolio" onchange="previewAssignment()"><option value="">All Portfolios</option></select>
+      </div>
+      <div>
+        <label>Status Filter</label>
+        <select id="assignStatus" onchange="previewAssignment()"><option value="">All Statuses</option></select>
+      </div>
+      <div>
+        <label>State(s)</label>
+        <input id="assignStates" placeholder="TX, CA, NV" oninput="previewAssignment()">
+      </div>
+      <div>
+        <label>City / Cities</label>
+        <input id="assignCities" placeholder="Houston, Dallas" oninput="previewAssignment()">
+      </div>
+
+      <div>
+        <label>Min Balance</label>
+        <input id="assignMinBalance" type="number" step="0.01" min="0" placeholder="0" oninput="previewAssignment()">
+      </div>
+      <div>
+        <label>Max Balance</label>
+        <input id="assignMaxBalance" type="number" step="0.01" min="0" placeholder="No max" oninput="previewAssignment()">
+      </div>
+      <div>
+        <label>Search Contains</label>
+        <input id="assignSearch" placeholder="name, account, creditor..." oninput="previewAssignment()">
+      </div>
+      <div>
+        <label>Employee Suggestions</label>
+        <button class="outline" style="width:100%;height:40px" onclick="fillSuggestedEmployees()">Use Known Employees</button>
+      </div>
+    </div>
+
+    <div class="assignOptions">
+      <label class="assignCheck"><input id="assignOnlyUnassigned" type="checkbox" checked onchange="previewAssignment()">Only unassigned accounts</label>
+      <label class="assignCheck"><input id="assignExcludeClosed" type="checkbox" checked onchange="previewAssignment()">Exclude Settled / DNC</label>
+      <label class="assignCheck"><input id="assignUseCurrentQueue" type="checkbox" onchange="previewAssignment()">Use current queue filters</label>
+      <label class="assignCheck"><input id="assignReplaceExisting" type="checkbox" onchange="previewAssignment()">Allow reassignment</label>
+    </div>
+
+    <div class="assignStats">
+      <div class="assignStat"><div class="assignStatLabel">Matching Accounts</div><div class="assignStatValue" id="assignMatchCount">0</div></div>
+      <div class="assignStat"><div class="assignStatLabel">Will Assign</div><div class="assignStatValue" id="assignWillCount">0</div></div>
+      <div class="assignStat"><div class="assignStatLabel">Employees</div><div class="assignStatValue" id="assignEmployeeCount">0</div></div>
+      <div class="assignStat"><div class="assignStatLabel">Per Employee Avg</div><div class="assignStatValue" id="assignPerEmployee">0</div></div>
+      <div class="assignStat"><div class="assignStatLabel">Total Balance</div><div class="assignStatValue" id="assignTotalBalance">$0.00</div></div>
+    </div>
+
+    <div style="display:flex;gap:10px;justify-content:flex-end;align-items:center;margin:12px 0;flex-wrap:wrap">
+      <button class="outline" onclick="previewAssignment()">Preview Assignment</button>
+      <button class="green" onclick="saveSmartAssignment()">Assign Accounts</button>
+      <button class="red" onclick="clearAssignmentsForFiltered()">Clear Assignments For Preview</button>
+    </div>
+
+    <div class="assignPreview" id="assignPreview"></div>
+  </div>
+</div></div>
+
 <script src="config.js"></script>
 <script>
 const ADMIN_EMAIL='afinch2678@gmail.com';
@@ -483,8 +615,8 @@ const TOKEN_KEY='coPilotSupabaseAccessToken';
 const REFRESH_KEY='coPilotSupabaseRefreshToken';
 let accounts=[], currentAccountId='', currentDisposition='', currentUser={email:'',isAdmin:false};
 const DISPOS=['No Answer','Left Voicemail','Promise to Pay','Disputed','Bad Number','Callback','Settled','DNC'];
-const FIELDS=["portfolio", "accountDescription", "clientAccountNumber", "accountId", "accountNumber", "issuerName", "firstName", "middleName", "lastName", "fullName", "ssn", "dob", "address", "address2", "city", "state", "zip", "employer", "occupation", "description", "email", "originalCreditor", "typeOfDebt", "originalBalance", "principal", "currentBalance", "openDate", "dateAccountOpened", "accountReceiveDate", "delinquencyDate", "chargeOffDate", "origLastPmtDate", "lastPaymentDate", "lastPaymentAmount", "bankRoutingNumber", "bankAccountNumber", "origEmployer", "origStoreName", "origStoreCity", "origStoreState", "origBankName", "origBankAcctLast4Digits", "origPrincipalBalance", "origOriginalLoanAmount", "origChargeOffBalance", "origLoanType", "origPrincipalLoanAmount", "origInterestAmount", "origReturnFee", "phone1", "phone1Type", "phone1LineType", "phone1Source", "phone1Note", "phone1Status", "phone2", "phone2Type", "phone2LineType", "phone2Source", "phone2Note", "phone2Status", "phone3", "phone3Type", "phone3LineType", "phone3Source", "phone3Note", "phone3Status", "phone4", "phone4Type", "phone4LineType", "phone4Source", "phone4Note", "phone4Status", "phone5", "phone5Type", "phone5LineType", "phone5Source", "phone5Note", "phone5Status", "phone6", "phone6Type", "phone6LineType", "phone6Source", "phone6Note", "phone6Status", "phone7", "phone7Type", "phone7LineType", "phone7Source", "phone7Note", "phone7Status", "phone8", "phone8Type", "phone8LineType", "phone8Source", "phone8Note", "phone8Status", "phone9", "phone9Type", "phone9LineType", "phone9Source", "phone9Note", "phone9Status", "phone10", "phone10Type", "phone10LineType", "phone10Source", "phone10Note", "phone10Status", "rawData", "status"];
-const map={"portfolio": "portfolio", "accountDescription": "account_description", "clientAccountNumber": "client_account_number", "accountId": "source_account_id", "accountNumber": "account_number", "issuerName": "issuer_name", "firstName": "first_name", "middleName": "middle_name", "lastName": "last_name", "fullName": "full_name", "ssn": "ssn", "dob": "dob", "address": "address", "address2": "address2", "city": "city", "state": "state", "zip": "zip", "employer": "employer", "occupation": "occupation", "description": "description", "email": "email", "originalCreditor": "original_creditor", "typeOfDebt": "type_of_debt", "originalBalance": "original_balance", "principal": "principal", "currentBalance": "current_balance", "openDate": "open_date", "dateAccountOpened": "date_account_opened", "accountReceiveDate": "account_receive_date", "delinquencyDate": "delinquency_date", "chargeOffDate": "charge_off_date", "origLastPmtDate": "orig_last_pmt_date", "lastPaymentDate": "last_payment_date", "lastPaymentAmount": "last_payment_amount", "bankRoutingNumber": "bank_routing_number", "bankAccountNumber": "bank_account_number", "origEmployer": "orig_employer", "origStoreName": "orig_store_name", "origStoreCity": "orig_store_city", "origStoreState": "orig_store_state", "origBankName": "orig_bank_name", "origBankAcctLast4Digits": "orig_bank_acct_last4_digits", "origPrincipalBalance": "orig_principal_balance", "origOriginalLoanAmount": "orig_original_loan_amount", "origChargeOffBalance": "orig_chargeoff_balance", "origLoanType": "orig_loan_type", "origPrincipalLoanAmount": "orig_principal_loan_amount", "origInterestAmount": "orig_interest_amount", "origReturnFee": "orig_return_fee", "rawData": "raw_data", "status": "status", "disposition": "disposition", "lastContactNumber": "last_contact_number", "phone1": "phone1", "phone1Type": "phone1_type", "phone1LineType": "phone1_line_type", "phone1Source": "phone1_source", "phone1Note": "phone1_note", "phone1Status": "phone1_status", "phone2": "phone2", "phone2Type": "phone2_type", "phone2LineType": "phone2_line_type", "phone2Source": "phone2_source", "phone2Note": "phone2_note", "phone2Status": "phone2_status", "phone3": "phone3", "phone3Type": "phone3_type", "phone3LineType": "phone3_line_type", "phone3Source": "phone3_source", "phone3Note": "phone3_note", "phone3Status": "phone3_status", "phone4": "phone4", "phone4Type": "phone4_type", "phone4LineType": "phone4_line_type", "phone4Source": "phone4_source", "phone4Note": "phone4_note", "phone4Status": "phone4_status", "phone5": "phone5", "phone5Type": "phone5_type", "phone5LineType": "phone5_line_type", "phone5Source": "phone5_source", "phone5Note": "phone5_note", "phone5Status": "phone5_status", "phone6": "phone6", "phone6Type": "phone6_type", "phone6LineType": "phone6_line_type", "phone6Source": "phone6_source", "phone6Note": "phone6_note", "phone6Status": "phone6_status", "phone7": "phone7", "phone7Type": "phone7_type", "phone7LineType": "phone7_line_type", "phone7Source": "phone7_source", "phone7Note": "phone7_note", "phone7Status": "phone7_status", "phone8": "phone8", "phone8Type": "phone8_type", "phone8LineType": "phone8_line_type", "phone8Source": "phone8_source", "phone8Note": "phone8_note", "phone8Status": "phone8_status", "phone9": "phone9", "phone9Type": "phone9_type", "phone9LineType": "phone9_line_type", "phone9Source": "phone9_source", "phone9Note": "phone9_note", "phone9Status": "phone9_status", "phone10": "phone10", "phone10Type": "phone10_type", "phone10LineType": "phone10_line_type", "phone10Source": "phone10_source", "phone10Note": "phone10_note", "phone10Status": "phone10_status"};
+const FIELDS=["portfolio", "accountDescription", "clientAccountNumber", "accountId", "accountNumber", "issuerName", "firstName", "middleName", "lastName", "fullName", "ssn", "dob", "address", "address2", "city", "state", "zip", "employer", "occupation", "description", "email", "originalCreditor", "typeOfDebt", "originalBalance", "principal", "currentBalance", "openDate", "dateAccountOpened", "accountReceiveDate", "delinquencyDate", "chargeOffDate", "origLastPmtDate", "lastPaymentDate", "lastPaymentAmount", "bankRoutingNumber", "bankAccountNumber", "origEmployer", "origStoreName", "origStoreCity", "origStoreState", "origBankName", "origBankAcctLast4Digits", "origPrincipalBalance", "origOriginalLoanAmount", "origChargeOffBalance", "origLoanType", "origPrincipalLoanAmount", "origInterestAmount", "origReturnFee", "phone1", "phone1Type", "phone1LineType", "phone1Source", "phone1Note", "phone1Status", "phone2", "phone2Type", "phone2LineType", "phone2Source", "phone2Note", "phone2Status", "phone3", "phone3Type", "phone3LineType", "phone3Source", "phone3Note", "phone3Status", "phone4", "phone4Type", "phone4LineType", "phone4Source", "phone4Note", "phone4Status", "phone5", "phone5Type", "phone5LineType", "phone5Source", "phone5Note", "phone5Status", "phone6", "phone6Type", "phone6LineType", "phone6Source", "phone6Note", "phone6Status", "phone7", "phone7Type", "phone7LineType", "phone7Source", "phone7Note", "phone7Status", "phone8", "phone8Type", "phone8LineType", "phone8Source", "phone8Note", "phone8Status", "phone9", "phone9Type", "phone9LineType", "phone9Source", "phone9Note", "phone9Status", "phone10", "phone10Type", "phone10LineType", "phone10Source", "phone10Note", "phone10Status", "rawData", "status", "assignedToEmail", "assignedByEmail", "assignmentMethod"];
+const map={"portfolio": "portfolio", "accountDescription": "account_description", "clientAccountNumber": "client_account_number", "accountId": "source_account_id", "accountNumber": "account_number", "issuerName": "issuer_name", "firstName": "first_name", "middleName": "middle_name", "lastName": "last_name", "fullName": "full_name", "ssn": "ssn", "dob": "dob", "address": "address", "address2": "address2", "city": "city", "state": "state", "zip": "zip", "employer": "employer", "occupation": "occupation", "description": "description", "email": "email", "originalCreditor": "original_creditor", "typeOfDebt": "type_of_debt", "originalBalance": "original_balance", "principal": "principal", "currentBalance": "current_balance", "openDate": "open_date", "dateAccountOpened": "date_account_opened", "accountReceiveDate": "account_receive_date", "delinquencyDate": "delinquency_date", "chargeOffDate": "charge_off_date", "origLastPmtDate": "orig_last_pmt_date", "lastPaymentDate": "last_payment_date", "lastPaymentAmount": "last_payment_amount", "bankRoutingNumber": "bank_routing_number", "bankAccountNumber": "bank_account_number", "origEmployer": "orig_employer", "origStoreName": "orig_store_name", "origStoreCity": "orig_store_city", "origStoreState": "orig_store_state", "origBankName": "orig_bank_name", "origBankAcctLast4Digits": "orig_bank_acct_last4_digits", "origPrincipalBalance": "orig_principal_balance", "origOriginalLoanAmount": "orig_original_loan_amount", "origChargeOffBalance": "orig_chargeoff_balance", "origLoanType": "orig_loan_type", "origPrincipalLoanAmount": "orig_principal_loan_amount", "origInterestAmount": "orig_interest_amount", "origReturnFee": "orig_return_fee", "rawData": "raw_data", "status": "status", "disposition": "disposition", "lastContactNumber": "last_contact_number", "phone1": "phone1", "phone1Type": "phone1_type", "phone1LineType": "phone1_line_type", "phone1Source": "phone1_source", "phone1Note": "phone1_note", "phone1Status": "phone1_status", "phone2": "phone2", "phone2Type": "phone2_type", "phone2LineType": "phone2_line_type", "phone2Source": "phone2_source", "phone2Note": "phone2_note", "phone2Status": "phone2_status", "phone3": "phone3", "phone3Type": "phone3_type", "phone3LineType": "phone3_line_type", "phone3Source": "phone3_source", "phone3Note": "phone3_note", "phone3Status": "phone3_status", "phone4": "phone4", "phone4Type": "phone4_type", "phone4LineType": "phone4_line_type", "phone4Source": "phone4_source", "phone4Note": "phone4_note", "phone4Status": "phone4_status", "phone5": "phone5", "phone5Type": "phone5_type", "phone5LineType": "phone5_line_type", "phone5Source": "phone5_source", "phone5Note": "phone5_note", "phone5Status": "phone5_status", "phone6": "phone6", "phone6Type": "phone6_type", "phone6LineType": "phone6_line_type", "phone6Source": "phone6_source", "phone6Note": "phone6_note", "phone6Status": "phone6_status", "phone7": "phone7", "phone7Type": "phone7_type", "phone7LineType": "phone7_line_type", "phone7Source": "phone7_source", "phone7Note": "phone7_note", "phone7Status": "phone7_status", "phone8": "phone8", "phone8Type": "phone8_type", "phone8LineType": "phone8_line_type", "phone8Source": "phone8_source", "phone8Note": "phone8_note", "phone8Status": "phone8_status", "phone9": "phone9", "phone9Type": "phone9_type", "phone9LineType": "phone9_line_type", "phone9Source": "phone9_source", "phone9Note": "phone9_note", "phone9Status": "phone9_status", "phone10": "phone10", "phone10Type": "phone10_type", "phone10LineType": "phone10_line_type", "phone10Source": "phone10_source", "phone10Note": "phone10_note", "phone10Status": "phone10_status","assignedToEmail":"assigned_to_email","assignedByEmail":"assigned_by_email","assignedAt":"assigned_at","assignmentMethod":"assignment_method","assignmentGroupId":"assignment_group_id"};
 const reverse=Object.fromEntries(Object.entries(map).map(([k,v])=>[v,k]));
 function cfg(){return window.CO_PILOT_SUPABASE_CONFIG||{}}
 function url(){return String(cfg().url||localStorage.getItem(URL_KEY)||'').replace(/\/$/,'')}
@@ -518,7 +650,13 @@ function applyRoleUI(){document.getElementById('roleBadge').textContent=(current
 function snakeToCamel(k){return String(k).replace(/_([a-z])/g,(_,c)=>c.toUpperCase())}function toCamel(row){let o={id:row.id};Object.entries(row||{}).forEach(([k,v])=>{o[reverse[k]||snakeToCamel(k)||k]=v??''});return o}
 function toRow(a){let r={};Object.entries(map).forEach(([k,v])=>{if(a[k]!==undefined)r[v]=numKey(k)?num(a[k]):a[k]});r.full_name=r.full_name||[r.first_name,r.middle_name,r.last_name].filter(Boolean).join(' ');r.account_number=r.account_number||r.client_account_number||r.source_account_id||'';r.portfolio=r.portfolio||r.issuer_name||r.account_description||r.original_creditor||'Imported Portfolio';r.original_creditor=r.original_creditor||r.issuer_name||r.account_description||r.portfolio;r.status=r.status||'New';r.updated_at=new Date().toISOString();r.created_by_email=currentUser.email;return r}
 function numKey(k){return ['originalBalance','principal','currentBalance','lastPaymentAmount','origPrincipalBalance','origOriginalLoanAmount','origChargeOffBalance','origPrincipalLoanAmount','origInterestAmount','origReturnFee'].includes(k)}function num(v){if(v===''||v==null)return null;let n=Number(String(v).replace(/[$,]/g,''));return Number.isFinite(n)?n:null}
-async function loadAccounts(){accounts=(await dbFetch('/accounts?select=*&order=created_at.asc&limit=20000')).map(toCamel);if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;render()}
+async function loadAccounts(){
+ accounts=(await dbFetch('/accounts?select=*&order=created_at.asc&limit=20000')).map(toCamel);
+ if(!currentUser.isAdmin)accounts=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===currentUser.email);
+ if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;
+ if(currentAccountId&&!accounts.some(a=>a.id===currentAccountId))currentAccountId=accounts[0]?.id||'';
+ render()
+}
 function queue(){let q=document.getElementById('search')?.value.toLowerCase()||'',st=document.getElementById('statusFilter')?.value||'',pf=document.getElementById('portfolioFilter')?.value||'';return accounts.filter(a=>{let raw=rawObj(a),text=(FIELDS.map(k=>a[k]).join(' ')+' '+Object.keys(raw).join(' ')+' '+Object.values(raw).join(' ')).toLowerCase();return(!q||text.includes(q))&&(!st||a.status===st)&&(!pf||a.portfolio===pf)})}
 function onQueueFilterChange(){let q=queue();if(q[0]&&!q.some(a=>a.id===currentAccountId))currentAccountId=q[0].id;render()}function setCurrent(id){currentAccountId=id;document.getElementById('agentNote').value='';currentDisposition='';render();loadHistory(id)}function getCurrent(){return queue().find(a=>a.id===currentAccountId)||queue()[0]||accounts[0]}
 function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}function moneyNum(v){let n=Number(String(v??'').replace(/[^0-9.-]/g,''));return isNaN(n)?0:n}function accountBalance(a){return moneyNum(a?.currentBalance||a?.principal||a?.originalBalance)}function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}function normPhone(p){return String(p||'').replace(/\D/g,'')}function fmtPhone(p){let d=normPhone(p);return d.length===10?'('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6):(p||'')}function acctNo(a){return a?.accountNumber||a?.clientAccountNumber||a?.accountId||''}function nameOf(a){return a?.fullName||[a?.firstName,a?.middleName,a?.lastName].filter(Boolean).join(' ')||'Unknown Account'}function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'--'}function creditor(a){return a?.originalCreditor||a?.accountDescription||a?.portfolio||'—'}function phones(a){return[a?.phone1,a?.phone2,a?.phone3,a?.phone4,a?.phone5,a?.phone6,a?.phone7,a?.phone8,a?.phone9,a?.phone10].filter(p=>p&&normPhone(p).length>=10)}
@@ -630,6 +768,10 @@ function renderAllImportedFields(a){
  addDetail(dates,'Account Receive Date',pickVal(a,['accountReceiveDate','AccountReceiveDate']));
  addDetail(dates,'Source / File',pickVal(a,['portfolio','SourceFile','fileName','FileName']));
  addDetail(dates,'Imported By',pickVal(a,['createdByEmail','created_by_email']));
+ addDetail(dates,'Assigned To',a.assignedToEmail||'');
+ addDetail(dates,'Assigned By',a.assignedByEmail||'');
+ addDetail(dates,'Assigned At',a.assignedAt||'');
+ addDetail(dates,'Assignment Method',a.assignmentMethod||'');
 
  let groups=[
    ['Borrower Details',borrower],
@@ -688,7 +830,15 @@ function renderMappedFields(a){
 }
 function render(){let q=queue(),cur=getCurrent();updatePortfolioFilter(accounts);renderQueue(q,cur);renderCurrent(cur,q);renderDispos(cur);if(cur)loadHistory(cur.id)}
 function updatePortfolioFilter(all){let sel=document.getElementById('portfolioFilter'),v=sel.value,names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();sel.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');sel.value=names.includes(v)?v:''}
-function renderQueue(q,cur){let idx=q.findIndex(a=>a.id===cur?.id);if(idx<0)idx=0;let start=Math.max(0,idx-1),next=q.slice(start,start+5);document.getElementById('queueList').innerHTML=next.map((a,i)=>`<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${start+i+1}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div></div><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div>`).join('')||'<div class="muted" style="padding:12px">No accounts in queue.</div>';document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts`}
+function renderQueue(q,cur){
+ let idx=q.findIndex(a=>a.id===cur?.id);if(idx<0)idx=0;
+ let start=Math.max(0,idx-1),next=q.slice(start,start+5);
+ document.getElementById('queueList').innerHTML=next.map((a,i)=>{
+   let assigned=currentUser.isAdmin?(a.assignedToEmail?`<span class="assignedPill">Assigned: ${esc(a.assignedToEmail)}</span>`:`<span class="unassignedPill">Unassigned</span>`):'';
+   return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${start+i+1}</div><div><div class="qName">${esc(nameOf(a))}</div><div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div>${assigned}</div><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div>`;
+ }).join('')||'<div class="muted" style="padding:12px">No accounts in queue.</div>';
+ document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts`
+}
 function renderCurrent(a,q){
  if(!a)return;
  let idx=q.findIndex(x=>x.id===a.id)+1,total=q.length;
@@ -726,6 +876,178 @@ async function insertActivity(accountId,type,text,phone='',oldStatus='',newStatu
 async function recordDial(id,phone){document.getElementById('callNumber').textContent=fmtPhone(phone);document.getElementById('lastDialed').textContent='Dialing '+fmtPhone(phone);await dbFetch(`/accounts?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({last_contact_number:phone,updated_at:new Date().toISOString()})}).catch(()=>{});await insertActivity(id,'Outbound Call','Clicked phone number '+fmtPhone(phone),phone)}
 async function loadHistory(id){if(!id)return;try{let notes=await dbFetch(`/account_notes?account_id=eq.${id}&select=*&order=created_at.desc&limit=20`),acts=await dbFetch(`/activity_logs?account_id=eq.${id}&select=*&order=created_at.desc&limit=20`);let events=[...acts.map(x=>({date:x.created_at,type:x.action_type,text:x.action_text})),...notes.map(x=>({date:x.created_at,type:'Note',text:x.note}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);document.getElementById('activityList').innerHTML=events.map(e=>`<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${new Date(e.date).toLocaleString()}</div></div>`).join('')||'<div class="muted">No activity yet.</div>'}catch{}}
 document.getElementById('agentNote').addEventListener('input',()=>{let v=document.getElementById('agentNote').value;document.getElementById('noteCounter').textContent=v.length+' / 2000'})
+
+
+let assignmentPreviewRows=[];
+function parseAssignEmails(){
+ let text=(document.getElementById('assignEmployees')?.value||'').toLowerCase();
+ return [...new Set(text.split(/[\s,;]+/).map(e=>e.trim()).filter(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)))];
+}
+function normalizeList(v){return String(v||'').split(/[,;]+/).map(x=>x.trim().toLowerCase()).filter(Boolean)}
+function assignedEmail(a){return (a.assignedToEmail||a.assigned_to_email||'').toLowerCase()}
+function employeeSuggestions(){
+ let set=new Set();
+ accounts.forEach(a=>{if(assignedEmail(a))set.add(assignedEmail(a))});
+ if(currentUser.email)set.add(currentUser.email);
+ return [...set].filter(e=>e&&e!==ADMIN_EMAIL).sort();
+}
+function fillSuggestedEmployees(){
+ let emails=employeeSuggestions();
+ if(!emails.length)return alert('No known employees yet. Type employee emails manually.');
+ document.getElementById('assignEmployees').value=emails.join(', ');
+ previewAssignment();
+}
+function openAssignModal(){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ fillAssignFilterOptions();
+ document.getElementById('assignModal').classList.add('open');
+ previewAssignment();
+}
+function fillAssignFilterOptions(){
+ let pf=document.getElementById('assignPortfolio'), st=document.getElementById('assignStatus');
+ if(pf){
+   let v=pf.value,names=[...new Set(accounts.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();
+   pf.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
+   pf.value=names.includes(v)?v:'';
+ }
+ if(st){
+   let v=st.value,names=[...new Set(accounts.map(a=>a.disposition||a.status||'New').filter(Boolean))].sort();
+   st.innerHTML='<option value="">All Statuses</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');
+   st.value=names.includes(v)?v:'';
+ }
+}
+function assignmentBaseRows(){
+ let useQueue=document.getElementById('assignUseCurrentQueue')?.checked;
+ let rows=useQueue?queue().slice():accounts.slice();
+ let onlyUn=document.getElementById('assignOnlyUnassigned')?.checked;
+ let replace=document.getElementById('assignReplaceExisting')?.checked;
+ if(onlyUn&&!replace)rows=rows.filter(a=>!assignedEmail(a));
+ let excludeClosed=document.getElementById('assignExcludeClosed')?.checked;
+ if(excludeClosed)rows=rows.filter(a=>!['settled','dnc','closed','paid'].includes(String(a.disposition||a.status||'').toLowerCase()));
+ let pf=document.getElementById('assignPortfolio')?.value||'';
+ if(pf)rows=rows.filter(a=>(a.portfolio||a.accountDescription||'')===pf);
+ let st=document.getElementById('assignStatus')?.value||'';
+ if(st)rows=rows.filter(a=>(a.disposition||a.status||'New')===st);
+ let states=normalizeList(document.getElementById('assignStates')?.value);
+ if(states.length)rows=rows.filter(a=>states.includes(String(a.state||'').toLowerCase()));
+ let cities=normalizeList(document.getElementById('assignCities')?.value);
+ if(cities.length)rows=rows.filter(a=>cities.includes(String(a.city||'').toLowerCase()));
+ let min=moneyNum(document.getElementById('assignMinBalance')?.value);
+ let maxRaw=document.getElementById('assignMaxBalance')?.value;
+ let max=maxRaw===''?null:moneyNum(maxRaw);
+ if(min)rows=rows.filter(a=>accountBalance(a)>=min);
+ if(max!==null)rows=rows.filter(a=>accountBalance(a)<=max);
+ let s=(document.getElementById('assignSearch')?.value||'').toLowerCase().trim();
+ if(s)rows=rows.filter(a=>{
+   let raw=rawObj(a);
+   let text=(FIELDS.map(k=>a[k]).join(' ')+' '+Object.keys(raw).join(' ')+' '+Object.values(raw).join(' ')).toLowerCase();
+   return text.includes(s);
+ });
+ return rows;
+}
+function shuffle(arr){
+ let a=arr.slice();
+ for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+ return a;
+}
+function sortAssignmentRows(rows,method){
+ let r=rows.slice();
+ if(method==='random')return shuffle(r);
+ if(method==='balanceHigh')return r.sort((a,b)=>accountBalance(b)-accountBalance(a));
+ if(method==='balanceLow')return r.sort((a,b)=>accountBalance(a)-accountBalance(b));
+ if(method==='state')return r.sort((a,b)=>String(a.state||'').localeCompare(String(b.state||''))||accountBalance(b)-accountBalance(a));
+ if(method==='city')return r.sort((a,b)=>String(a.city||'').localeCompare(String(b.city||''))||accountBalance(b)-accountBalance(a));
+ return r;
+}
+function buildAssignments(){
+ let employees=parseAssignEmails();
+ let rows=assignmentBaseRows();
+ let method=document.getElementById('assignMethod')?.value||'random';
+ rows=sortAssignmentRows(rows,method);
+ let count=Math.max(1,parseInt(document.getElementById('assignCount')?.value||'1',10));
+ let mode=document.getElementById('assignCountMode')?.value||'total';
+ let totalWanted=mode==='each'?count*employees.length:count;
+ let selected=rows.slice(0,totalWanted);
+ let style=document.getElementById('assignStyle')?.value||'roundRobin';
+ let assignments=[];
+ if(!employees.length)return {employees,rows,assignments};
+ if(style==='block'){
+   let per=mode==='each'?count:Math.ceil(selected.length/employees.length);
+   selected.forEach((a,i)=>assignments.push({account:a,email:employees[Math.min(employees.length-1,Math.floor(i/per))]}));
+ }else{
+   selected.forEach((a,i)=>assignments.push({account:a,email:employees[i%employees.length]}));
+ }
+ return {employees,rows,assignments};
+}
+function previewAssignment(){
+ let built=buildAssignments();
+ assignmentPreviewRows=built.assignments;
+ let byEmp={};
+ built.assignments.forEach(x=>{byEmp[x.email]=(byEmp[x.email]||0)+1});
+ let totalBal=built.assignments.reduce((s,x)=>s+accountBalance(x.account),0);
+ let mc=document.getElementById('assignMatchCount'); if(mc)mc.textContent=built.rows.length;
+ let wc=document.getElementById('assignWillCount'); if(wc)wc.textContent=built.assignments.length;
+ let ec=document.getElementById('assignEmployeeCount'); if(ec)ec.textContent=built.employees.length;
+ let pe=document.getElementById('assignPerEmployee'); if(pe)pe.textContent=built.employees.length?Object.values(byEmp).join(' / '):'0';
+ let tb=document.getElementById('assignTotalBalance'); if(tb)tb.textContent=money(totalBal);
+ let box=document.getElementById('assignPreview'); if(!box)return;
+ let rows=built.assignments.slice(0,200);
+ box.innerHTML=`<table><thead><tr><th>#</th><th>Assign To</th><th>Name</th><th>Account</th><th>State</th><th>City</th><th>Balance</th><th>Current Assignment</th></tr></thead><tbody>`+
+ rows.map((x,i)=>`<tr><td>${i+1}</td><td><span class="assignTag">${esc(x.email)}</span></td><td>${esc(nameOf(x.account))}</td><td>${esc(acctNo(x.account))}</td><td>${esc(x.account.state||'')}</td><td>${esc(x.account.city||'')}</td><td>${money(accountBalance(x.account))}</td><td>${esc(assignedEmail(x.account)||'Unassigned')}</td></tr>`).join('')+
+ `</tbody></table>${built.assignments.length>200?`<div class="assignWarning">Showing first 200 of ${built.assignments.length} assignments.</div>`:''}`;
+}
+async function saveSmartAssignment(){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ let built=buildAssignments();
+ if(!built.employees.length)return alert('Enter at least one valid employee email.');
+ if(!built.assignments.length)return alert('No accounts matched your criteria.');
+ let ok=confirm('Assign '+built.assignments.length+' account(s) to '+built.employees.length+' employee(s)?');
+ if(!ok)return;
+ let groupId=crypto.randomUUID?crypto.randomUUID():String(Date.now());
+ let method=document.getElementById('assignMethod')?.value||'random';
+ let byEmail={};
+ built.assignments.forEach(x=>{(byEmail[x.email]=byEmail[x.email]||[]).push(x.account.id)});
+ for(let [email,ids] of Object.entries(byEmail)){
+   for(let i=0;i<ids.length;i+=100){
+     let chunk=ids.slice(i,i+100);
+     await dbFetch(`/accounts?id=in.(${chunk.join(',')})`,{method:'PATCH',body:JSON.stringify({
+       assigned_to_email:email,
+       assigned_by_email:currentUser.email,
+       assigned_at:new Date().toISOString(),
+       assignment_method:method,
+       assignment_group_id:groupId,
+       updated_at:new Date().toISOString()
+     })});
+   }
+ }
+ // Activity log per first 100 assigned accounts to avoid huge log spam.
+ for(let x of built.assignments.slice(0,100)){
+   await insertActivity(x.account.id,'Assigned','Assigned to '+x.email+' by '+currentUser.email+' using '+method).catch(()=>{});
+ }
+ alert('Assigned '+built.assignments.length+' account(s).');
+ closeModal('assignModal');
+ await loadAccounts();
+}
+async function clearAssignmentsForFiltered(){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ let built=buildAssignments();
+ let ids=built.assignments.map(x=>x.account.id);
+ if(!ids.length){
+   ids=assignmentBaseRows().slice(0,Math.max(1,parseInt(document.getElementById('assignCount')?.value||'1',10))).map(a=>a.id);
+ }
+ if(!ids.length)return alert('No accounts to clear.');
+ let ok=confirm('Clear assignment from '+ids.length+' account(s)?');
+ if(!ok)return;
+ for(let i=0;i<ids.length;i+=100){
+   let chunk=ids.slice(i,i+100);
+   await dbFetch(`/accounts?id=in.(${chunk.join(',')})`,{method:'PATCH',body:JSON.stringify({
+     assigned_to_email:null,assigned_by_email:null,assigned_at:null,assignment_method:null,assignment_group_id:null,updated_at:new Date().toISOString()
+   })});
+ }
+ alert('Assignments cleared for '+ids.length+' account(s).');
+ await loadAccounts();
+ previewAssignment();
+}
 
 let paymentPlanCache={};
 let paymentScheduleDraft=[];
