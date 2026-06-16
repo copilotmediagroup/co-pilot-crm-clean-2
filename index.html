@@ -84,6 +84,92 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 .importProgressBox{z-index:99999}
 @media(max-width:1400px){.main{grid-template-columns:50px 300px 1fr 260px}.summaryGrid{grid-template-columns:repeat(3,1fr)}.allFieldsGrid{grid-template-columns:repeat(3,1fr)}.allFieldCard:nth-child(4n){border-right:1px solid #e5edf7}.allFieldCard:nth-child(3n){border-right:0}.phoneGrid{grid-template-columns:repeat(3,1fr)}.dispoGrid{grid-template-columns:repeat(4,1fr)}}
 
+
+/* COMPACT CLEAN MOCKUP FIX */
+.center{padding:16px 18px 76px;gap:12px}
+.accountCard{min-height:118px;padding:17px 20px}
+.summaryGrid{align-items:start}
+.allFieldsTopPanel{padding:14px 16px;border-radius:16px}
+.allFieldsTopHeader{margin-bottom:10px}
+.allFieldsTopTitle{font-size:15px;font-weight:1000}
+.allFieldsTopBadge{font-size:11px;padding:5px 9px}
+.allFieldsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  border:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+.detailGroup{
+  border:1px solid #dbe3ef;
+  border-radius:14px;
+  background:#fff;
+  overflow:hidden;
+  box-shadow:0 2px 10px rgba(15,23,42,.035);
+  min-width:0;
+}
+.detailGroupTitle{
+  margin:0!important;
+  padding:10px 12px;
+  font-size:12px!important;
+  background:#f8fbff;
+  border-bottom:1px solid #e5edf7;
+  color:#0f172a;
+}
+.detailGroupGrid{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  border:0!important;
+  border-radius:0!important;
+}
+.allFieldCard{
+  border:0!important;
+  border-bottom:1px solid #edf2f8!important;
+  padding:8px 12px!important;
+  min-height:44px!important;
+  background:#fff!important;
+}
+.allFieldCard:last-child{border-bottom:0!important}
+.allFieldKey{
+  font-size:10px!important;
+  line-height:1.1;
+  color:#64748b!important;
+  margin-bottom:4px!important;
+  letter-spacing:.01em;
+}
+.allFieldVal{
+  font-size:12px!important;
+  line-height:1.25!important;
+  font-weight:850!important;
+  color:#0f172a!important;
+  white-space:normal!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.phonePanel,.dispoPanel,.notePanel,.activity{padding:13px 15px}
+.phoneGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.phoneChip{min-height:54px}
+.dispoGrid{grid-template-columns:repeat(8,minmax(0,1fr))}
+.dispo{height:39px;font-size:11px}
+.notePanel textarea{height:74px}
+.timeline{max-height:125px}
+.rawDumpToggle{margin-left:auto}
+.rawDumpBox{display:none;margin-top:12px;border:1px dashed #cbd5e1;border-radius:12px;background:#f8fafc;padding:10px;max-height:220px;overflow:auto}
+.rawDumpBox.open{display:block}
+.rawDumpGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rawDumpItem{border:1px solid #e2e8f0;border-radius:10px;background:#fff;padding:8px}
+.rawDumpKey{font-size:10px;font-weight:900;color:#64748b;margin-bottom:4px;word-break:break-word}
+.rawDumpVal{font-size:12px;font-weight:750;color:#0f172a;word-break:break-word}
+@media(max-width:1500px){
+  .allFieldsGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .dispoGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .phoneGrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1050px){
+  .allFieldsGrid,.phoneGrid{grid-template-columns:1fr!important}
+}
+
 </style>
 </head>
 <body>
@@ -125,7 +211,7 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">Compact collector workflow — no repeated account information.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">COMPACT CLEAN MOCKUP FIX — curated account details, no raw field dump.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <label class="fileBtn gray adminOnly hidden">⇩ Import CSV<input type="file" accept=".csv" onchange="importCSV(event)"></label>
@@ -188,11 +274,13 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
         <div class="allFieldsTopHeader">
           <div>
             <div class="allFieldsTopTitle">Account Details</div>
-            <div class="hint">Extra mapped/imported fields only. Primary summary fields are not repeated.</div>
+            <div class="hint">Curated extra fields only. Primary summary info is not repeated here.</div>
           </div>
-          <span class="allFieldsTopBadge" id="allFieldsCount">0 fields</span>
+          <button class="outline rawDumpToggle" onclick="toggleRawDump()">Show Source Fields</button>
+          <span class="allFieldsTopBadge" id="allFieldsCount">0 details</span>
         </div>
         <div id="allFieldsGrid" class="allFieldsGrid"></div>
+        <div id="rawDumpBox" class="rawDumpBox"><div class="rawDumpGrid" id="rawDumpGrid"></div></div>
       </section>
 
       <section class="panel phonePanel"><div class="panelTitle"><h3>Phone Numbers</h3><button class="outline" onclick="renderPhones(getCurrent())">Refresh Numbers</button></div><div class="phoneGrid" id="phoneGrid"></div></section>
@@ -296,7 +384,7 @@ function numKey(k){return ['originalBalance','principal','currentBalance','lastP
 async function loadAccounts(){accounts=(await dbFetch('/accounts?select=*&order=created_at.asc&limit=20000')).map(toCamel);if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;render()}
 function queue(){let q=document.getElementById('search')?.value.toLowerCase()||'',st=document.getElementById('statusFilter')?.value||'',pf=document.getElementById('portfolioFilter')?.value||'';return accounts.filter(a=>{let raw=rawObj(a),text=(FIELDS.map(k=>a[k]).join(' ')+' '+Object.keys(raw).join(' ')+' '+Object.values(raw).join(' ')).toLowerCase();return(!q||text.includes(q))&&(!st||a.status===st)&&(!pf||a.portfolio===pf)})}
 function onQueueFilterChange(){let q=queue();if(q[0]&&!q.some(a=>a.id===currentAccountId))currentAccountId=q[0].id;render()}function setCurrent(id){currentAccountId=id;document.getElementById('agentNote').value='';currentDisposition='';render();loadHistory(id)}function getCurrent(){return queue().find(a=>a.id===currentAccountId)||queue()[0]||accounts[0]}
-function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}function normPhone(p){return String(p||'').replace(/\D/g,'')}function fmtPhone(p){let d=normPhone(p);return d.length===10?'('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6):(p||'')}function acctNo(a){return a?.accountNumber||a?.clientAccountNumber||a?.accountId||''}function nameOf(a){return a?.fullName||[a?.firstName,a?.middleName,a?.lastName].filter(Boolean).join(' ')||'Unknown Account'}function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'--'}function creditor(a){return a?.originalCreditor||a?.accountDescription||a?.portfolio||'—'}function phones(a){return[a?.phone1,a?.phone2,a?.phone3,a?.phone4,a?.phone5,a?.phone6,a?.phone7,a?.phone8,a?.phone9,a?.phone10].filter(Boolean)}
+function money(n){return Number(n||0).toLocaleString('en-US',{style:'currency',currency:'USD'})}function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}function normPhone(p){return String(p||'').replace(/\D/g,'')}function fmtPhone(p){let d=normPhone(p);return d.length===10?'('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6):(p||'')}function acctNo(a){return a?.accountNumber||a?.clientAccountNumber||a?.accountId||''}function nameOf(a){return a?.fullName||[a?.firstName,a?.middleName,a?.lastName].filter(Boolean).join(' ')||'Unknown Account'}function initials(a){return nameOf(a).split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'--'}function creditor(a){return a?.originalCreditor||a?.accountDescription||a?.portfolio||'—'}function phones(a){return[a?.phone1,a?.phone2,a?.phone3,a?.phone4,a?.phone5,a?.phone6,a?.phone7,a?.phone8,a?.phone9,a?.phone10].filter(p=>p&&normPhone(p).length>=10)}
 function rawObj(a){return a?.rawData||a?.raw_data||{}}
 
 const EXTRA_FIELD_LABELS={
@@ -352,60 +440,90 @@ function mappedEntries(a){
  return out;
 }
 
+function pickVal(a,keys){
+ let raw=rawObj(a);
+ for(let key of keys){
+   if(a && a[key]!==undefined && a[key]!==null && String(a[key]).trim()!=='')return a[key];
+   let found=Object.keys(raw||{}).find(k=>norm(k)===norm(key));
+   if(found && String(raw[found]??'').trim()!=='')return raw[found];
+ }
+ return '';
+}
+function compactMoney(v){
+ if(v===undefined||v===null||String(v).trim()==='')return '';
+ let n=Number(String(v).replace(/[^0-9.-]/g,''));
+ return isNaN(n)?String(v):money(n);
+}
+function addDetail(rows,label,value,type='text'){
+ if(value===undefined||value===null||String(value).trim()==='')return;
+ rows.push([label,label,value,type]);
+}
 function renderAllImportedFields(a){
  let grid=document.getElementById('allFieldsGrid'),count=document.getElementById('allFieldsCount');
  if(!grid)return;
- if(!a){grid.innerHTML='<div class="allFieldsEmpty">No account selected.</div>';if(count)count.textContent='0 fields';return}
+ if(!a){grid.innerHTML='<div class="allFieldsEmpty">No account selected.</div>';if(count)count.textContent='0 details';return}
 
- let entries=[];
- try{entries=mappedEntries(a)}catch(e){entries=[]}
- let raw=rawObj(a);
- if(!entries.length){
-   entries=Object.entries(raw||{}).filter(([k,v])=>String(v??'').trim()!=='').map(([k,v])=>['Source: '+k,k,v,'raw']);
- }
+ let borrower=[], loan=[], bank=[], dates=[];
+ addDetail(borrower,'DOB / Birthdate',pickVal(a,['dob','PBirthdate','PBIRTHDATE','birthdate']));
+ addDetail(borrower,'Address', [pickVal(a,['address','OrigAddress1','Orig_Address1']),pickVal(a,['address2','OrigAddress2','Orig_Address2'])].filter(Boolean).join(' '));
+ addDetail(borrower,'Zip / Postal',pickVal(a,['zip','OrigZipPostal','OrigZip','zipcode']));
+ addDetail(borrower,'Employer',pickVal(a,['employer','Employer','Orig_EMPLOYER','origEmployer']));
+ addDetail(borrower,'Occupation',pickVal(a,['occupation','Occupation']));
+ addDetail(borrower,'Description',pickVal(a,['description','Description']));
 
- const summaryKeys=new Set(['portfolio','accountDescription','accountNumber','clientAccountNumber','accountId','firstName','middleName','lastName','fullName','ssn','state','city','currentBalance','email','status','disposition','lastContactNumber']);
- const summaryLabelWords=['source: pfname','source: pmiddle','source: plname','source: borrowername','source: issueraccountnumber','source: pssn','source: origstate','source: origcity','source: pemail','source: curbalance'];
+ addDetail(loan,'Store Name',pickVal(a,['origStoreName','Orig_StoreName','StoreName','store_name','IssuerName','issuerName']));
+ let storeCity=pickVal(a,['origStoreCity','Orig_Store_City','StoreCity','store_city']);
+ let storeState=pickVal(a,['origStoreState','Orig_StoreState','StoreState','store_state']);
+ addDetail(loan,'Store City / State',[storeCity,storeState].filter(Boolean).join(' / '));
+ addDetail(loan,'Product / Description',pickVal(a,['accountDescription','OrigProduct','origProduct','Product','typeOfDebt']));
+ addDetail(loan,'Account Type',pickVal(a,['typeOfDebt','AccountType','accountType','Orig_LoanType','origLoanType']));
+ addDetail(loan,'Principal',compactMoney(pickVal(a,['principal','Principal','COPrincipal','Orig_PRINCIPALBALANCE','origPrincipalBalance'])));
+ addDetail(loan,'Original Loan Amount',compactMoney(pickVal(a,['origOriginalLoanAmount','Orig_ORIGINALLOANAMOUNT','Orig_PrincipalLoanAmount','origPrincipalLoanAmount','originalBalance'])));
 
- let clean=[];
- let seen=new Set();
- entries.forEach(([label,k,v,type])=>{
-   if(v==null||String(v).trim()==='')return;
-   let l=String(label||'').toLowerCase();
-   if(summaryKeys.has(k))return;
-   if(summaryLabelWords.some(w=>l.includes(w)))return;
-   let sig=label+'|'+String(v);
-   if(seen.has(sig))return;
-   seen.add(sig);
-   clean.push([label,k,v,type]);
- });
+ addDetail(bank,'Bank Name',pickVal(a,['origBankName','Orig_BankName','BankName','bank_name']));
+ addDetail(bank,'Bank Account Last 4',pickVal(a,['origBankAcctLast4Digits','Orig_BankAcctLast4Digits','BankAccountLast4','bankAccountNumber','bank_account_number']));
+ addDetail(bank,'Routing Number',pickVal(a,['bankRoutingNumber','BankRoutingNumber','routing','RoutingNumber']));
+ addDetail(bank,'Last Payment Date',pickVal(a,['lastPaymentDate','Last Payment Date','IssuerLPDate','origLastPmtDate']));
+ addDetail(bank,'Last Payment Amount',compactMoney(pickVal(a,['lastPaymentAmount','Last Payment Amount','last_pmt_amt'])));
+ addDetail(bank,'Return Fee',compactMoney(pickVal(a,['origReturnFee','Orig_ReturnFee','ReturnFee'])));
 
- function inGroup(label,k,words){let s=(String(label)+' '+String(k)).toLowerCase();return words.some(w=>s.includes(w))}
+ addDetail(dates,'Open Date',pickVal(a,['openDate','AccountOpenDate','account_open_date','dateAccountOpened']));
+ addDetail(dates,'Delinquency Date',pickVal(a,['delinquencyDate','DelinquencyDate']));
+ addDetail(dates,'Charge-off Date',pickVal(a,['chargeOffDate','CODate','Charge Off Date','charge_off_date']));
+ addDetail(dates,'Account Receive Date',pickVal(a,['accountReceiveDate','AccountReceiveDate']));
+ addDetail(dates,'Source / File',pickVal(a,['portfolio','SourceFile','fileName','FileName']));
+ addDetail(dates,'Imported By',pickVal(a,['createdByEmail','created_by_email']));
+
  let groups=[
-   ['Borrower Details',['dob','birth','address','zip','employer','occupation','description']],
-   ['Store / Loan Details',['store','product','type','loan','principal','interest','return fee','original loan','chargeoff balance']],
-   ['Bank / Payment Details',['bank','routing','acct','account last','payment','paid']],
-   ['Phone Metadata',['phone','line type','note','status']],
-   ['Dates / Metadata',['date','delinquency','charge','import','receive','source','file','batch','review']]
- ];
- let used=new Set();
- let htmlOut='';
- groups.forEach(([title,words])=>{
-   let rows=clean.filter((e,i)=>!used.has(i)&&inGroup(e[0],e[1],words)).slice(0,24);
-   rows.forEach(e=>used.add(clean.indexOf(e)));
-   if(!rows.length)return;
-   htmlOut+=`<div class="detailGroup"><div class="detailGroupTitle">${esc(title)}</div><div class="detailGroupGrid">`;
-   htmlOut+=rows.map(([label,k,v,type])=>fieldCard(label,k,v,a)).join('');
-   htmlOut+='</div></div>';
- });
- let other=clean.filter((e,i)=>!used.has(i)).slice(0,36);
- if(other.length){
-   htmlOut+=`<div class="detailGroup"><div class="detailGroupTitle">Other Imported Fields</div><div class="detailGroupGrid">`;
-   htmlOut+=other.map(([label,k,v,type])=>fieldCard(label,k,v,a)).join('');
-   htmlOut+='</div></div>';
- }
- if(count)count.textContent=clean.length+' fields';
- grid.innerHTML=htmlOut||'<div class="allFieldsEmpty">No extra mapped fields were saved on this account. Run SQL, clear accounts, and re-import.</div>';
+   ['Borrower Details',borrower],
+   ['Store / Loan Details',loan],
+   ['Bank / Payment Details',bank],
+   ['Dates / Metadata',dates]
+ ].filter(g=>g[1].length);
+
+ let total=groups.reduce((s,g)=>s+g[1].length,0);
+ if(count)count.textContent=total+' details';
+
+ grid.innerHTML=groups.map(([title,rows])=>{
+   return `<div class="detailGroup"><div class="detailGroupTitle">${esc(title)}</div><div class="detailGroupGrid">`+
+     rows.slice(0,8).map(([label,k,v,type])=>fieldCard(label,k,v,a)).join('')+
+     `</div></div>`;
+ }).join('')||'<div class="allFieldsEmpty">No extra mapped fields were saved on this account. Run SQL, clear accounts, and re-import.</div>';
+
+ renderRawDump(a);
+}
+function renderRawDump(a){
+ let box=document.getElementById('rawDumpBox'),grid=document.getElementById('rawDumpGrid');
+ if(!grid)return;
+ let raw=rawObj(a)||{};
+ let entries=Object.entries(raw).filter(([k,v])=>String(v??'').trim()!=='');
+ grid.innerHTML=entries.map(([k,v])=>{
+   return `<div class="rawDumpItem"><div class="rawDumpKey">${esc(k)}</div><div class="rawDumpVal">${esc(v)}</div></div>`;
+ }).join('')||'<div class="allFieldsEmpty">No source fields saved.</div>';
+}
+function toggleRawDump(){
+ let box=document.getElementById('rawDumpBox');
+ if(box)box.classList.toggle('open');
 }
 function fieldCard(label,k,v,a){
  let shown='';
@@ -458,7 +576,12 @@ function renderCurrent(a,q){
  renderPhones(a);
  renderDispos(a);
 }
-function renderPhones(a){let ps=phones(a);document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alt'}</div></div></a>`).join('')||'<div class="muted">No phone numbers on this account.</div>'}
+function renderPhones(a){
+ let ps=phones(a).map(p=>normPhone(p)).filter(p=>p.length>=10);
+ let seen=new Set();
+ ps=ps.filter(p=>{let key=p.slice(-10); if(seen.has(key))return false; seen.add(key); return true;}).slice(0,6);
+ document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alternate'}</div></div></a>`).join('')||'<div class="muted">No phone numbers on this account.</div>'
+}
 function renderDispos(a){document.getElementById('selectedDisposition').textContent=currentDisposition||a?.disposition||'Select one';document.getElementById('dispoGrid').innerHTML=DISPOS.map(d=>`<button class="dispo ${d==='Disputed'?'orangeText':['Promise to Pay','Settled'].includes(d)?'greenText':['Bad Number','DNC'].includes(d)?'redText':d==='Callback'?'purpleText':''} ${(currentDisposition||a?.disposition)===d?'selected':''}" onclick="selectDisposition('${d}')">${d}</button>`).join('')}
 async function selectDisposition(d){let cur=getCurrent();if(!cur)return;currentDisposition=d;let old=cur.status,newStatus=d==='Disputed'?'Disputed':d;let updated=(await dbFetch(`/accounts?id=eq.${cur.id}`,{method:'PATCH',body:JSON.stringify({status:newStatus,disposition:d,updated_at:new Date().toISOString()})}))[0];await insertActivity(cur.id,'Status Updated','Disposition set to '+d,'',old,newStatus);let i=accounts.findIndex(a=>a.id===cur.id);if(i>=0)accounts[i]=toCamel(updated);render()}
 async function insertActivity(accountId,type,text,phone='',oldStatus='',newStatus=''){await dbFetch('/activity_logs',{method:'POST',body:JSON.stringify([{account_id:accountId,action_type:type,action_text:text,phone_number:phone,old_status:oldStatus,new_status:newStatus,created_by_email:currentUser.email}])}).catch(()=>{})}
