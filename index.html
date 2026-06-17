@@ -1340,7 +1340,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">COMPANY LOGO LETTERS READY — admin logo upload, shared logo settings, professional branded debtor letters.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">LOGO UPLOAD FIX READY — accepts image files even when browser MIME type is blank and prints logo on letters.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
@@ -3013,12 +3013,18 @@ async function loadCompanyLogoSettings(force=false){
 function fileToLogoJpeg(file){
  return new Promise((resolve,reject)=>{
    if(!file)return reject(new Error('No logo file selected.'));
-   if(!file.type.startsWith('image/'))return reject(new Error('Upload an image file.'));
+   // Some Mac/Bolt/browser file pickers return a blank MIME type even for real images.
+   // Do not reject based only on file.type. Try to load it as an image first.
+   let allowedExt=/\.(png|jpg|jpeg|webp|gif|bmp|svg)$/i.test(file.name||'');
+   if(file.type && !file.type.startsWith('image/') && !allowedExt){
+     return reject(new Error('Upload a PNG, JPG, JPEG, WEBP, GIF, BMP, or SVG logo image.'));
+   }
    let reader=new FileReader();
    reader.onerror=()=>reject(new Error('Could not read logo file.'));
    reader.onload=()=>{
      let img=new Image();
-     img.onerror=()=>reject(new Error('Could not load logo image.'));
+     img.crossOrigin='anonymous';
+     img.onerror=()=>reject(new Error('That file could not be loaded as an image. Use PNG or JPG for best results.'));
      img.onload=()=>{
        let maxW=700,maxH=240;
        let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
@@ -3030,7 +3036,7 @@ function fileToLogoJpeg(file){
        ctx.fillStyle='#ffffff';
        ctx.fillRect(0,0,cw,ch);
        ctx.drawImage(img,0,0,cw,ch);
-       resolve({dataUrl:canvas.toDataURL('image/jpeg',0.88),width:cw,height:ch});
+       resolve({dataUrl:canvas.toDataURL('image/jpeg',0.9),width:cw,height:ch});
      };
      img.src=reader.result;
    };
@@ -3054,7 +3060,8 @@ async function saveCompanyLogoToDatabase(dataUrl,width,height){
      ])
    });
  }catch(e){
-   alert('Logo saved in this browser, but database save failed. Run the updated SQL, then upload logo again. Error: '+e.message);
+   console.warn('Company logo database save failed:',e);
+   alert('Logo is active in this browser now, but it did not save to the shared database. Run database_schema_rls.sql once in Supabase, then upload the logo again so employees can use it too.');
    return;
  }
  try{await insertAudit('Company Logo Updated','Admin updated company logo for letters','company_settings','company_logo_data_url')}catch(e){}
@@ -3063,12 +3070,19 @@ async function handleCompanyLogoUpload(event){
  try{
    if(!currentUser.isAdmin)return alert('Only admin can upload the company logo.');
    let file=event.target.files&&event.target.files[0];
+   if(!file)return alert('No logo file selected.');
    let logo=await fileToLogoJpeg(file);
    await saveCompanyLogoToDatabase(logo.dataUrl,logo.width,logo.height);
+   await loadCompanyLogoSettings(true);
+   updateCompanyLogoPreview();
    renderPdfDocPreview();
-   alert('Company logo uploaded. It will appear on debtor letters.');
- }catch(e){alert(e.message||String(e))}
- finally{event.target.value=''}
+   alert('Company logo uploaded successfully. Generate a new letter now and the logo will appear on the PDF.');
+ }catch(e){
+   alert(e.message||String(e));
+ }
+ finally{
+   if(event && event.target)event.target.value='';
+ }
 }
 async function removeCompanyLogo(){
  if(!currentUser.isAdmin)return alert('Only admin can remove the company logo.');
@@ -3625,15 +3639,15 @@ async function makeSimplePdfWithLogo(title,lines){
  let logoId=add([`<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logoBytes.length} >>\nstream\n`,logoBytes,`\nendstream`]);
  let pageIds=[];
  pages.forEach((p,idx)=>{
-   let y=650,content=[];
-   let targetW=120;
-   let targetH=Math.min(58,targetW*(imgH/imgW));
-   let logoX=420,logoY=710;
+   let y=638,content=[];
+   let targetW=118;
+   let targetH=Math.min(54,targetW*(imgH/imgW));
+   let logoX=422,logoY=716;
    content.push(`q ${targetW.toFixed(1)} 0 0 ${targetH.toFixed(1)} ${logoX} ${logoY} cm /Logo Do Q`);
    let titleText=idx===0?title:title+" - continued";
-   let approxWidth=Math.min(420, titleText.length*8.5);
+   let approxWidth=Math.min(380, titleText.length*7.8);
    let titleX=Math.max(72, 306-(approxWidth/2));
-   content.push(`BT /F2 17 Tf ${titleX.toFixed(0)} 692 Td (${pdfEscape(titleText)}) Tj ET`);
+   content.push(`BT /F2 16 Tf ${titleX.toFixed(0)} 690 Td (${pdfEscape(titleText)}) Tj ET`);
    p.forEach((line)=>{
      let raw=String(line||'');
      if(raw.trim()===''){y-=13;return;}
