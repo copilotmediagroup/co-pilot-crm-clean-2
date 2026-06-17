@@ -887,3 +887,42 @@ alter table account_docs add column if not exists generated_by_email text;
 alter table account_docs add column if not exists generated_at timestamptz;
 
 create index if not exists idx_account_docs_generated on account_docs(account_id, generated_at);
+
+
+-- COMPANY LOGO SETTINGS FOR LETTERS
+create table if not exists company_settings (
+  setting_key text primary key,
+  setting_value text,
+  updated_by_email text,
+  updated_at timestamptz default now()
+);
+
+alter table company_settings enable row level security;
+
+drop policy if exists "company_settings_select_authenticated" on company_settings;
+drop policy if exists "company_settings_admin_insert" on company_settings;
+drop policy if exists "company_settings_admin_update" on company_settings;
+drop policy if exists "company_settings_admin_delete" on company_settings;
+
+create policy "company_settings_select_authenticated"
+on company_settings for select
+to authenticated
+using (true);
+
+create policy "company_settings_admin_insert"
+on company_settings for insert
+to authenticated
+with check (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com');
+
+create policy "company_settings_admin_update"
+on company_settings for update
+to authenticated
+using (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com')
+with check (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com');
+
+create policy "company_settings_admin_delete"
+on company_settings for delete
+to authenticated
+using (lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com');
+
+create index if not exists idx_company_settings_updated_at on company_settings(updated_at);

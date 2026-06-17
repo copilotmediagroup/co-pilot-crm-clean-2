@@ -1215,6 +1215,90 @@ main.center > *,
   color:#0f172a!important;
 }
 
+
+/* COMPANY LOGO FOR LETTERS */
+.logoManager{
+  border:1px solid #bfdbfe;
+  background:#eff6ff;
+  border-radius:14px;
+  padding:12px;
+  margin:10px 0;
+}
+.logoManagerHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.logoManagerHead b{
+  color:#0f172a;
+  font-size:14px;
+}
+.logoManagerHead div div{
+  color:#475569;
+  font-size:12px;
+  margin-top:3px;
+}
+.logoManagerBtns{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.logoPreviewRow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-top:10px;
+  flex-wrap:wrap;
+}
+.companyLogoPreview{
+  width:190px;
+  min-height:62px;
+  border:1px dashed #93c5fd;
+  border-radius:12px;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  color:#64748b;
+  font-size:12px;
+  font-weight:850;
+  overflow:hidden;
+}
+.companyLogoPreview img{
+  max-width:170px;
+  max-height:56px;
+  object-fit:contain;
+}
+.logoHint{
+  color:#334155;
+  font-size:12px;
+  max-width:520px;
+}
+.logoLoadedNotice{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:10px;
+  padding:8px 10px;
+  color:#475569;
+  font-size:12px;
+  margin-bottom:10px;
+}
+.pdfPreviewPaper .letterLogoRow{
+  height:64px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:flex-end!important;
+  margin-bottom:8px!important;
+}
+.pdfPreviewPaper .letterLogoRow img{
+  max-width:165px!important;
+  max-height:58px!important;
+  object-fit:contain!important;
+}
+
 </style>
 </head>
 <body>
@@ -1256,7 +1340,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">PROFESSIONAL LETTER FORMAT READY — debtor block, spaced metadata, clean body, and separate disclosure/footer.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">COMPANY LOGO LETTERS READY — admin logo upload, shared logo settings, professional branded debtor letters.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
@@ -1831,6 +1915,26 @@ main.center > *,
     <div class="pdfDocWarning">
       Employee chooses the document type, reviews the auto-filled debtor/account values, then downloads the PDF and/or saves the document record to the account. No company name, company address, or company email is printed on the letters.
     </div>
+
+    <div class="logoManager adminOnly">
+      <div class="logoManagerHead">
+        <div>
+          <b>Company Logo for Letters</b>
+          <div>Admin upload only. Logo is shared with employees and appears professionally on downloaded debtor letters.</div>
+        </div>
+        <div class="logoManagerBtns">
+          <input id="companyLogoUpload" type="file" accept="image/*" onchange="handleCompanyLogoUpload(event)" style="display:none">
+          <button class="outline" onclick="document.getElementById('companyLogoUpload').click()">Upload Logo</button>
+          <button class="gray" onclick="removeCompanyLogo()">Remove Logo</button>
+        </div>
+      </div>
+      <div class="logoPreviewRow">
+        <div id="companyLogoPreview" class="companyLogoPreview">No logo uploaded yet.</div>
+        <div class="logoHint">Best size: wide PNG/JPG logo. The app converts it for PDF use and places it in the upper-right letter header.</div>
+      </div>
+    </div>
+
+    <div class="logoLoadedNotice" id="logoLoadedNotice">Logo status: checking...</div>
 
     <div class="pdfDocGrid">
       <div class="pdfHalf"><label>Document Type</label><select id="pdfDocType" onchange="pdfDocTypeChanged()">
@@ -2868,6 +2972,120 @@ async function saveSettlement(){let a=getCurrent();if(!a)return;let row={account
 /* DEBTOR DOC TEMPLATE GENERATOR — pure browser PDF, no external libraries */
 let pdfGeneratedDocsCache=[];
 
+
+let companyLogoSettings={loaded:false,dataUrl:'',width:0,height:0};
+
+function logoFromLocalStorage(){
+ companyLogoSettings.dataUrl=localStorage.getItem('companyLogoDataUrl')||'';
+ companyLogoSettings.width=parseInt(localStorage.getItem('companyLogoWidth')||'0',10)||0;
+ companyLogoSettings.height=parseInt(localStorage.getItem('companyLogoHeight')||'0',10)||0;
+}
+function updateCompanyLogoPreview(){
+ let box=document.getElementById('companyLogoPreview');
+ let notice=document.getElementById('logoLoadedNotice');
+ if(box){
+   box.innerHTML=companyLogoSettings.dataUrl?`<img src="${companyLogoSettings.dataUrl}" alt="Company logo">`:'No logo uploaded yet.';
+ }
+ if(notice){
+   notice.textContent=companyLogoSettings.dataUrl?'Logo status: logo loaded and will appear on downloaded letters.':'Logo status: no logo uploaded. Letters will generate without a logo.';
+ }
+}
+async function loadCompanyLogoSettings(force=false){
+ if(companyLogoSettings.loaded&&!force){updateCompanyLogoPreview();return companyLogoSettings;}
+ companyLogoSettings.loaded=true;
+ logoFromLocalStorage();
+ try{
+   let rows=(await dbFetch('/company_settings?select=setting_key,setting_value&setting_key=in.(company_logo_data_url,company_logo_width,company_logo_height)')).map(toCamel);
+   let map={};
+   rows.forEach(r=>map[r.settingKey]=r.settingValue);
+   if(map.company_logo_data_url){
+     companyLogoSettings.dataUrl=map.company_logo_data_url||'';
+     companyLogoSettings.width=parseInt(map.company_logo_width||'0',10)||companyLogoSettings.width||0;
+     companyLogoSettings.height=parseInt(map.company_logo_height||'0',10)||companyLogoSettings.height||0;
+     localStorage.setItem('companyLogoDataUrl',companyLogoSettings.dataUrl);
+     localStorage.setItem('companyLogoWidth',companyLogoSettings.width||'0');
+     localStorage.setItem('companyLogoHeight',companyLogoSettings.height||'0');
+   }
+ }catch(e){}
+ updateCompanyLogoPreview();
+ return companyLogoSettings;
+}
+function fileToLogoJpeg(file){
+ return new Promise((resolve,reject)=>{
+   if(!file)return reject(new Error('No logo file selected.'));
+   if(!file.type.startsWith('image/'))return reject(new Error('Upload an image file.'));
+   let reader=new FileReader();
+   reader.onerror=()=>reject(new Error('Could not read logo file.'));
+   reader.onload=()=>{
+     let img=new Image();
+     img.onerror=()=>reject(new Error('Could not load logo image.'));
+     img.onload=()=>{
+       let maxW=700,maxH=240;
+       let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+       let scale=Math.min(1,maxW/w,maxH/h);
+       let cw=Math.max(1,Math.round(w*scale)),ch=Math.max(1,Math.round(h*scale));
+       let canvas=document.createElement('canvas');
+       canvas.width=cw;canvas.height=ch;
+       let ctx=canvas.getContext('2d');
+       ctx.fillStyle='#ffffff';
+       ctx.fillRect(0,0,cw,ch);
+       ctx.drawImage(img,0,0,cw,ch);
+       resolve({dataUrl:canvas.toDataURL('image/jpeg',0.88),width:cw,height:ch});
+     };
+     img.src=reader.result;
+   };
+   reader.readAsDataURL(file);
+ });
+}
+async function saveCompanyLogoToDatabase(dataUrl,width,height){
+ localStorage.setItem('companyLogoDataUrl',dataUrl||'');
+ localStorage.setItem('companyLogoWidth',width||'0');
+ localStorage.setItem('companyLogoHeight',height||'0');
+ companyLogoSettings={loaded:true,dataUrl:dataUrl||'',width:width||0,height:height||0};
+ updateCompanyLogoPreview();
+ try{
+   await dbFetch('/company_settings?on_conflict=setting_key',{
+     method:'POST',
+     headers:{Prefer:'resolution=merge-duplicates,return=representation'},
+     body:JSON.stringify([
+       {setting_key:'company_logo_data_url',setting_value:dataUrl||'',updated_by_email:currentUser.email,updated_at:new Date().toISOString()},
+       {setting_key:'company_logo_width',setting_value:String(width||0),updated_by_email:currentUser.email,updated_at:new Date().toISOString()},
+       {setting_key:'company_logo_height',setting_value:String(height||0),updated_by_email:currentUser.email,updated_at:new Date().toISOString()}
+     ])
+   });
+ }catch(e){
+   alert('Logo saved in this browser, but database save failed. Run the updated SQL, then upload logo again. Error: '+e.message);
+   return;
+ }
+ try{await insertAudit('Company Logo Updated','Admin updated company logo for letters','company_settings','company_logo_data_url')}catch(e){}
+}
+async function handleCompanyLogoUpload(event){
+ try{
+   if(!currentUser.isAdmin)return alert('Only admin can upload the company logo.');
+   let file=event.target.files&&event.target.files[0];
+   let logo=await fileToLogoJpeg(file);
+   await saveCompanyLogoToDatabase(logo.dataUrl,logo.width,logo.height);
+   renderPdfDocPreview();
+   alert('Company logo uploaded. It will appear on debtor letters.');
+ }catch(e){alert(e.message||String(e))}
+ finally{event.target.value=''}
+}
+async function removeCompanyLogo(){
+ if(!currentUser.isAdmin)return alert('Only admin can remove the company logo.');
+ if(!confirm('Remove the company logo from generated letters?'))return;
+ await saveCompanyLogoToDatabase('',0,0);
+ renderPdfDocPreview();
+}
+function logoDataUrlBytes(){
+ let dataUrl=companyLogoSettings.dataUrl||'';
+ if(!dataUrl.includes(','))return null;
+ let b64=dataUrl.split(',')[1];
+ let bin=atob(b64);
+ let bytes=new Uint8Array(bin.length);
+ for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+ return bytes;
+}
+
 function pdfDateLabel(d){
  try{return typeof powerDateLabel==='function'?powerDateLabel(d):String(d||'—')}catch(e){return String(d||'—')}
 }
@@ -2908,6 +3126,7 @@ function pdfDocTypeChanged(){
 }
 async function openDocumentGenerator(){
  let a=getCurrent(); if(!a)return alert('No account selected.');
+ await loadCompanyLogoSettings(true);
  let bal=accountBalance(a);
  document.getElementById('pdfDocType').value='Stipulation - Paid In Full + Card Authorization';
  document.getElementById('pdfDocDate').value=todayISO();
@@ -3247,7 +3466,9 @@ function renderPdfDocPreview(){
  let metaHtml=t.meta.map(([k,v])=>`<div><b>${esc(k)}:</b> ${esc(v||'—')}</div>`).join('');
  let bodyHtml=t.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('');
  let postHtml=t.post.length?`<div class="letterDisclosure"><b>ADDITIONAL INFORMATION</b>${t.post.map(([k,v])=>`<div><b>${esc(k)}:</b> ${esc(v||'—')}</div>`).join('')}</div>`:'';
+ let logoHtml=companyLogoSettings.dataUrl?`<div class="letterLogoRow"><img src="${companyLogoSettings.dataUrl}" alt="Company logo"></div>`:'';
  document.getElementById('pdfDocPreview').innerHTML=`<div class="letterPreview">
+   ${logoHtml}
    <div class="letterTitle">${esc(t.title)}</div>
    <div class="letterAddress">${recipientHtml}</div>
    <div class="letterMeta">${metaHtml}</div>
@@ -3257,6 +3478,7 @@ function renderPdfDocPreview(){
    ${postHtml}
    ${t.disclosure?`<div class="letterDisclosure"><b>DISCLOSURE</b>${esc(t.disclosure)}</div>`:''}
  </div>`;
+ updateCompanyLogoPreview();
 }
 
 async function fillPdfFromPaymentPlan(){
@@ -3370,6 +3592,91 @@ function makeSimplePdf(title,lines){
  pdf+=`trailer\n<< /Size ${objects.length+1} /Root ${catalogId} 0 R >>\nstartxref\n${xref}\n%%EOF`;
  return new Blob([pdf],{type:'application/pdf'});
 }
+
+function asciiBytes(s){return new TextEncoder().encode(String(s));}
+function pdfConcatBlob(parts){return new Blob(parts,{type:'application/pdf'});}
+function makePdfObjectParts(id,bodyParts){
+ let parts=[asciiBytes(`${id} 0 obj\n`)];
+ bodyParts.forEach(p=>parts.push(typeof p==='string'?asciiBytes(p):p));
+ parts.push(asciiBytes(`\nendobj\n`));
+ return parts;
+}
+async function makeSimplePdfWithLogo(title,lines){
+ await loadCompanyLogoSettings(false);
+ let logoBytes=companyLogoSettings.dataUrl?logoDataUrlBytes():null;
+ if(!logoBytes||!logoBytes.length)return makeSimplePdf(title,lines);
+
+ let pageLines=[],pages=[],lineLimit=34;
+ lines.forEach(line=>{
+   if(String(line||'').trim()===''){pageLines.push('');return;}
+   let wraps=pdfWrapText(line,82);
+   wraps.forEach(w=>{
+     pageLines.push(w);
+     if(pageLines.length>=lineLimit){pages.push(pageLines);pageLines=[];}
+   });
+ });
+ if(pageLines.length)pages.push(pageLines);
+
+ let objects=[];
+ function add(parts){objects.push(Array.isArray(parts)?parts:[parts]);return objects.length;}
+ let fontId=add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+ let boldId=add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+ let imgW=companyLogoSettings.width||500,imgH=companyLogoSettings.height||160;
+ let logoId=add([`<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logoBytes.length} >>\nstream\n`,logoBytes,`\nendstream`]);
+ let pageIds=[];
+ pages.forEach((p,idx)=>{
+   let y=650,content=[];
+   let targetW=120;
+   let targetH=Math.min(58,targetW*(imgH/imgW));
+   let logoX=420,logoY=710;
+   content.push(`q ${targetW.toFixed(1)} 0 0 ${targetH.toFixed(1)} ${logoX} ${logoY} cm /Logo Do Q`);
+   let titleText=idx===0?title:title+" - continued";
+   let approxWidth=Math.min(420, titleText.length*8.5);
+   let titleX=Math.max(72, 306-(approxWidth/2));
+   content.push(`BT /F2 17 Tf ${titleX.toFixed(0)} 692 Td (${pdfEscape(titleText)}) Tj ET`);
+   p.forEach((line)=>{
+     let raw=String(line||'');
+     if(raw.trim()===''){y-=13;return;}
+     let isHead=raw.startsWith('## ');
+     let font=isHead?'/F2 11 Tf':'/F1 10 Tf';
+     let clean=raw.replace(/^##\s*/,'');
+     if(isHead){
+       y-=6;
+       content.push(`BT ${font} 72 ${y} Td (${pdfEscape(clean)}) Tj ET`);
+       y-=18;
+     }else{
+       content.push(`BT ${font} 72 ${y} Td (${pdfEscape(clean)}) Tj ET`);
+       y-=15;
+     }
+   });
+   content.push(`BT /F1 8 Tf 72 38 Td (Page ${idx+1} of ${pages.length}) Tj ET`);
+   let stream=content.join("\n");
+   let contentId=add(`<< /Length ${asciiBytes(stream).length} >>\nstream\n${stream}\nendstream`);
+   let pageId=add(`<< /Type /Page /Parent 0 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 ${fontId} 0 R /F2 ${boldId} 0 R >> /XObject << /Logo ${logoId} 0 R >> >> /Contents ${contentId} 0 R >>`);
+   pageIds.push(pageId);
+ });
+ let pagesId=add(`<< /Type /Pages /Kids [${pageIds.map(id=>id+" 0 R").join(" ")}] /Count ${pages.length} >>`);
+ objects=objects.map(parts=>parts.map(p=>typeof p==='string'?p.replace("/Parent 0 0 R",`/Parent ${pagesId} 0 R`):p));
+ let catalogId=add(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+
+ let pdfParts=[],offset=0,offsets=[0];
+ function push(part){
+   let b=part instanceof Uint8Array?part:asciiBytes(part);
+   pdfParts.push(b);
+   offset+=b.length;
+ }
+ push("%PDF-1.4\n");
+ objects.forEach((bodyParts,idx)=>{
+   offsets.push(offset);
+   makePdfObjectParts(idx+1,bodyParts).forEach(push);
+ });
+ let xref=offset;
+ push(`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`);
+ for(let i=1;i<=objects.length;i++)push(String(offsets[i]).padStart(10,'0')+" 00000 n \n");
+ push(`trailer\n<< /Size ${objects.length+1} /Root ${catalogId} 0 R >>\nstartxref\n${xref}\n%%EOF`);
+ return pdfConcatBlob(pdfParts);
+}
+
 function pdfDocumentLines(d){
  let t=pdfProfessionalTemplate(d);
  let lines=[];
@@ -3443,7 +3750,7 @@ async function generateAccountPdf(){
    if(total>d.currentBalance+0.01)return alert('Payment plan total cannot be more than current balance.');
  }
  let lines=pdfDocumentLines(d);
- let blob=makeSimplePdf(d.docType,lines);
+ let blob=await makeSimplePdfWithLogo(d.docType,lines);
  let fileName=pdfFileName(d);
  let url=URL.createObjectURL(blob);
  let link=document.createElement('a');
