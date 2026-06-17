@@ -1372,7 +1372,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">WATERMARK LOGO LETTERS READY — logo sits behind text with transparency and correct aspect ratio.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">EXPIRED LOGIN TOKEN FIX READY — auto-refreshes session and clears stale JWT tokens cleanly.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
@@ -2036,6 +2036,7 @@ const URL_KEY='coPilotSupabaseUrl';
 const PUB_KEY='coPilotSupabasePublishableKey';
 const TOKEN_KEY='coPilotSupabaseAccessToken';
 const REFRESH_KEY='coPilotSupabaseRefreshToken';
+const EXP_KEY='coPilotSupabaseTokenExpiresAt';
 let accounts=[], appUsers=[], currentAccountId='', currentDisposition='', currentUser={email:'',isAdmin:false};
 const DISPOS=['No Answer','Left Voicemail','Promise to Pay','Disputed','Bad Number','Callback','Settled','DNC'];
 const FIELDS=["portfolio", "accountDescription", "clientAccountNumber", "accountId", "accountNumber", "issuerName", "firstName", "middleName", "lastName", "fullName", "ssn", "dob", "address", "address2", "city", "state", "zip", "employer", "occupation", "description", "email", "originalCreditor", "typeOfDebt", "originalBalance", "principal", "currentBalance", "openDate", "dateAccountOpened", "accountReceiveDate", "delinquencyDate", "chargeOffDate", "origLastPmtDate", "lastPaymentDate", "lastPaymentAmount", "bankRoutingNumber", "bankAccountNumber", "origEmployer", "origStoreName", "origStoreCity", "origStoreState", "origBankName", "origBankAcctLast4Digits", "origPrincipalBalance", "origOriginalLoanAmount", "origChargeOffBalance", "origLoanType", "origPrincipalLoanAmount", "origInterestAmount", "origReturnFee", "phone1", "phone1Type", "phone1LineType", "phone1Source", "phone1Note", "phone1Status", "phone2", "phone2Type", "phone2LineType", "phone2Source", "phone2Note", "phone2Status", "phone3", "phone3Type", "phone3LineType", "phone3Source", "phone3Note", "phone3Status", "phone4", "phone4Type", "phone4LineType", "phone4Source", "phone4Note", "phone4Status", "phone5", "phone5Type", "phone5LineType", "phone5Source", "phone5Note", "phone5Status", "phone6", "phone6Type", "phone6LineType", "phone6Source", "phone6Note", "phone6Status", "phone7", "phone7Type", "phone7LineType", "phone7Source", "phone7Note", "phone7Status", "phone8", "phone8Type", "phone8LineType", "phone8Source", "phone8Note", "phone8Status", "phone9", "phone9Type", "phone9LineType", "phone9Source", "phone9Note", "phone9Status", "phone10", "phone10Type", "phone10LineType", "phone10Source", "phone10Note", "phone10Status", "rawData", "status", "assignedToEmail", "assignedByEmail", "assignmentMethod"];
@@ -2061,7 +2062,32 @@ function showConnectionNotice(){
 function saveConnection(){alert('Connection setup is already handled in config.js.')}
 function fillConnection(){showConnectionNotice()}
 async function authFetch(path,body){if(!connectionIsReady())throw new Error('System connection is not configured. Admin must update config.js with the Supabase Project URL and Publishable Key.');let res=await fetch(url()+path,{method:'POST',headers:{apikey:pubKey(),'Content-Type':'application/json'},body:JSON.stringify(body)});let data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.msg||data.message||data.error_description||data.error||'Auth failed');return data}
-async function dbFetch(path,opt={}){if(!token())throw new Error('Not logged in.');let res=await fetch(url()+'/rest/v1'+path,{...opt,headers:{apikey:pubKey(),Authorization:'Bearer '+token(),'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});let text=await res.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}if(!res.ok)throw new Error(data?.message||data?.hint||data||'Database failed');return data}
+async function dbFetch(path,opt={}){
+ await ensureFreshToken();
+ async function run(){
+   let res=await fetch(url()+'/rest/v1'+path,{...opt,headers:{apikey:pubKey(),Authorization:'Bearer '+token(),'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});
+   let text=await res.text();
+   let data=null;
+   try{data=text?JSON.parse(text):null}catch{data=text}
+   return {res,data,text};
+ }
+ let first=await run();
+ if(first.res.ok)return first.data;
+ let msg=first.data?.message||first.data?.hint||first.data||first.text||'Database failed';
+ if(first.res.status===401 || /jwt|expired|invalid token|invalid claims/i.test(String(msg))){
+   try{
+     await refreshSession();
+     let second=await run();
+     if(second.res.ok)return second.data;
+     let msg2=second.data?.message||second.data?.hint||second.data||second.text||'Database failed';
+     throw new Error(msg2);
+   }catch(e){
+     clearSession();
+     throw new Error('Your login session expired. Please log in again.');
+   }
+ }
+ throw new Error(msg);
+}
 
 function applyRoleUI(){
   const badge=document.getElementById('roleBadge');
@@ -2075,6 +2101,18 @@ function applyRoleUI(){
 async function login(){try{clearLoginError();let email=val('loginEmail').trim().toLowerCase(),password=val('loginPassword');if(!email||!password)throw new Error('Enter email and password.');let data=await authFetch('/auth/v1/token?grant_type=password',{email,password});storeSession(data);await boot()}catch(e){showLoginError(e.message||String(e))}}
 
 window.applyRoleUI = window.applyRoleUI || applyRoleUI;
+
+document.addEventListener('visibilitychange', async ()=>{
+  if(document.visibilityState==='visible' && token()){
+    try{await ensureFreshToken()}catch(e){}
+  }
+});
+window.addEventListener('focus', async ()=>{
+  if(token()){
+    try{await ensureFreshToken()}catch(e){}
+  }
+});
+
 
 async function signup(){
  try{
@@ -2102,16 +2140,84 @@ async function signup(){
  }catch(e){showLoginError(e.message)}
 }
 
-function storeSession(data){localStorage.setItem(TOKEN_KEY,data.access_token||'');localStorage.setItem(REFRESH_KEY,data.refresh_token||'')}
-function logout(){localStorage.removeItem(TOKEN_KEY);localStorage.removeItem(REFRESH_KEY);location.reload()}
+function storeSession(data){
+ localStorage.setItem(TOKEN_KEY,data.access_token||'');
+ localStorage.setItem(REFRESH_KEY,data.refresh_token||localStorage.getItem(REFRESH_KEY)||'');
+ if(data.expires_at){
+   localStorage.setItem(EXP_KEY,String(data.expires_at));
+ }else if(data.expires_in){
+   localStorage.setItem(EXP_KEY,String(Math.floor(Date.now()/1000)+Number(data.expires_in)));
+ }
+}
+function clearSession(){
+ localStorage.removeItem(TOKEN_KEY);
+ localStorage.removeItem(REFRESH_KEY);
+ localStorage.removeItem(EXP_KEY);
+}
+function logout(){
+ clearSession();
+ location.reload();
+}
+function jwtPayload(tok){
+ try{
+   let part=String(tok||'').split('.')[1]||'';
+   part=part.replace(/-/g,'+').replace(/_/g,'/');
+   part += '='.repeat((4-part.length%4)%4);
+   return JSON.parse(atob(part));
+ }catch(e){return null}
+}
+function tokenIsExpiredSoon(){
+ let payload=jwtPayload(token());
+ let exp=payload?.exp || parseInt(localStorage.getItem(EXP_KEY)||'0',10);
+ if(!exp)return false;
+ return Math.floor(Date.now()/1000) >= (Number(exp)-60);
+}
+async function refreshSession(){
+ if(!connectionIsReady())throw new Error('System connection is not configured.');
+ let refreshToken=localStorage.getItem(REFRESH_KEY)||'';
+ if(!refreshToken)throw new Error('No refresh token.');
+ let res=await fetch(url()+'/auth/v1/token?grant_type=refresh_token',{
+   method:'POST',
+   headers:{apikey:pubKey(),'Content-Type':'application/json'},
+   body:JSON.stringify({refresh_token:refreshToken})
+ });
+ let data=await res.json().catch(()=>({}));
+ if(!res.ok){
+   clearSession();
+   throw new Error(data.msg||data.message||data.error_description||data.error||'Session expired.');
+ }
+ storeSession(data);
+ return data;
+}
+async function ensureFreshToken(){
+ if(!token())throw new Error('Not logged in.');
+ if(tokenIsExpiredSoon()){
+   await refreshSession();
+ }
+}
 function showLoginError(msg){let el=document.getElementById('loginError');if(!el)return alert(msg);el.textContent=msg;el.classList.remove('hidden')}
 function clearLoginError(){let el=document.getElementById('loginError');if(el){el.textContent='';el.classList.add('hidden')}}
 
 async function getUser(){
- let res=await fetch(url()+'/auth/v1/user',{headers:{apikey:pubKey(),Authorization:'Bearer '+token()}});
- let data=await res.json().catch(()=>({}));
- if(!res.ok)throw new Error(data.msg||data.message||'Login expired. Log in again.');
- return data;
+ await ensureFreshToken();
+ async function run(){
+   let res=await fetch(url()+'/auth/v1/user',{headers:{apikey:pubKey(),Authorization:'Bearer '+token()}});
+   let data=await res.json().catch(()=>({}));
+   return {res,data};
+ }
+ let first=await run();
+ if(first.res.ok)return first.data;
+ let msg=first.data.msg||first.data.message||'Login expired. Log in again.';
+ if(first.res.status===401 || /jwt|expired|invalid token|invalid claims/i.test(String(msg))){
+   try{
+     await refreshSession();
+     let second=await run();
+     if(second.res.ok)return second.data;
+   }catch(e){}
+   clearSession();
+   throw new Error('Your login session expired. Please log in again.');
+ }
+ throw new Error(msg);
 }
 
 async function upsertCurrentUser(){
@@ -2179,7 +2285,12 @@ async function boot(){
    applyRoleUI();
    await loadAccounts();
  }catch(e){
-   showLoginError(e.message);
+   let msg=e.message||String(e);
+   if(/expired|jwt|token|session/i.test(msg)){
+     clearSession();
+     msg='Your login session expired. Please log in again.';
+   }
+   showLoginError(msg);
    document.getElementById('pendingScreen').classList.remove('open');
    document.getElementById('loginScreen').classList.add('open');
  }
