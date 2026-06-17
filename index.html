@@ -1563,30 +1563,148 @@ main.center > *,
 }
 
 
-/* CONTACT RULES + CALL LIMITS */
-.contactRulesPanel{padding:16px;border:1px solid #dbe3ef}
-.contactRulesSummary{border-radius:12px;padding:10px 12px;font-size:13px;font-weight:900;margin-bottom:10px}
-.contactRulesSummary.clear{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
-.contactRulesSummary.warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
-.contactRulesSummary.block{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
-.contactRuleGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.contactRuleCard{border:1px solid #e2e8f0;background:#f8fafc;border-radius:12px;padding:10px;min-width:0}
-.contactRuleLabel{font-size:10px;color:#64748b;font-weight:1000;text-transform:uppercase;margin-bottom:4px}
-.contactRuleVal{font-size:13px;color:#0f172a;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.contactPill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:1000}
-.contactPill.clear{background:#dcfce7;color:#166534}
-.contactPill.warn{background:#fef3c7;color:#92400e}
-.contactPill.block{background:#fee2e2;color:#991b1b}
-.phoneChip.phoneBlocked{background:#fff1f2;border-color:#fecaca;color:#991b1b}
-.phoneChip.phoneWarn{background:#fffbeb;border-color:#fde68a}
-.contactRulesPreview{margin-top:12px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;padding:10px;font-size:12px;font-weight:800;color:#334155;white-space:pre-line}
-@media(max-width:1350px){.contactRuleGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:850px){.contactRuleGrid{grid-template-columns:1fr}}
+/* SIMPLE TODAY DASHBOARD */
+.todayBtn{
+  background:#0ea5e9!important;
+  border-color:#0284c7!important;
+  color:#fff!important;
+}
+.todayDashboardBox{
+  max-width:1120px!important;
+}
+.todayHero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px;
+  border:1px solid #bfdbfe;
+  background:linear-gradient(135deg,#eff6ff,#f8fafc);
+  border-radius:16px;
+  margin-bottom:12px;
+}
+.todayHeroTitle{
+  font-size:18px;
+  font-weight:1000;
+  color:#0f172a;
+}
+.todayHeroSub{
+  margin-top:3px;
+  font-size:12px;
+  color:#475569;
+  font-weight:750;
+}
+.todayStats{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+  margin-bottom:12px;
+}
+.todayStat{
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  border-radius:14px;
+  padding:10px;
+  min-width:0;
+}
+.todayStatLabel{
+  font-size:10px;
+  color:#64748b;
+  font-weight:1000;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+}
+.todayStatValue{
+  margin-top:4px;
+  font-size:20px;
+  font-weight:1000;
+  color:#0f172a;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.todayStat.red{background:#fef2f2;border-color:#fecaca}
+.todayStat.red .todayStatValue{color:#b91c1c}
+.todayStat.orange{background:#fffbeb;border-color:#fde68a}
+.todayStat.orange .todayStatValue{color:#92400e}
+.todayStat.blue{background:#eff6ff;border-color:#bfdbfe}
+.todayStat.blue .todayStatValue{color:#1d4ed8}
+.todayStat.green{background:#f0fdf4;border-color:#bbf7d0}
+.todayStat.green .todayStatValue{color:#15803d}
+.todayStat.purple{background:#faf5ff;border-color:#e9d5ff}
+.todayStat.purple .todayStatValue{color:#7e22ce}
+.todayToolbar{
+  align-items:center;
+}
+.todayFilter{
+  border:1px solid #dbe3ef;
+  border-radius:10px;
+  padding:8px 10px;
+  font-weight:850;
+}
+.todayList{
+  display:grid;
+  gap:10px;
+  max-height:62vh;
+  overflow:auto;
+  padding-right:4px;
+}
+.todayWorkCard{
+  border:1px solid #e2e8f0;
+  border-radius:16px;
+  padding:12px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(15,23,42,.04);
+}
+.todayWorkTop{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:flex-start;
+}
+.todayWorkTitle{
+  font-weight:1000;
+  font-size:14px;
+  color:#0f172a;
+}
+.todayWorkMeta{
+  margin-top:5px;
+  font-size:12px;
+  line-height:1.45;
+  color:#475569;
+  font-weight:760;
+}
+.todayWorkActions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.todayBadge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:10.5px;
+  font-weight:1000;
+  white-space:nowrap;
+}
+.todayBadge.red{background:#fee2e2;color:#b91c1c}
+.todayBadge.orange{background:#fef3c7;color:#92400e}
+.todayBadge.blue{background:#dbeafe;color:#1d4ed8}
+.todayBadge.green{background:#dcfce7;color:#166534}
+.todayBadge.purple{background:#f3e8ff;color:#7e22ce}
+.todayBadge.gray{background:#f1f5f9;color:#334155}
+@media(max-width:1200px){
+  .todayStats{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:750px){
+  .todayStats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .todayHero{align-items:flex-start;flex-direction:column}
+}
 
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -1627,14 +1745,14 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">CONTACT RULES + CALL LIMITS READY — blocks DNC/cease/attorney flags and warns on call frequency.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">TODAY DASHBOARD READY — promises, callbacks, overdue payments, and broken promises in one simple view.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
+      <button class="gray todayBtn" onclick="openTodayDashboard()">Today</button>
       <button class="gray" onclick="openPaymentsDashboard()">Pay</button>
       <button class="gray" onclick="runBrokenPromiseAutomation(true)">Broken</button>
       <button class="gray" onclick="openDailyWorkQueue()">Queue</button>
-      <button class="gray" onclick="openContactRulesModal()">Rules</button>
       <button class="gray" onclick="openPromiseDashboard()">Promises</button>
       <button class="gray adminOnly hidden" onclick="openAuditLog()">Audit</button>
       <button class="gray adminOnly hidden" onclick="openPermissionsModal()">Perms</button>
@@ -1723,15 +1841,6 @@ main.center > *,
 
       <section class="panel phonePanel"><div class="panelTitle"><h3>Phone Numbers</h3><button class="outline" onclick="renderPhones(getCurrent())">Refresh Numbers</button></div><div class="phoneGrid" id="phoneGrid"></div></section>
 
-      <section class="panel contactRulesPanel" id="contactRulesPanel">
-        <div class="panelTitle">
-          <h3>Contact Rules / Call Safety</h3>
-          <button class="outline" onclick="openContactRulesModal()">Edit Rules</button>
-        </div>
-        <div id="contactRulesSummary" class="contactRulesSummary">Checking contact rules...</div>
-        <div class="contactRuleGrid" id="contactRuleGrid"></div>
-      </section>
-
       <section class="panel dispoPanel"><div class="panelTitle"><h3>Disposition / Status</h3><span class="muted" id="selectedDisposition">Select one</span></div><div class="dispoGrid" id="dispoGrid"></div></section>
 
       <section class="panel notePanel"><div class="panelTitle"><h3>Agent Notes</h3><button class="outline" onclick="saveCurrent()">Save Note</button></div><textarea id="agentNote" placeholder="Type call notes, promise to pay details, dispute reason, callback time, wrong number info..."></textarea><div class="counter" id="noteCounter">0 / 2000</div></section>
@@ -1751,7 +1860,6 @@ main.center > *,
         <div class="qaItem" onclick="openPaymentLedger()"><span class="qaLeft"><span class="qaIcon">💵</span>Record Payment / Ledger</span><span>›</span></div>
         <div class="qaItem" onclick="openDocumentGenerator()"><span class="qaLeft"><span class="qaIcon">🧾</span>Create Debtor Letter / PDF</span><span>›</span></div>
         <div class="qaItem" onclick="openFollowUpModal('Callback')"><span class="qaLeft"><span class="qaIcon">📅</span>Schedule Callback / Follow-Up</span><span>›</span></div>
-        <div class="qaItem" onclick="openContactRulesModal()"><span class="qaLeft"><span class="qaIcon">🛑</span>Contact Rules / Call Limits</span><span>›</span></div>
         <div class="qaItem" onclick="openCallResultModal()"><span class="qaLeft"><span class="qaIcon">☎</span>Log Call Result</span><span>›</span></div>
         <div class="qaItem" onclick="openDisputeModal()"><span class="qaLeft"><span class="qaIcon">⚠</span>Dispute Tracker</span><span>›</span></div>
         <div class="qaItem" onclick="openSettlementModal()"><span class="qaLeft"><span class="qaIcon">%</span>Settlement Offer</span><span>›</span></div>
@@ -2109,6 +2217,47 @@ main.center > *,
   </div><div style="text-align:right;margin-top:12px"><button class="green" onclick="saveFollowUp()">Save Follow-Up</button></div></div>
 </div></div>
 
+
+<div id="todayDashboardModal" class="modal"><div class="modalbox powerBox todayDashboardBox">
+  <div class="modalhead">
+    <h2>Today Dashboard</h2>
+    <button class="gray" onclick="closeModal('todayDashboardModal')">Close</button>
+  </div>
+  <div class="modalbody">
+    <div class="todayHero">
+      <div>
+        <div class="todayHeroTitle">Collector Work Today</div>
+        <div class="todayHeroSub">Promises, callbacks, payment due dates, overdue items, and broken promises in one simple list.</div>
+      </div>
+      <button class="outline" onclick="loadTodayDashboard()">Refresh</button>
+    </div>
+
+    <div class="todayStats">
+      <div class="todayStat red"><div class="todayStatLabel">Overdue</div><div class="todayStatValue" id="todayOverdue">0</div></div>
+      <div class="todayStat orange"><div class="todayStatLabel">Due Today</div><div class="todayStatValue" id="todayDueToday">0</div></div>
+      <div class="todayStat blue"><div class="todayStatLabel">Callbacks</div><div class="todayStatValue" id="todayCallbacks">0</div></div>
+      <div class="todayStat green"><div class="todayStatLabel">Payment Due</div><div class="todayStatValue" id="todayPaymentDue">$0.00</div></div>
+      <div class="todayStat purple"><div class="todayStatLabel">Broken Promises</div><div class="todayStatValue" id="todayBroken">0</div></div>
+      <div class="todayStat"><div class="todayStatLabel">Paid Today</div><div class="todayStatValue" id="todayPaid">$0.00</div></div>
+    </div>
+
+    <div class="powerToolbar todayToolbar">
+      <div class="powerTabs">
+        <button class="powerTab active" id="todayTabAll" onclick="renderTodayDashboard('all')">All Work</button>
+        <button class="powerTab" id="todayTabCallbacks" onclick="renderTodayDashboard('callbacks')">Callbacks</button>
+        <button class="powerTab" id="todayTabPayments" onclick="renderTodayDashboard('payments')">Payments Due</button>
+        <button class="powerTab" id="todayTabBroken" onclick="renderTodayDashboard('broken')">Broken</button>
+        <button class="powerTab" id="todayTabUpcoming" onclick="renderTodayDashboard('upcoming')">Upcoming</button>
+      </div>
+      <select id="todayEmployeeFilter" class="todayFilter adminOnly" onchange="renderTodayDashboard(todayActiveTab)">
+        <option value="">All Employees</option>
+      </select>
+    </div>
+
+    <div id="todayDashboardList" class="todayList"></div>
+  </div>
+</div></div>
+
 <div id="dailyWorkQueueModal" class="modal"><div class="modalbox powerBox">
   <div class="modalhead"><h2>Daily Work Queue</h2><button class="gray" onclick="closeModal('dailyWorkQueueModal')">Close</button></div>
   <div class="modalbody">
@@ -2126,27 +2275,6 @@ main.center > *,
     <div id="promiseDashboardList" class="powerList"></div>
   </div>
 </div></div>
-
-
-<div id="contactRulesModal" class="modal"><div class="modalbox"><div class="modalhead"><h2>Contact Rules / Call Limits</h2><button class="gray" onclick="closeModal('contactRulesModal')">Close</button></div><div class="modalbody">
-  <div class="pdfDocWarning">Use this before calling. These are internal safety controls only. Have your compliance/legal person set the exact rules for your company.</div>
-  <div class="powerGrid">
-    <div><label>Do Not Call</label><select id="crDoNotCall"><option>No</option><option>Yes</option></select></div>
-    <div><label>Cease Contact</label><select id="crCeaseContact"><option>No</option><option>Yes</option></select></div>
-    <div><label>Attorney Represented</label><select id="crAttorneyRepresented"><option>No</option><option>Yes</option></select></div>
-    <div><label>Wrong Number / Bad Number</label><select id="crWrongNumber"><option>No</option><option>Yes</option></select></div>
-
-    <div><label>Preferred Contact Method</label><select id="crPreferredMethod"><option>Phone</option><option>Email</option><option>Mail</option><option>No Phone</option></select></div>
-    <div><label>Best Time To Call</label><input id="crBestTime" placeholder="Example: after 6 PM"></div>
-    <div><label>Timezone</label><input id="crTimezone" placeholder="Example: EST, CST, PST"></div>
-    <div><label>Daily Call Warning Limit</label><input id="crDailyLimit" type="number" min="1" value="3"></div>
-    <div><label>7-Day Call Warning Limit</label><input id="crWeeklyLimit" type="number" min="1" value="7"></div>
-
-    <div class="powerWide"><label>Contact / Restriction Notes</label><textarea id="crNotes" placeholder="Example: Consumer says wrong number. Attorney name/number. Do not call work. Best time to contact."></textarea></div>
-  </div>
-  <div class="contactRulesPreview" id="contactRulesModalPreview"></div>
-  <div style="text-align:right;margin-top:12px"><button class="green" onclick="saveContactRules()">Save Contact Rules</button></div>
-</div></div></div>
 
 <div id="callResultModal" class="modal"><div class="modalbox"><div class="modalhead"><h2>Log Call Result</h2><button class="gray" onclick="closeModal('callResultModal')">Close</button></div><div class="modalbody"><div class="powerGrid"><div><label>Phone Number</label><input id="callResultPhone"></div><div><label>Result</label><select id="callResultStatus"><option>No Answer</option><option>Left Voicemail</option><option>Promise to Pay</option><option>Callback</option><option>Bad Number</option><option>Wrong Number</option><option>Disputed</option><option>Settled</option><option>DNC</option></select></div><div><label>Duration Seconds</label><input id="callDuration" type="number" min="0" value="0"></div><div><label>Callback Date if Needed</label><input id="callCallbackDate" type="date"></div><div class="powerWide"><label>Call Notes</label><textarea id="callResultNotes"></textarea></div></div><div style="text-align:right;margin-top:12px"><button class="green" onclick="saveCallResult()">Save Call Result</button></div></div></div></div>
 
@@ -2326,8 +2454,8 @@ const REFRESH_KEY='coPilotSupabaseRefreshToken';
 const EXP_KEY='coPilotSupabaseTokenExpiresAt';
 let accounts=[], appUsers=[], currentAccountId='', currentDisposition='', currentUser={email:'',isAdmin:false};
 const DISPOS=['No Answer','Left Voicemail','Promise to Pay','Disputed','Bad Number','Callback','Settled','DNC'];
-const FIELDS=["portfolio", "accountDescription", "clientAccountNumber", "accountId", "accountNumber", "issuerName", "firstName", "middleName", "lastName", "fullName", "ssn", "dob", "address", "address2", "city", "state", "zip", "employer", "occupation", "description", "email", "originalCreditor", "typeOfDebt", "originalBalance", "principal", "currentBalance", "openDate", "dateAccountOpened", "accountReceiveDate", "delinquencyDate", "chargeOffDate", "origLastPmtDate", "lastPaymentDate", "lastPaymentAmount", "bankRoutingNumber", "bankAccountNumber", "origEmployer", "origStoreName", "origStoreCity", "origStoreState", "origBankName", "origBankAcctLast4Digits", "origPrincipalBalance", "origOriginalLoanAmount", "origChargeOffBalance", "origLoanType", "origPrincipalLoanAmount", "origInterestAmount", "origReturnFee", "phone1", "phone1Type", "phone1LineType", "phone1Source", "phone1Note", "phone1Status", "phone2", "phone2Type", "phone2LineType", "phone2Source", "phone2Note", "phone2Status", "phone3", "phone3Type", "phone3LineType", "phone3Source", "phone3Note", "phone3Status", "phone4", "phone4Type", "phone4LineType", "phone4Source", "phone4Note", "phone4Status", "phone5", "phone5Type", "phone5LineType", "phone5Source", "phone5Note", "phone5Status", "phone6", "phone6Type", "phone6LineType", "phone6Source", "phone6Note", "phone6Status", "phone7", "phone7Type", "phone7LineType", "phone7Source", "phone7Note", "phone7Status", "phone8", "phone8Type", "phone8LineType", "phone8Source", "phone8Note", "phone8Status", "phone9", "phone9Type", "phone9LineType", "phone9Source", "phone9Note", "phone9Status", "phone10", "phone10Type", "phone10LineType", "phone10Source", "phone10Note", "phone10Status", "doNotCall", "ceaseContact", "attorneyRepresented", "wrongNumber", "preferredContactMethod", "bestTimeToCall", "contactTimezone", "contactNotes", "callLimitDaily", "callLimitWeekly", "rawData", "status", "assignedToEmail", "assignedByEmail", "assignmentMethod"];
-const map={"portfolio": "portfolio", "accountDescription": "account_description", "clientAccountNumber": "client_account_number", "accountId": "source_account_id", "accountNumber": "account_number", "issuerName": "issuer_name", "firstName": "first_name", "middleName": "middle_name", "lastName": "last_name", "fullName": "full_name", "ssn": "ssn", "dob": "dob", "address": "address", "address2": "address2", "city": "city", "state": "state", "zip": "zip", "employer": "employer", "occupation": "occupation", "description": "description", "email": "email", "originalCreditor": "original_creditor", "typeOfDebt": "type_of_debt", "originalBalance": "original_balance", "principal": "principal", "currentBalance": "current_balance", "openDate": "open_date", "dateAccountOpened": "date_account_opened", "accountReceiveDate": "account_receive_date", "delinquencyDate": "delinquency_date", "chargeOffDate": "charge_off_date", "origLastPmtDate": "orig_last_pmt_date", "lastPaymentDate": "last_payment_date", "lastPaymentAmount": "last_payment_amount", "bankRoutingNumber": "bank_routing_number", "bankAccountNumber": "bank_account_number", "origEmployer": "orig_employer", "origStoreName": "orig_store_name", "origStoreCity": "orig_store_city", "origStoreState": "orig_store_state", "origBankName": "orig_bank_name", "origBankAcctLast4Digits": "orig_bank_acct_last4_digits", "origPrincipalBalance": "orig_principal_balance", "origOriginalLoanAmount": "orig_original_loan_amount", "origChargeOffBalance": "orig_chargeoff_balance", "origLoanType": "orig_loan_type", "origPrincipalLoanAmount": "orig_principal_loan_amount", "origInterestAmount": "orig_interest_amount", "origReturnFee": "orig_return_fee", "rawData": "raw_data", "status": "status", "disposition": "disposition", "lastContactNumber": "last_contact_number", "phone1": "phone1", "phone1Type": "phone1_type", "phone1LineType": "phone1_line_type", "phone1Source": "phone1_source", "phone1Note": "phone1_note", "phone1Status": "phone1_status", "phone2": "phone2", "phone2Type": "phone2_type", "phone2LineType": "phone2_line_type", "phone2Source": "phone2_source", "phone2Note": "phone2_note", "phone2Status": "phone2_status", "phone3": "phone3", "phone3Type": "phone3_type", "phone3LineType": "phone3_line_type", "phone3Source": "phone3_source", "phone3Note": "phone3_note", "phone3Status": "phone3_status", "phone4": "phone4", "phone4Type": "phone4_type", "phone4LineType": "phone4_line_type", "phone4Source": "phone4_source", "phone4Note": "phone4_note", "phone4Status": "phone4_status", "phone5": "phone5", "phone5Type": "phone5_type", "phone5LineType": "phone5_line_type", "phone5Source": "phone5_source", "phone5Note": "phone5_note", "phone5Status": "phone5_status", "phone6": "phone6", "phone6Type": "phone6_type", "phone6LineType": "phone6_line_type", "phone6Source": "phone6_source", "phone6Note": "phone6_note", "phone6Status": "phone6_status", "phone7": "phone7", "phone7Type": "phone7_type", "phone7LineType": "phone7_line_type", "phone7Source": "phone7_source", "phone7Note": "phone7_note", "phone7Status": "phone7_status", "phone8": "phone8", "phone8Type": "phone8_type", "phone8LineType": "phone8_line_type", "phone8Source": "phone8_source", "phone8Note": "phone8_note", "phone8Status": "phone8_status", "phone9": "phone9", "phone9Type": "phone9_type", "phone9LineType": "phone9_line_type", "phone9Source": "phone9_source", "phone9Note": "phone9_note", "phone9Status": "phone9_status", "phone10": "phone10", "phone10Type": "phone10_type", "phone10LineType": "phone10_line_type", "phone10Source": "phone10_source", "phone10Note": "phone10_note", "phone10Status": "phone10_status","doNotCall":"do_not_call","ceaseContact":"cease_contact","attorneyRepresented":"attorney_represented","wrongNumber":"wrong_number","preferredContactMethod":"preferred_contact_method","bestTimeToCall":"best_time_to_call","contactTimezone":"contact_timezone","contactNotes":"contact_notes","callLimitDaily":"call_limit_daily","callLimitWeekly":"call_limit_weekly","assignedToEmail":"assigned_to_email","assignedByEmail":"assigned_by_email","assignedAt":"assigned_at","assignmentMethod":"assignment_method","assignmentGroupId":"assignment_group_id"};
+const FIELDS=["portfolio", "accountDescription", "clientAccountNumber", "accountId", "accountNumber", "issuerName", "firstName", "middleName", "lastName", "fullName", "ssn", "dob", "address", "address2", "city", "state", "zip", "employer", "occupation", "description", "email", "originalCreditor", "typeOfDebt", "originalBalance", "principal", "currentBalance", "openDate", "dateAccountOpened", "accountReceiveDate", "delinquencyDate", "chargeOffDate", "origLastPmtDate", "lastPaymentDate", "lastPaymentAmount", "bankRoutingNumber", "bankAccountNumber", "origEmployer", "origStoreName", "origStoreCity", "origStoreState", "origBankName", "origBankAcctLast4Digits", "origPrincipalBalance", "origOriginalLoanAmount", "origChargeOffBalance", "origLoanType", "origPrincipalLoanAmount", "origInterestAmount", "origReturnFee", "phone1", "phone1Type", "phone1LineType", "phone1Source", "phone1Note", "phone1Status", "phone2", "phone2Type", "phone2LineType", "phone2Source", "phone2Note", "phone2Status", "phone3", "phone3Type", "phone3LineType", "phone3Source", "phone3Note", "phone3Status", "phone4", "phone4Type", "phone4LineType", "phone4Source", "phone4Note", "phone4Status", "phone5", "phone5Type", "phone5LineType", "phone5Source", "phone5Note", "phone5Status", "phone6", "phone6Type", "phone6LineType", "phone6Source", "phone6Note", "phone6Status", "phone7", "phone7Type", "phone7LineType", "phone7Source", "phone7Note", "phone7Status", "phone8", "phone8Type", "phone8LineType", "phone8Source", "phone8Note", "phone8Status", "phone9", "phone9Type", "phone9LineType", "phone9Source", "phone9Note", "phone9Status", "phone10", "phone10Type", "phone10LineType", "phone10Source", "phone10Note", "phone10Status", "rawData", "status", "assignedToEmail", "assignedByEmail", "assignmentMethod"];
+const map={"portfolio": "portfolio", "accountDescription": "account_description", "clientAccountNumber": "client_account_number", "accountId": "source_account_id", "accountNumber": "account_number", "issuerName": "issuer_name", "firstName": "first_name", "middleName": "middle_name", "lastName": "last_name", "fullName": "full_name", "ssn": "ssn", "dob": "dob", "address": "address", "address2": "address2", "city": "city", "state": "state", "zip": "zip", "employer": "employer", "occupation": "occupation", "description": "description", "email": "email", "originalCreditor": "original_creditor", "typeOfDebt": "type_of_debt", "originalBalance": "original_balance", "principal": "principal", "currentBalance": "current_balance", "openDate": "open_date", "dateAccountOpened": "date_account_opened", "accountReceiveDate": "account_receive_date", "delinquencyDate": "delinquency_date", "chargeOffDate": "charge_off_date", "origLastPmtDate": "orig_last_pmt_date", "lastPaymentDate": "last_payment_date", "lastPaymentAmount": "last_payment_amount", "bankRoutingNumber": "bank_routing_number", "bankAccountNumber": "bank_account_number", "origEmployer": "orig_employer", "origStoreName": "orig_store_name", "origStoreCity": "orig_store_city", "origStoreState": "orig_store_state", "origBankName": "orig_bank_name", "origBankAcctLast4Digits": "orig_bank_acct_last4_digits", "origPrincipalBalance": "orig_principal_balance", "origOriginalLoanAmount": "orig_original_loan_amount", "origChargeOffBalance": "orig_chargeoff_balance", "origLoanType": "orig_loan_type", "origPrincipalLoanAmount": "orig_principal_loan_amount", "origInterestAmount": "orig_interest_amount", "origReturnFee": "orig_return_fee", "rawData": "raw_data", "status": "status", "disposition": "disposition", "lastContactNumber": "last_contact_number", "phone1": "phone1", "phone1Type": "phone1_type", "phone1LineType": "phone1_line_type", "phone1Source": "phone1_source", "phone1Note": "phone1_note", "phone1Status": "phone1_status", "phone2": "phone2", "phone2Type": "phone2_type", "phone2LineType": "phone2_line_type", "phone2Source": "phone2_source", "phone2Note": "phone2_note", "phone2Status": "phone2_status", "phone3": "phone3", "phone3Type": "phone3_type", "phone3LineType": "phone3_line_type", "phone3Source": "phone3_source", "phone3Note": "phone3_note", "phone3Status": "phone3_status", "phone4": "phone4", "phone4Type": "phone4_type", "phone4LineType": "phone4_line_type", "phone4Source": "phone4_source", "phone4Note": "phone4_note", "phone4Status": "phone4_status", "phone5": "phone5", "phone5Type": "phone5_type", "phone5LineType": "phone5_line_type", "phone5Source": "phone5_source", "phone5Note": "phone5_note", "phone5Status": "phone5_status", "phone6": "phone6", "phone6Type": "phone6_type", "phone6LineType": "phone6_line_type", "phone6Source": "phone6_source", "phone6Note": "phone6_note", "phone6Status": "phone6_status", "phone7": "phone7", "phone7Type": "phone7_type", "phone7LineType": "phone7_line_type", "phone7Source": "phone7_source", "phone7Note": "phone7_note", "phone7Status": "phone7_status", "phone8": "phone8", "phone8Type": "phone8_type", "phone8LineType": "phone8_line_type", "phone8Source": "phone8_source", "phone8Note": "phone8_note", "phone8Status": "phone8_status", "phone9": "phone9", "phone9Type": "phone9_type", "phone9LineType": "phone9_line_type", "phone9Source": "phone9_source", "phone9Note": "phone9_note", "phone9Status": "phone9_status", "phone10": "phone10", "phone10Type": "phone10_type", "phone10LineType": "phone10_line_type", "phone10Source": "phone10_source", "phone10Note": "phone10_note", "phone10Status": "phone10_status","assignedToEmail":"assigned_to_email","assignedByEmail":"assigned_by_email","assignedAt":"assigned_at","assignmentMethod":"assignment_method","assignmentGroupId":"assignment_group_id"};
 const reverse=Object.fromEntries(Object.entries(map).map(([k,v])=>[v,k]));
 function cfg(){return window.CO_PILOT_SUPABASE_CONFIG||{}}
 function url(){return String(cfg().url||localStorage.getItem(URL_KEY)||'').replace(/\/$/,'')}
@@ -2755,7 +2883,7 @@ function displayVal(k,v,a){
  if(typeof v==='object')return '';
  let val=String(v);
  let phone=normPhone(val);
- if(phone.length>=10 && phone.length<=11 && /phone/i.test(k))return `<a href="#" onclick="startCallFromPhone(\'${a.id}\',\'${phone}\');return false">${fmtPhone(phone)}</a>`;
+ if(phone.length>=10 && phone.length<=11 && /phone/i.test(k))return `<a href="tel:${phone}" onclick="recordDial('${a.id}','${phone}')">${fmtPhone(phone)}</a>`;
  return esc(val);
 }
 function mappedEntries(a){
@@ -2932,32 +3060,18 @@ function renderCurrent(a,q){
  renderAllImportedFields(a);
  renderPaymentPlanSummary(a.id);
  renderPhones(a);
- renderContactRulesPanel(a);
- refreshContactMetrics(a).catch(()=>{});
  renderDispos(a);
 }
 function renderPhones(a){
  let ps=phones(a).map(p=>normPhone(p)).filter(p=>p.length>=10);
  let seen=new Set();
  ps=ps.filter(p=>{let key=p.slice(-10); if(seen.has(key))return false; seen.add(key); return true;}).slice(0,6);
- let m=contactMetricsCache[a?.id];
- let warns=contactWarningReasons(a,m).length;
- let blocks=contactBlockReasons(a).length;
- document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>{
-   let cls=blocks?'phoneBlocked':warns?'phoneWarn':'';
-   return `<a class="phoneChip ${cls}" href="#" onclick="startCallFromPhone('${a.id}','${normPhone(p)}');return false"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alternate'}</div></div></a>`;
- }).join('')||'<div class="muted">No phone numbers on this account.</div>'
+ document.getElementById('phoneGrid').innerHTML=ps.map((p,i)=>`<a class="phoneChip" href="tel:${normPhone(p)}" onclick="recordDial('${a.id}','${normPhone(p)}')"><div class="phoneIcon">☎</div><div><div class="phoneNum">${fmtPhone(p)}</div><div class="phoneType">${i===0?'Primary':i===1?'Mobile':'Alternate'}</div></div></a>`).join('')||'<div class="muted">No phone numbers on this account.</div>'
 }
 function renderDispos(a){document.getElementById('selectedDisposition').textContent=currentDisposition||a?.disposition||'Select one';document.getElementById('dispoGrid').innerHTML=DISPOS.map(d=>`<button class="dispo ${d==='Disputed'?'orangeText':['Promise to Pay','Settled'].includes(d)?'greenText':['Bad Number','DNC'].includes(d)?'redText':d==='Callback'?'purpleText':''} ${(currentDisposition||a?.disposition)===d?'selected':''}" onclick="selectDisposition('${d}')">${d}</button>`).join('')}
 async function selectDisposition(d){let cur=getCurrent();if(!cur)return;currentDisposition=d;let old=cur.status,newStatus=d==='Disputed'?'Disputed':d;let updated=(await dbFetch(`/accounts?id=eq.${cur.id}`,{method:'PATCH',body:JSON.stringify({status:newStatus,disposition:d,updated_at:new Date().toISOString()})}))[0];await insertActivity(cur.id,'Status Updated','Disposition set to '+d,'',old,newStatus);await insertAudit('Status Updated','Disposition set to '+d,'account',cur.id);let i=accounts.findIndex(a=>a.id===cur.id);if(i>=0)accounts[i]=toCamel(updated);render();if(d==='Callback')openFollowUpModal('Callback');if(d==='Disputed')openDisputeModal();if(d==='Promise to Pay')openPaymentPlan();}
 async function insertActivity(accountId,type,text,phone='',oldStatus='',newStatus=''){await dbFetch('/activity_logs',{method:'POST',body:JSON.stringify([{account_id:accountId,action_type:type,action_text:text,phone_number:phone,old_status:oldStatus,new_status:newStatus,created_by_email:currentUser.email}])}).catch(()=>{})}
-async function recordDial(id,phone){
- document.getElementById('callNumber').textContent=fmtPhone(phone);
- document.getElementById('lastDialed').textContent='Dialing '+fmtPhone(phone);
- await dbFetch(`/accounts?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({last_contact_number:phone,updated_at:new Date().toISOString()})}).catch(()=>{});
- await insertActivity(id,'Outbound Call','Clicked phone number '+fmtPhone(phone),phone);
- await insertAudit('Outbound Call','Clicked phone '+fmtPhone(phone),'account',id);
-}
+async function recordDial(id,phone){document.getElementById('callNumber').textContent=fmtPhone(phone);document.getElementById('lastDialed').textContent='Dialing '+fmtPhone(phone);await dbFetch(`/accounts?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({last_contact_number:phone,updated_at:new Date().toISOString()})}).catch(()=>{});await insertActivity(id,'Outbound Call','Clicked phone number '+fmtPhone(phone),phone);await insertAudit('Outbound Call','Clicked phone '+fmtPhone(phone),'account',id)}
 async function loadHistory(id){if(!id)return;try{let notes=await dbFetch(`/account_notes?account_id=eq.${id}&select=*&order=created_at.desc&limit=20`),acts=await dbFetch(`/activity_logs?account_id=eq.${id}&select=*&order=created_at.desc&limit=20`);let events=[...acts.map(x=>({date:x.created_at,type:x.action_type,text:x.action_text})),...notes.map(x=>({date:x.created_at,type:'Note',text:x.note}))].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,8);document.getElementById('activityList').innerHTML=events.map(e=>`<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${new Date(e.date).toLocaleString()}</div></div>`).join('')||'<div class="muted">No activity yet.</div>'}catch{}}
 document.getElementById('agentNote').addEventListener('input',()=>{let v=document.getElementById('agentNote').value;document.getElementById('noteCounter').textContent=v.length+' / 2000'})
 
@@ -3473,167 +3587,6 @@ let workQueueData={followups:[],payments:[],plans:[],accounts:[]};
 let promiseData={payments:[],plans:[]};
 
 function accountById(id){return accounts.find(a=>String(a.id)===String(id))}
-
-let contactMetricsCache={};
-
-function yesBool(v){return v===true||v==='true'||v==='Yes'||v==='YES'||v===1||v==='1'}
-function contactLimitDaily(a){let n=Number(a?.callLimitDaily||a?.call_limit_daily||3);return Number.isFinite(n)&&n>0?n:3}
-function contactLimitWeekly(a){let n=Number(a?.callLimitWeekly||a?.call_limit_weekly||7);return Number.isFinite(n)&&n>0?n:7}
-function phoneStatusFor(a,phone){
- let d=normPhone(phone).slice(-10);
- for(let i=1;i<=10;i++){
-   let p=normPhone(a?.['phone'+i]||'').slice(-10);
-   if(p && p===d){
-     return String([a?.['phone'+i+'Status'],a?.['phone'+i+'Note'],a?.['phone'+i+'Type']].filter(Boolean).join(' '));
-   }
- }
- return '';
-}
-function contactBlockReasons(a,phone=''){
- let reasons=[];
- if(!a)return reasons;
- if(yesBool(a.doNotCall)||String(a.disposition||a.status||'').toLowerCase()==='dnc')reasons.push('Do Not Call');
- if(yesBool(a.ceaseContact))reasons.push('Cease Contact');
- if(yesBool(a.attorneyRepresented))reasons.push('Attorney Represented');
- if(yesBool(a.wrongNumber))reasons.push('Wrong Number / Bad Number');
- let ps=phoneStatusFor(a,phone).toLowerCase();
- if(phone && /(dnc|do not call|wrong|bad|disconnected|cease)/i.test(ps))reasons.push('Phone marked restricted');
- if(String(a.preferredContactMethod||'').toLowerCase()==='no phone')reasons.push('Preferred method: No Phone');
- return [...new Set(reasons)];
-}
-function contactWarningReasons(a,metrics=null){
- let warnings=[];
- if(!a)return warnings;
- if(a.bestTimeToCall)warnings.push('Best time: '+a.bestTimeToCall);
- if(a.contactTimezone)warnings.push('Timezone: '+a.contactTimezone);
- let m=metrics||contactMetricsCache[a.id];
- if(m){
-   let daily=contactLimitDaily(a), weekly=contactLimitWeekly(a);
-   if(m.callsToday>=daily)warnings.push(`Daily call warning reached: ${m.callsToday}/${daily}`);
-   if(m.calls7Days>=weekly)warnings.push(`7-day call warning reached: ${m.calls7Days}/${weekly}`);
- }
- if(String(a.status||a.disposition||'').toLowerCase()==='disputed')warnings.push('Account is disputed');
- return warnings;
-}
-function startOfDayISO(){return todayISO()+'T00:00:00Z'}
-function sevenDaysAgoISO(){return addDaysISO(todayISO(),-6)+'T00:00:00Z'}
-async function loadContactMetrics(accountId){
- if(!accountId)return {callsToday:0,calls7Days:0,lastCall:''};
- let rows=[];
- try{
-   rows=(await dbFetch(`/call_results?account_id=eq.${accountId}&select=*&created_at=gte.${sevenDaysAgoISO()}&order=created_at.desc&limit=500`)).map(toCamel);
- }catch(e){rows=[]}
- let today=todayISO();
- let callsToday=rows.filter(r=>String(r.createdAt||r.created_at||'').slice(0,10)===today).length;
- let calls7Days=rows.length;
- let lastCall=rows[0]?.createdAt||rows[0]?.created_at||'';
- contactMetricsCache[accountId]={callsToday,calls7Days,lastCall,rows};
- return contactMetricsCache[accountId];
-}
-async function refreshContactMetrics(a){
- if(!a)return;
- let m=await loadContactMetrics(a.id);
- if(getCurrent()?.id===a.id)renderContactRulesPanel(a,m);
-}
-function renderContactRulesPanel(a,metrics=null){
- let panel=document.getElementById('contactRulesPanel'),summary=document.getElementById('contactRulesSummary'),grid=document.getElementById('contactRuleGrid');
- if(!panel||!summary||!grid)return;
- if(!a){summary.className='contactRulesSummary warn';summary.textContent='No account selected.';grid.innerHTML='';return}
- let m=metrics||contactMetricsCache[a.id];
- let blocks=contactBlockReasons(a);
- let warns=contactWarningReasons(a,m);
- let cls=blocks.length?'block':warns.length?'warn':'clear';
- summary.className='contactRulesSummary '+cls;
- summary.innerHTML=blocks.length
-   ? `<span class="contactPill block">CALL BLOCKED</span> ${esc(blocks.join(' • '))}`
-   : warns.length
-     ? `<span class="contactPill warn">CAUTION</span> ${esc(warns.join(' • '))}`
-     : `<span class="contactPill clear">OK TO CALL</span> No active contact restrictions.`;
- let last=m?.lastCall?String(m.lastCall).slice(0,19).replace('T',' '):'—';
- grid.innerHTML=[
-   ['Calls Today',m?`${m.callsToday}/${contactLimitDaily(a)}`:'checking...'],
-   ['Calls 7 Days',m?`${m.calls7Days}/${contactLimitWeekly(a)}`:'checking...'],
-   ['Last Call',last],
-   ['Best Time',a.bestTimeToCall||'—'],
-   ['Timezone',a.contactTimezone||'—'],
-   ['Preferred Method',a.preferredContactMethod||'Phone'],
-   ['DNC / Cease / Attorney',[yesBool(a.doNotCall)?'DNC':'',yesBool(a.ceaseContact)?'Cease':'',yesBool(a.attorneyRepresented)?'Attorney':''].filter(Boolean).join(', ')||'No'],
-   ['Notes',a.contactNotes||'—']
- ].map(([k,v])=>`<div class="contactRuleCard"><div class="contactRuleLabel">${esc(k)}</div><div class="contactRuleVal" title="${esc(v)}">${esc(v)}</div></div>`).join('');
-}
-function contactRulesModalPreview(a){
- let m=a?contactMetricsCache[a.id]:null;
- let blocks=contactBlockReasons(a||{});
- let warns=contactWarningReasons(a||{},m);
- return `Current account: ${a?nameOf(a):'No account'}\nBlocking flags: ${blocks.length?blocks.join(', '):'None'}\nWarnings: ${warns.length?warns.join(', '):'None'}\nCalls today: ${m?m.callsToday:'checking'}\nCalls last 7 days: ${m?m.calls7Days:'checking'}`;
-}
-async function openContactRulesModal(){
- let a=getCurrent();if(!a)return alert('No account selected.');
- await refreshContactMetrics(a).catch(()=>{});
- document.getElementById('crDoNotCall').value=yesBool(a.doNotCall)?'Yes':'No';
- document.getElementById('crCeaseContact').value=yesBool(a.ceaseContact)?'Yes':'No';
- document.getElementById('crAttorneyRepresented').value=yesBool(a.attorneyRepresented)?'Yes':'No';
- document.getElementById('crWrongNumber').value=yesBool(a.wrongNumber)?'Yes':'No';
- document.getElementById('crPreferredMethod').value=a.preferredContactMethod||'Phone';
- document.getElementById('crBestTime').value=a.bestTimeToCall||'';
- document.getElementById('crTimezone').value=a.contactTimezone||'';
- document.getElementById('crDailyLimit').value=contactLimitDaily(a);
- document.getElementById('crWeeklyLimit').value=contactLimitWeekly(a);
- document.getElementById('crNotes').value=a.contactNotes||'';
- document.getElementById('contactRulesModalPreview').textContent=contactRulesModalPreview(a);
- document.getElementById('contactRulesModal').classList.add('open');
-}
-async function saveContactRules(){
- let a=getCurrent();if(!a)return;
- let patch={
-   do_not_call:val('crDoNotCall')==='Yes',
-   cease_contact:val('crCeaseContact')==='Yes',
-   attorney_represented:val('crAttorneyRepresented')==='Yes',
-   wrong_number:val('crWrongNumber')==='Yes',
-   preferred_contact_method:val('crPreferredMethod')||'Phone',
-   best_time_to_call:val('crBestTime'),
-   contact_timezone:val('crTimezone'),
-   call_limit_daily:Number(val('crDailyLimit')||3),
-   call_limit_weekly:Number(val('crWeeklyLimit')||7),
-   contact_notes:val('crNotes'),
-   updated_at:new Date().toISOString()
- };
- if(patch.do_not_call)patch.disposition='DNC',patch.status='DNC';
- if(patch.wrong_number)patch.disposition='Bad Number',patch.status='Bad Number';
- let updated=(await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify(patch)}))[0];
- let i=accounts.findIndex(x=>x.id===a.id);if(i>=0)accounts[i]=toCamel(updated);
- await insertActivity(a.id,'Contact Rules Updated','Contact rules updated. '+[patch.do_not_call?'DNC':'',patch.cease_contact?'Cease Contact':'',patch.attorney_represented?'Attorney Represented':'',patch.wrong_number?'Wrong Number':''].filter(Boolean).join(', '));
- await insertAudit('Contact Rules Updated','Updated contact restrictions for '+nameOf(a),'account',a.id);
- closeModal('contactRulesModal');
- render();
-}
-async function canStartCall(a,phone){
- let m=await loadContactMetrics(a.id).catch(()=>null);
- let blocks=contactBlockReasons(a,phone);
- if(blocks.length){
-   await insertActivity(a.id,'Blocked Call Attempt',`Blocked call to ${fmtPhone(phone)} because: ${blocks.join(', ')}`,phone).catch(()=>{});
-   alert('Call blocked by Contact Rules:\n\n'+blocks.join('\n')+'\n\nOpen Contact Rules to update this account if needed.');
-   renderContactRulesPanel(a,m);
-   return false;
- }
- let warns=contactWarningReasons(a,m);
- if(warns.length){
-   let ok=confirm('Call caution:\n\n'+warns.join('\n')+'\n\nContinue with call?');
-   if(!ok)return false;
- }
- return true;
-}
-async function startCallFromPhone(id,phone){
- let a=accounts.find(x=>String(x.id)===String(id))||getCurrent();
- if(!a||!phone)return false;
- let ok=await canStartCall(a,phone);
- if(!ok)return false;
- await recordDial(a.id,phone);
- window.location.href='tel:'+normPhone(phone);
- return false;
-}
-
-
 function currentAssignee(a){return (a?.assignedToEmail||a?.assigned_to_email||currentUser.email||'').toLowerCase()}
 function ownsAccount(a){return currentUser.isAdmin || currentAssignee(a)===(currentUser.email||'').toLowerCase()}
 function powerDateLabel(d){if(!d)return '—';let x=new Date(String(d)+'T00:00:00');return isNaN(x)?String(d):x.toLocaleDateString()}
@@ -3646,6 +3599,223 @@ function priorityScore(a){let score=0,reasons=[];let bal=accountBalance(a);if(ba
 
 function openFollowUpModal(type='Callback'){let a=getCurrent();if(!a)return alert('No account selected.');document.getElementById('fuType').value=type;document.getElementById('fuDate').value=todayISO();document.getElementById('fuTime').value='09:00';document.getElementById('fuStatus').value='Open';document.getElementById('fuAssigned').value=currentAssignee(a);document.getElementById('fuReason').value=type==='Callback'?'Consumer requested callback':'';document.getElementById('fuNotes').value='';document.getElementById('followUpModal').classList.add('open')}
 async function saveFollowUp(){let a=getCurrent();if(!a)return;let row={account_id:a.id,follow_up_type:val('fuType'),due_date:val('fuDate'),due_time:val('fuTime'),status:val('fuStatus')||'Open',assigned_to_email:val('fuAssigned').toLowerCase()||currentAssignee(a),reason:val('fuReason'),notes:val('fuNotes'),created_by_email:currentUser.email};if(!row.due_date)return alert('Choose a due date.');await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([row])});await insertActivity(a.id,'Follow-Up Scheduled',`${row.follow_up_type} scheduled for ${row.due_date} ${row.due_time||''}. ${row.reason||''}`);await insertAudit('Follow-Up Scheduled',`${row.follow_up_type} for ${nameOf(a)} on ${row.due_date}`,'account',a.id);closeModal('followUpModal');await loadHistory(a.id);alert('Follow-up saved.')}
+
+
+let todayDashboardData={followups:[],payments:[],plans:[]};
+let todayActiveTab='all';
+
+function todayEmployeeOptions(items){
+ let sel=document.getElementById('todayEmployeeFilter');
+ if(!sel||!currentUser.isAdmin)return;
+ let selected=sel.value||'';
+ let emails=new Set();
+ items.followups.forEach(f=>{if(f.assignedToEmail)emails.add(String(f.assignedToEmail).toLowerCase())});
+ items.payments.forEach(p=>{
+   let a=accountById(p.accountId);
+   if(a?.assignedToEmail)emails.add(String(a.assignedToEmail).toLowerCase());
+ });
+ accounts.forEach(a=>{if(a.assignedToEmail)emails.add(String(a.assignedToEmail).toLowerCase())});
+ let opts=['<option value="">All Employees</option>'].concat([...emails].sort().map(e=>`<option value="${esc(e)}">${esc(e)}</option>`));
+ sel.innerHTML=opts.join('');
+ sel.value=selected;
+}
+function todayEmployeeAllowedForFollowUp(f){
+ if(!currentUser.isAdmin)return (f.assignedToEmail||'').toLowerCase()===currentUser.email;
+ let chosen=(document.getElementById('todayEmployeeFilter')?.value||'').toLowerCase();
+ return !chosen || (f.assignedToEmail||'').toLowerCase()===chosen;
+}
+function todayEmployeeAllowedForPayment(p){
+ let a=accountById(p.accountId);
+ if(!currentUser.isAdmin)return !!a;
+ let chosen=(document.getElementById('todayEmployeeFilter')?.value||'').toLowerCase();
+ return !chosen || (a?.assignedToEmail||'').toLowerCase()===chosen;
+}
+function paymentOwed(p){return Math.max(0,moneyNum(p.amountDue)-moneyNum(p.amountPaid))}
+function isUnpaidPayment(p){return !['Paid','Cancelled'].includes(p.status) && paymentOwed(p)>0}
+function todayPaymentIsBroken(p){
+ let status=String(p.status||'').toLowerCase();
+ return status.includes('broken') || (isUnpaidPayment(p) && isPastISO(p.dueDate));
+}
+function todayPaymentIsDue(p){
+ return isUnpaidPayment(p) && String(p.dueDate)<=todayISO();
+}
+function todayPaymentIsUpcoming(p){
+ return isUnpaidPayment(p) && String(p.dueDate)>todayISO();
+}
+function todayFollowUpOpen(f){
+ return !['Completed','Cancelled'].includes(f.status);
+}
+function todayFollowUpDue(f){
+ return todayFollowUpOpen(f) && String(f.dueDate)<=todayISO();
+}
+function todayFollowUpUpcoming(f){
+ return todayFollowUpOpen(f) && String(f.dueDate)>todayISO();
+}
+
+async function openTodayDashboard(){
+ document.getElementById('todayDashboardModal').classList.add('open');
+ await loadTodayDashboard();
+}
+async function loadTodayDashboard(){
+ let fus=[],pays=[],plans=[];
+ try{fus=(await dbFetch('/follow_ups?select=*&order=due_date.asc&limit=10000')).map(toCamel)}catch(e){fus=[]}
+ try{pays=(await dbFetch('/payment_plan_payments?select=*&order=due_date.asc&limit=10000')).map(toCamel)}catch(e){pays=[]}
+ try{plans=(await dbFetch('/payment_plans?select=*&order=created_at.desc&limit=10000')).map(toCamel)}catch(e){plans=[]}
+
+ if(!currentUser.isAdmin){
+   fus=fus.filter(todayEmployeeAllowedForFollowUp);
+   let allowedIds=new Set(accounts.map(a=>String(a.id)));
+   pays=pays.filter(p=>allowedIds.has(String(p.accountId)));
+   plans=plans.filter(p=>allowedIds.has(String(p.accountId)));
+ }
+ todayDashboardData={followups:fus,payments:pays,plans};
+
+ // Keep existing promise/work dashboards compatible with the same data.
+ workQueueData={followups:fus,payments:pays,plans,accounts};
+ promiseData={payments:pays,plans};
+
+ todayEmployeeOptions(todayDashboardData);
+ renderTodayDashboard(todayActiveTab||'all');
+}
+function todayAllWorkItems(){
+ let items=[];
+ todayDashboardData.followups.filter(todayEmployeeAllowedForFollowUp).forEach(f=>{
+   if(todayFollowUpDue(f)){
+     let overdue=isPastISO(f.dueDate);
+     items.push({kind:'followup',due:f.dueDate,priority:overdue?1:2,row:f});
+   }
+ });
+ todayDashboardData.payments.filter(todayEmployeeAllowedForPayment).forEach(p=>{
+   if(todayPaymentIsBroken(p)){
+     items.push({kind:'broken',due:p.dueDate,priority:0,row:p});
+   }else if(todayPaymentIsDue(p)){
+     items.push({kind:'payment',due:p.dueDate,priority:isPastISO(p.dueDate)?1:2,row:p});
+   }
+ });
+ return items.sort((a,b)=>a.priority-b.priority||String(a.due).localeCompare(String(b.due)));
+}
+function renderTodayStats(){
+ let fus=todayDashboardData.followups.filter(todayEmployeeAllowedForFollowUp);
+ let pays=todayDashboardData.payments.filter(todayEmployeeAllowedForPayment);
+ let overdueFollowups=fus.filter(f=>todayFollowUpOpen(f)&&isPastISO(f.dueDate)).length;
+ let overduePayments=pays.filter(p=>isUnpaidPayment(p)&&isPastISO(p.dueDate)).length;
+ let dueFollowups=fus.filter(f=>todayFollowUpOpen(f)&&isTodayISO(f.dueDate)).length;
+ let duePayments=pays.filter(p=>isUnpaidPayment(p)&&isTodayISO(p.dueDate)).length;
+ let callbacks=fus.filter(f=>todayFollowUpDue(f)&&String(f.followUpType||'').toLowerCase().includes('callback')).length;
+ let paymentDue=pays.filter(todayPaymentIsDue).reduce((s,p)=>s+paymentOwed(p),0);
+ let broken=pays.filter(todayPaymentIsBroken).length;
+ let paidToday=pays.filter(p=>String(p.paidDate||p.paid_date||'').slice(0,10)===todayISO()||String(p.status||'')==='Paid'&&String(p.updatedAt||p.updated_at||'').slice(0,10)===todayISO()).reduce((s,p)=>s+moneyNum(p.amountPaid||p.amount_paid||p.amountDue||p.amount_due),0);
+
+ document.getElementById('todayOverdue').textContent=overdueFollowups+overduePayments;
+ document.getElementById('todayDueToday').textContent=dueFollowups+duePayments;
+ document.getElementById('todayCallbacks').textContent=callbacks;
+ document.getElementById('todayPaymentDue').textContent=money(paymentDue);
+ document.getElementById('todayBroken').textContent=broken;
+ document.getElementById('todayPaid').textContent=money(paidToday);
+}
+function setTodayActiveTab(tab){
+ todayActiveTab=tab;
+ ['All','Callbacks','Payments','Broken','Upcoming'].forEach(t=>{
+   document.getElementById('todayTab'+t)?.classList.toggle('active',tab.toLowerCase()===t.toLowerCase());
+ });
+}
+function renderTodayDashboard(tab='all'){
+ todayActiveTab=tab;
+ setTodayActiveTab(tab);
+ renderTodayStats();
+ let box=document.getElementById('todayDashboardList');
+ if(!box)return;
+
+ if(tab==='callbacks'){
+   let list=todayDashboardData.followups.filter(todayEmployeeAllowedForFollowUp).filter(f=>todayFollowUpDue(f)&&String(f.followUpType||'').toLowerCase().includes('callback')).sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+   box.innerHTML=list.map(f=>todayFollowUpCard(f)).join('')||'<div class="powerEmpty">No callbacks due today.</div>';
+   return;
+ }
+ if(tab==='payments'){
+   let list=todayDashboardData.payments.filter(todayEmployeeAllowedForPayment).filter(todayPaymentIsDue).sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+   box.innerHTML=list.map(p=>todayPaymentCard(p)).join('')||'<div class="powerEmpty">No payments due today.</div>';
+   return;
+ }
+ if(tab==='broken'){
+   let list=todayDashboardData.payments.filter(todayEmployeeAllowedForPayment).filter(todayPaymentIsBroken).sort((a,b)=>String(a.dueDate).localeCompare(String(b.dueDate)));
+   box.innerHTML=list.map(p=>todayPaymentCard(p,true)).join('')||'<div class="powerEmpty">No broken promises right now.</div>';
+   return;
+ }
+ if(tab==='upcoming'){
+   let payItems=todayDashboardData.payments.filter(todayEmployeeAllowedForPayment).filter(todayPaymentIsUpcoming).map(p=>({kind:'payment',due:p.dueDate,row:p}));
+   let fuItems=todayDashboardData.followups.filter(todayEmployeeAllowedForFollowUp).filter(todayFollowUpUpcoming).map(f=>({kind:'followup',due:f.dueDate,row:f}));
+   let list=[...payItems,...fuItems].sort((a,b)=>String(a.due).localeCompare(String(b.due))).slice(0,50);
+   box.innerHTML=list.map(x=>x.kind==='payment'?todayPaymentCard(x.row):todayFollowUpCard(x.row)).join('')||'<div class="powerEmpty">No upcoming work found.</div>';
+   return;
+ }
+
+ let list=todayAllWorkItems();
+ box.innerHTML=list.map(x=>x.kind==='followup'?todayFollowUpCard(x.row):todayPaymentCard(x.row,x.kind==='broken')).join('')||'<div class="powerEmpty">Nothing due right now.</div>';
+}
+function todayFollowUpCard(f){
+ let a=accountById(f.accountId);
+ let overdue=isPastISO(f.dueDate);
+ let type=f.followUpType||'Follow-Up';
+ let badge=overdue?'<span class="todayBadge red">OVERDUE</span>':isTodayISO(f.dueDate)?'<span class="todayBadge orange">DUE TODAY</span>':'<span class="todayBadge blue">UPCOMING</span>';
+ return `<div class="todayWorkCard">
+   <div class="todayWorkTop">
+     <div>
+       <div class="todayWorkTitle">${esc(type)} — ${esc(a?nameOf(a):'Unknown Account')}</div>
+       <div class="todayWorkMeta">
+         Due: ${powerDateLabel(f.dueDate)} ${esc(f.dueTime||'')}<br>
+         Account: ${esc(a?acctNo(a):'—')} • Balance: ${a?money(accountBalance(a)):'—'} • Assigned: ${esc(f.assignedToEmail||a?.assignedToEmail||'—')}<br>
+         Reason: ${esc(f.reason||'—')} ${f.notes?'<br>Notes: '+esc(f.notes):''}
+       </div>
+     </div>
+     ${badge}
+   </div>
+   <div class="todayWorkActions">
+     <button class="outline" onclick="setAccountFromModal('${f.accountId}','todayDashboardModal')">Open Account</button>
+     <button class="green" onclick="todayCompleteFollowUp('${f.id}')">Mark Complete</button>
+   </div>
+ </div>`;
+}
+function todayPaymentCard(p,forceBroken=false){
+ let a=accountById(p.accountId);
+ let owed=paymentOwed(p);
+ let broken=forceBroken||todayPaymentIsBroken(p);
+ let badge=broken?'<span class="todayBadge red">BROKEN</span>':isTodayISO(p.dueDate)?'<span class="todayBadge orange">DUE TODAY</span>':isPastISO(p.dueDate)?'<span class="todayBadge red">OVERDUE</span>':'<span class="todayBadge green">UPCOMING</span>';
+ return `<div class="todayWorkCard">
+   <div class="todayWorkTop">
+     <div>
+       <div class="todayWorkTitle">Payment Due — ${esc(a?nameOf(a):'Unknown Account')} — ${money(owed)}</div>
+       <div class="todayWorkMeta">
+         Due date: ${powerDateLabel(p.dueDate)} • Status: ${esc(p.status||'Scheduled')}<br>
+         Account: ${esc(a?acctNo(a):'—')} • Account Balance: ${a?money(accountBalance(a)):'—'} • Assigned: ${esc(a?.assignedToEmail||'—')}<br>
+         Amount Due: ${money(moneyNum(p.amountDue))} • Paid: ${money(moneyNum(p.amountPaid))}
+       </div>
+     </div>
+     ${badge}
+   </div>
+   <div class="todayWorkActions">
+     <button class="outline" onclick="setAccountFromModal('${a?.id||p.accountId}','todayDashboardModal')">Open Account</button>
+     <button class="green" onclick="todayMarkPaid('${p.id}')">Mark Paid</button>
+     ${broken?`<button class="outline" onclick="todayCreateBrokenFollowUp('${p.id}')">Create Follow-Up</button>`:''}
+   </div>
+ </div>`;
+}
+async function todayCompleteFollowUp(id){
+ await completeFollowUp(id);
+ await loadTodayDashboard();
+}
+async function todayMarkPaid(paymentId){
+ await markPromisePaid(paymentId);
+ await loadTodayDashboard();
+}
+async function todayCreateBrokenFollowUp(paymentId){
+ let p=todayDashboardData.payments.find(x=>String(x.id)===String(paymentId));
+ let a=accountById(p?.accountId);
+ if(!p||!a)return alert('Payment/account not found.');
+ await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([{account_id:a.id,follow_up_type:'Broken Promise Follow-Up',due_date:todayISO(),status:'Open',assigned_to_email:(a.assignedToEmail||currentUser.email||''),reason:'Missed payment promise',notes:'Created from Today Dashboard.',created_by_email:currentUser.email}])});
+ await insertActivity(a.id,'Broken Promise Follow-Up','Follow-up created from Today Dashboard.');
+ await insertAudit('Broken Promise Follow-Up','Created follow-up from Today Dashboard','account',a.id);
+ await loadTodayDashboard();
+}
 
 async function openDailyWorkQueue(){document.getElementById('dailyWorkQueueModal').classList.add('open');await loadDailyWorkQueue()}
 async function loadDailyWorkQueue(){let fus=[],pays=[],plans=[];try{fus=(await dbFetch('/follow_ups?select=*&order=due_date.asc&limit=5000')).map(toCamel)}catch(e){fus=[]}try{pays=(await dbFetch('/payment_plan_payments?select=*&order=due_date.asc&limit=5000')).map(toCamel)}catch(e){pays=[]}try{plans=(await dbFetch('/payment_plans?select=*&order=created_at.desc&limit=5000')).map(toCamel)}catch(e){plans=[]}if(!currentUser.isAdmin){fus=fus.filter(f=>(f.assignedToEmail||'').toLowerCase()===currentUser.email);let allowedIds=new Set(accounts.map(a=>String(a.id)));pays=pays.filter(p=>allowedIds.has(String(p.accountId)));plans=plans.filter(p=>allowedIds.has(String(p.accountId)))}workQueueData={followups:fus,payments:pays,plans,accounts};renderDailyWorkQueue('due')}
@@ -3676,26 +3846,7 @@ async function markPromisePaid(paymentId){
 function renderPromiseDashboard(tab='due'){['Due','Overdue','Upcoming','All'].forEach(t=>document.getElementById('promTab'+t)?.classList.toggle('active',tab.toLowerCase()===t.toLowerCase()));let pays=promiseData.payments.filter(unpaidPayment);let dueToday=pays.filter(p=>isTodayISO(p.dueDate));let overdue=pays.filter(p=>isPastISO(p.dueDate));let upcoming=pays.filter(p=>isFutureISO(p.dueDate));document.getElementById('promiseDueToday').textContent=dueToday.length;document.getElementById('promiseOverdue').textContent=overdue.length;document.getElementById('promiseUpcoming').textContent=upcoming.length;document.getElementById('promiseDueAmount').textContent=money([...dueToday,...overdue].reduce((s,p)=>s+moneyNum(p.amountDue)-moneyNum(p.amountPaid),0));document.getElementById('promisePaidAmount').textContent=money(promiseData.payments.reduce((s,p)=>s+moneyNum(p.amountPaid),0));document.getElementById('promiseBroken').textContent=overdue.length;let list=tab==='due'?dueToday:tab==='overdue'?overdue:tab==='upcoming'?upcoming:promiseData.payments;document.getElementById('promiseDashboardList').innerHTML=list.map(p=>promiseCard(p)).join('')||'<div class="powerEmpty">No promises found for this view.</div>'}
 
 function openCallResultModal(){let a=getCurrent();if(!a)return alert('No account selected.');document.getElementById('callResultPhone').value=a.lastContactNumber||phones(a)[0]||'';document.getElementById('callResultStatus').value='No Answer';document.getElementById('callDuration').value='0';document.getElementById('callCallbackDate').value='';document.getElementById('callResultNotes').value='';document.getElementById('callResultModal').classList.add('open')}
-async function saveCallResult(){
- let a=getCurrent();if(!a)return;
- let result=val('callResultStatus'),phone=normPhone(val('callResultPhone')),duration=Number(val('callDuration')||0),notes=val('callResultNotes');
- await dbFetch('/call_results',{method:'POST',body:JSON.stringify([{account_id:a.id,phone_number:phone,call_result:result,duration_seconds:duration,notes,created_by_email:currentUser.email}])});
- await insertActivity(a.id,'Call Result',`${result} ${phone?fmtPhone(phone):''}. ${notes}`.trim(),phone);
- if(result){
-   let patch={status:result,disposition:result,last_contact_number:phone,updated_at:new Date().toISOString()};
-   if(result==='DNC'){patch.do_not_call=true;patch.contact_notes=[a.contactNotes,`DNC marked ${todayISO()} from call result. ${notes}`].filter(Boolean).join('\n');}
-   if(result==='Wrong Number'||result==='Bad Number'){patch.wrong_number=true;patch.contact_notes=[a.contactNotes,`${result} marked ${todayISO()} from call result. ${phone?fmtPhone(phone):''} ${notes}`].filter(Boolean).join('\n');}
-   let updated=(await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify(patch)}))[0];
-   let i=accounts.findIndex(x=>x.id===a.id);if(i>=0)accounts[i]=toCamel(updated)
- }
- if(result==='Callback'&&val('callCallbackDate')){
-   await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([{account_id:a.id,follow_up_type:'Callback',due_date:val('callCallbackDate'),status:'Open',assigned_to_email:currentAssignee(a),reason:'Callback from call result',notes,created_by_email:currentUser.email}])})
- }
- await insertAudit('Call Result',`${result} for ${nameOf(a)}`,'account',a.id);
- closeModal('callResultModal');
- await refreshContactMetrics(a).catch(()=>{});
- render();
-}
+async function saveCallResult(){let a=getCurrent();if(!a)return;let result=val('callResultStatus'),phone=normPhone(val('callResultPhone')),duration=Number(val('callDuration')||0),notes=val('callResultNotes');await dbFetch('/call_results',{method:'POST',body:JSON.stringify([{account_id:a.id,phone_number:phone,call_result:result,duration_seconds:duration,notes,created_by_email:currentUser.email}])});await insertActivity(a.id,'Call Result',`${result} ${phone?fmtPhone(phone):''}. ${notes}`.trim(),phone);if(result){let updated=(await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify({status:result,disposition:result,last_contact_number:phone,updated_at:new Date().toISOString()})}))[0];let i=accounts.findIndex(x=>x.id===a.id);if(i>=0)accounts[i]=toCamel(updated)}if(result==='Callback'&&val('callCallbackDate')){await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([{account_id:a.id,follow_up_type:'Callback',due_date:val('callCallbackDate'),status:'Open',assigned_to_email:currentAssignee(a),reason:'Callback from call result',notes,created_by_email:currentUser.email}])})}await insertAudit('Call Result',`${result} for ${nameOf(a)}`,'account',a.id);closeModal('callResultModal');render()}
 
 function openDisputeModal(){let a=getCurrent();if(!a)return alert('No account selected.');document.getElementById('disputeReason').value='';document.getElementById('disputeDate').value=todayISO();document.getElementById('disputeStatus').value='Open';document.getElementById('proofRequested').value='No';document.getElementById('accountFrozen').value='Yes';document.getElementById('disputeFollowUp').value='';document.getElementById('docsNeeded').value='';document.getElementById('disputeNotes').value='';document.getElementById('disputeModal').classList.add('open')}
 async function saveDispute(){let a=getCurrent();if(!a)return;let row={account_id:a.id,dispute_reason:val('disputeReason'),received_date:val('disputeDate'),status:val('disputeStatus'),proof_requested:val('proofRequested')==='Yes',account_frozen:val('accountFrozen')==='Yes',follow_up_date:val('disputeFollowUp')||null,docs_needed:val('docsNeeded'),notes:val('disputeNotes'),created_by_email:currentUser.email};if(!row.dispute_reason)return alert('Enter dispute reason.');await dbFetch('/disputes',{method:'POST',body:JSON.stringify([row])});let updated=(await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify({status:'Disputed',disposition:'Disputed',updated_at:new Date().toISOString()})}))[0];let i=accounts.findIndex(x=>x.id===a.id);if(i>=0)accounts[i]=toCamel(updated);await insertActivity(a.id,'Dispute',`${row.dispute_reason}. Status: ${row.status}`);if(row.follow_up_date){await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([{account_id:a.id,follow_up_type:'Dispute Follow-Up',due_date:row.follow_up_date,status:'Open',assigned_to_email:currentAssignee(a),reason:'Dispute follow-up',notes:row.docs_needed,created_by_email:currentUser.email}])})}await insertAudit('Dispute Created',row.dispute_reason,'account',a.id);closeModal('disputeModal');render()}
@@ -5152,7 +5303,7 @@ function openPayoffQuote(){
 /* removed old openAccountDocs; enhanced version is inserted later */
 
 
-async function saveCurrent(){let a=getCurrent();if(!a)return;let note=document.getElementById('agentNote').value.trim();if(note){await dbFetch('/account_notes',{method:'POST',body:JSON.stringify([{account_id:a.id,note,created_by_email:currentUser.email}])});await insertActivity(a.id,'Note',note)}document.getElementById('agentNote').value='';await loadAccounts()}async function saveAndNext(){await saveCurrent();nextAccount()}function nextAccount(){let q=queue(),cur=getCurrent(),idx=q.findIndex(a=>a.id===cur?.id);if(q[idx+1])setCurrent(q[idx+1].id)}function skipAccount(){nextAccount()}function callPrimary(){let a=getCurrent();let p=phones(a)[0];if(p)startCallFromPhone(a.id,normPhone(p))}function endCall(){document.getElementById('lastDialed').textContent='Call ended';document.getElementById('callNumber').textContent='—'}
+async function saveCurrent(){let a=getCurrent();if(!a)return;let note=document.getElementById('agentNote').value.trim();if(note){await dbFetch('/account_notes',{method:'POST',body:JSON.stringify([{account_id:a.id,note,created_by_email:currentUser.email}])});await insertActivity(a.id,'Note',note)}document.getElementById('agentNote').value='';await loadAccounts()}async function saveAndNext(){await saveCurrent();nextAccount()}function nextAccount(){let q=queue(),cur=getCurrent(),idx=q.findIndex(a=>a.id===cur?.id);if(q[idx+1])setCurrent(q[idx+1].id)}function skipAccount(){nextAccount()}function callPrimary(){let p=phones(getCurrent())[0];if(p)window.location.href='tel:'+normPhone(p)}function endCall(){document.getElementById('lastDialed').textContent='Call ended';document.getElementById('callNumber').textContent='—'}
 function val(id){return document.getElementById(id).value.trim()}function setVal(id,v){document.getElementById(id).value=v??''}function inputId(k){return{accountNumber:'accountNumberInput',status:'statusInput',ssn:'ssnInput',state:'stateInput',email:'emailInput'}[k]||k}function openModal(){document.querySelector('#modal form').reset();document.getElementById('id').value='';document.getElementById('modalTitle').textContent='Add Account';document.getElementById('modal').classList.add('open')}function closeModal(id){document.getElementById(id).classList.remove('open')}
 async function saveAccount(e){e.preventDefault();if(!currentUser.isAdmin)return alert('Admin only');let id=val('id'),acct={};FIELDS.forEach(k=>acct[k]=val(inputId(k)));acct.fullName=acct.fullName||[acct.firstName,acct.middleName,acct.lastName].filter(Boolean).join(' ');if(id)await dbFetch(`/accounts?id=eq.${id}`,{method:'PATCH',body:JSON.stringify(toRow(acct))});else await dbFetch('/accounts',{method:'POST',body:JSON.stringify([toRow(acct)])});closeModal('modal');await loadAccounts()}
 
