@@ -371,6 +371,33 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 @media(max-width:1450px){.powerGrid,.powerStats{grid-template-columns:repeat(2,1fr)}.powerHalf{grid-column:span 1}.docList{grid-template-columns:1fr}}
 @media(max-width:850px){.powerGrid,.powerStats{grid-template-columns:1fr}.powerHalf{grid-column:1/-1}}
 
+
+/* PAYMENT LEDGER + BROKEN PROMISE */
+.ledgerBox{max-width:1220px}
+.ledgerGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ledgerGrid label{font-size:12px;font-weight:900;color:#334155;display:block;margin-bottom:5px}
+.ledgerGrid input,.ledgerGrid select,.ledgerGrid textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font:inherit;background:#fff}
+.ledgerGrid textarea{min-height:78px;resize:vertical}
+.ledgerWide{grid-column:1/-1}.ledgerHalf{grid-column:span 2}
+.ledgerStats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin:12px 0}
+.ledgerStat{border:1px solid #e2e8f0;border-radius:13px;background:#f8fbff;padding:10px}
+.ledgerStatLabel{font-size:10px;text-transform:uppercase;font-weight:900;color:#64748b;margin-bottom:4px}
+.ledgerStatValue{font-size:18px;font-weight:1000;color:#0f172a}
+.ledgerTableWrap{border:1px solid #e2e8f0;border-radius:14px;overflow:auto;max-height:420px;background:#fff;margin-top:12px}
+.ledgerTable{width:100%;border-collapse:collapse;font-size:12px}
+.ledgerTable th{position:sticky;top:0;background:#f8fafc;text-align:left;padding:9px;border-bottom:1px solid #e2e8f0;color:#334155;font-size:10px;text-transform:uppercase;z-index:1}
+.ledgerTable td{padding:8px 9px;border-bottom:1px solid #edf2f8;vertical-align:top}
+.ledgerPill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900;background:#eef2ff;color:#1d4ed8}
+.ledgerPill.green{background:#dcfce7;color:#166534}.ledgerPill.red{background:#fee2e2;color:#991b1b}.ledgerPill.orange{background:#fff7ed;color:#9a3412}.ledgerPill.gray{background:#f1f5f9;color:#334155}
+.ledgerWarning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:12px;padding:10px;font-size:12px;font-weight:850;margin:10px 0}
+.ledgerBalancePreview{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.ledgerPreviewBox{border:1px solid #e2e8f0;background:#f8fbff;border-radius:12px;padding:10px}
+.ledgerPreviewLabel{font-size:10px;font-weight:900;text-transform:uppercase;color:#64748b}
+.ledgerPreviewValue{font-size:18px;font-weight:1000;color:#0f172a;margin-top:4px}
+.brokenRow{background:#fff7ed}
+@media(max-width:1450px){.ledgerGrid,.ledgerStats,.ledgerBalancePreview{grid-template-columns:repeat(2,1fr)}.ledgerHalf{grid-column:span 1}}
+@media(max-width:850px){.ledgerGrid,.ledgerStats,.ledgerBalancePreview{grid-template-columns:1fr}.ledgerHalf{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -412,9 +439,11 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">PAYMENT PLAN RENDER FIX — restored payment-plan engine plus power features.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">PAYMENT LEDGER + BROKEN PROMISE READY — real payments, balance updates, receipts, and missed promise automation.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
+      <button class="gray" onclick="openPaymentsDashboard()">💵 Payments</button>
+      <button class="gray" onclick="runBrokenPromiseAutomation(true)">⚡ Broken Check</button>
       <button class="gray" onclick="openDailyWorkQueue()">📅 Work Queue</button>
       <button class="gray" onclick="openPromiseDashboard()">💰 Promises</button>
       <button class="gray adminOnly hidden" onclick="openAuditLog()">🛡 Audit Log</button>
@@ -519,6 +548,7 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
       <section class="panel quickActions">
         <div class="panelTitle"><h3>Quick Actions</h3></div>
         <div class="qaItem" onclick="openPaymentPlan()"><span class="qaLeft"><span class="qaIcon">💳</span>Payment Promise / Plan</span><span>›</span></div>
+        <div class="qaItem" onclick="openPaymentLedger()"><span class="qaLeft"><span class="qaIcon">💵</span>Record Payment / Ledger</span><span>›</span></div>
         <div class="qaItem" onclick="openFollowUpModal('Callback')"><span class="qaLeft"><span class="qaIcon">📅</span>Schedule Callback / Follow-Up</span><span>›</span></div>
         <div class="qaItem" onclick="openCallResultModal()"><span class="qaLeft"><span class="qaIcon">☎</span>Log Call Result</span><span>›</span></div>
         <div class="qaItem" onclick="openDisputeModal()"><span class="qaLeft"><span class="qaIcon">⚠</span>Dispute Tracker</span><span>›</span></div>
@@ -905,6 +935,74 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div id="permissionsModal" class="modal"><div class="modalbox powerBox"><div class="modalhead"><h2>Role Permissions</h2><button class="gray" onclick="closeModal('permissionsModal')">Close</button></div><div class="modalbody"><div class="powerWarning">This stores role permissions for your CRM. Current hard rules still remain: admin controls imports/exports/assignments; employees work assigned accounts.</div><div class="powerTableWrap"><table class="powerTable"><thead><tr><th>Permission</th><th>Admin</th><th>Manager</th><th>Collector</th></tr></thead><tbody id="permissionsBody"></tbody></table></div><div style="text-align:right;margin-top:12px"><button class="green" onclick="savePermissions()">Save Permissions</button></div></div></div></div>
 
+
+<div id="paymentLedgerModal" class="modal"><div class="modalbox ledgerBox">
+  <div class="modalhead"><h2>Payment Ledger / Record Payment</h2><button class="gray" onclick="closeModal('paymentLedgerModal')">Close</button></div>
+  <div class="modalbody">
+    <div class="ledgerWarning">
+      This is the money ledger. Completed payments reduce the current account balance. Reversals add the amount back. Each entry creates a permanent payment record and audit entry.
+    </div>
+    <div class="ledgerBalancePreview">
+      <div class="ledgerPreviewBox"><div class="ledgerPreviewLabel">Current Balance</div><div class="ledgerPreviewValue" id="ledgerCurrentBalance">$0.00</div></div>
+      <div class="ledgerPreviewBox"><div class="ledgerPreviewLabel">Payment / Reversal</div><div class="ledgerPreviewValue" id="ledgerPaymentAmount">$0.00</div></div>
+      <div class="ledgerPreviewBox"><div class="ledgerPreviewLabel">Balance After</div><div class="ledgerPreviewValue" id="ledgerBalanceAfter">$0.00</div></div>
+    </div>
+    <div class="ledgerGrid">
+      <div><label>Payment Date</label><input id="ledgerDate" type="date" oninput="updateLedgerPreview()"></div>
+      <div><label>Amount</label><input id="ledgerAmount" type="number" step="0.01" min="0" oninput="updateLedgerPreview()"></div>
+      <div><label>Type</label><select id="ledgerType" onchange="updateLedgerPreview()"><option>Payment</option><option>Reversal</option><option>Adjustment Credit</option><option>Adjustment Debit</option></select></div>
+      <div><label>Status</label><select id="ledgerStatus" onchange="updateLedgerPreview()"><option>Completed</option><option>Pending</option><option>Failed</option><option>Reversed</option></select></div>
+      <div><label>Payment Method</label><select id="ledgerMethod"><option>Card</option><option>ACH</option><option>Zelle</option><option>Cash App</option><option>Money Order</option><option>Check</option><option>Other</option></select></div>
+      <div><label>Receipt #</label><input id="ledgerReceipt" placeholder="Auto if blank"></div>
+      <div><label>Apply to Plan</label><select id="ledgerApplyPlan"><option value="auto">Auto-apply to oldest unpaid plan payment</option><option value="none">Do not apply to plan</option></select></div>
+      <div><label>Entered By</label><input id="ledgerEnteredBy" readonly></div>
+      <div class="ledgerWide"><label>Notes</label><textarea id="ledgerNotes" placeholder="Payment confirmation, transaction ID, debtor statement..."></textarea></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+      <button class="outline" onclick="loadPaymentLedgerForCurrent()">Refresh Ledger</button>
+      <button class="green" onclick="saveLedgerPayment()">Save Payment Entry</button>
+    </div>
+    <div class="ledgerTableWrap">
+      <table class="ledgerTable">
+        <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Balance Before</th><th>Balance After</th><th>Receipt</th><th>Entered By</th><th>Notes</th></tr></thead>
+        <tbody id="ledgerHistoryBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+
+<div id="paymentsDashboardModal" class="modal"><div class="modalbox ledgerBox">
+  <div class="modalhead"><h2>Payments Dashboard</h2><button class="gray" onclick="closeModal('paymentsDashboardModal')">Close</button></div>
+  <div class="modalbody">
+    <div class="ledgerWarning">Track real money received, reversals, payment methods, broken promises, and recent payment activity.</div>
+    <div class="powerToolbar">
+      <div class="powerTabs">
+        <button class="powerTab active" id="payTabRecent" onclick="renderPaymentsDashboard('recent')">Recent</button>
+        <button class="powerTab" id="payTabToday" onclick="renderPaymentsDashboard('today')">Today</button>
+        <button class="powerTab" id="payTabBroken" onclick="renderPaymentsDashboard('broken')">Broken Promises</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="outline" onclick="loadPaymentsDashboard()">Refresh</button>
+        <button class="green" onclick="exportPaymentLedgerCSV()">Export Ledger</button>
+      </div>
+    </div>
+    <div class="ledgerStats">
+      <div class="ledgerStat"><div class="ledgerStatLabel">Paid Today</div><div class="ledgerStatValue" id="payStatToday">$0.00</div></div>
+      <div class="ledgerStat"><div class="ledgerStatLabel">Paid This Month</div><div class="ledgerStatValue" id="payStatMonth">$0.00</div></div>
+      <div class="ledgerStat"><div class="ledgerStatLabel">Total Paid</div><div class="ledgerStatValue" id="payStatTotal">$0.00</div></div>
+      <div class="ledgerStat"><div class="ledgerStatLabel">Pending</div><div class="ledgerStatValue" id="payStatPending">$0.00</div></div>
+      <div class="ledgerStat"><div class="ledgerStatLabel">Reversals</div><div class="ledgerStatValue" id="payStatReversals">$0.00</div></div>
+      <div class="ledgerStat"><div class="ledgerStatLabel">Broken Promises</div><div class="ledgerStatValue" id="payStatBroken">0</div></div>
+    </div>
+    <div class="ledgerTableWrap">
+      <table class="ledgerTable">
+        <thead><tr><th>Date</th><th>Account</th><th>Name</th><th>Type</th><th>Amount</th><th>Method</th><th>Status</th><th>Balance After</th><th>Entered By</th><th>Action</th></tr></thead>
+        <tbody id="paymentsDashboardBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div></div>
+
 <script src="config.js"></script>
 <script>
 const ADMIN_EMAIL='afinch2678@gmail.com';
@@ -1083,6 +1181,7 @@ async function loadAccounts(){
  if(!currentUser.isAdmin)accounts=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===currentUser.email);
  if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;
  if(currentAccountId&&!accounts.some(a=>a.id===currentAccountId))currentAccountId=accounts[0]?.id||'';
+ if(typeof runBrokenPromiseAutomation==='function')runBrokenPromiseAutomation(false).catch(()=>{});
  render()
 }
 function queue(){let q=document.getElementById('search')?.value.toLowerCase()||'',st=document.getElementById('statusFilter')?.value||'',pf=document.getElementById('portfolioFilter')?.value||'';return accounts.filter(a=>{let raw=rawObj(a),text=(FIELDS.map(k=>a[k]).join(' ')+' '+Object.keys(raw).join(' ')+' '+Object.values(raw).join(' ')).toLowerCase();return(!q||text.includes(q))&&(!st||a.status===st)&&(!pf||a.portfolio===pf)})}
@@ -1841,7 +1940,21 @@ async function completeFollowUp(id){await dbFetch('/follow_ups?id=eq.'+id,{metho
 async function openPromiseDashboard(){document.getElementById('promiseDashboardModal').classList.add('open');await loadPromiseDashboard()}
 async function loadPromiseDashboard(){let pays=[],plans=[];try{pays=(await dbFetch('/payment_plan_payments?select=*&order=due_date.asc&limit=10000')).map(toCamel)}catch(e){pays=[]}try{plans=(await dbFetch('/payment_plans?select=*&order=created_at.desc&limit=10000')).map(toCamel)}catch(e){plans=[]}if(!currentUser.isAdmin){let ids=new Set(accounts.map(a=>String(a.id)));pays=pays.filter(p=>ids.has(String(p.accountId)));plans=plans.filter(p=>ids.has(String(p.accountId)))}promiseData={payments:pays,plans};renderPromiseDashboard('due')}
 function promiseCard(p,modalId='promiseDashboardModal'){let plan=promiseData.plans.find(x=>String(x.id)===String(p.planId))||workQueueData.plans.find(x=>String(x.id)===String(p.planId));let a=accountById(p.accountId)||accountById(plan?.accountId);let due=String(p.dueDate||'');let status=p.status||'Scheduled';let owed=Math.max(0,moneyNum(p.amountDue)-moneyNum(p.amountPaid));let cls=status==='Paid'?'green':isPastISO(due)?'red':isTodayISO(due)?'orange':'gray';return `<div class="powerCard"><div class="powerCardTop"><div><div class="powerTitle">${esc(a?nameOf(a):'Unknown Account')} — ${money(owed)} due</div><div class="powerMeta">Due date: ${powerDateLabel(due)} • Status: ${esc(status)}<br>Account: ${esc(a?acctNo(a):'—')} • Balance: ${a?money(accountBalance(a)):'—'}<br>Assigned: ${esc(a?.assignedToEmail||'—')}</div></div><span class="powerPill ${cls}">${isPastISO(due)&&status!=='Paid'?'Broken/Overdue':esc(status)}</span></div><div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"><button class="outline" onclick="setAccountFromModal('${a?.id||p.accountId}','${modalId}')">Open Account</button><button class="green" onclick="markPromisePaid('${p.id}')">Mark Paid</button></div></div>`}
-async function markPromisePaid(paymentId){let p=[...promiseData.payments,...workQueueData.payments].find(x=>String(x.id)===String(paymentId));if(!p)return alert('Payment not found.');await dbFetch('/payment_plan_payments?id=eq.'+paymentId,{method:'PATCH',body:JSON.stringify({amount_paid:moneyNum(p.amountDue),paid_date:todayISO(),status:'Paid',updated_at:new Date().toISOString()})});await insertActivity(p.accountId,'Payment Promise Paid','Promise payment marked paid: '+money(p.amountDue));await insertAudit('Promise Paid','Promise payment marked paid '+money(p.amountDue),'account',p.accountId);await loadPromiseDashboard();if(document.getElementById('dailyWorkQueueModal')?.classList.contains('open'))await loadDailyWorkQueue()}
+async function markPromisePaid(paymentId){
+ let p=[...promiseData.payments,...workQueueData.payments].find(x=>String(x.id)===String(paymentId));
+ if(!p)return alert('Payment not found.');
+ let a=accountById(p.accountId), amount=moneyNum(p.amountDue), balBefore=accountBalance(a), balAfter=Math.max(0,balBefore-amount), receipt=ledgerReceiptNo();
+ await dbFetch('/payment_plan_payments?id=eq.'+paymentId,{method:'PATCH',body:JSON.stringify({amount_paid:amount,paid_date:todayISO(),status:'Paid',updated_at:new Date().toISOString()})});
+ if(a){
+   await dbFetch('/payments_ledger',{method:'POST',body:JSON.stringify([{account_id:a.id,payment_date:todayISO(),amount,payment_type:'Payment',payment_method:'Other',status:'Completed',receipt_number:receipt,balance_before:balBefore,balance_after:balAfter,plan_payment_id:paymentId,notes:'Marked paid from Promise Dashboard',created_by_email:currentUser.email}])}).catch(()=>{});
+   await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify({current_balance:balAfter,status:balAfter<=0?'Settled':a.status,disposition:balAfter<=0?'Settled':a.disposition,updated_at:new Date().toISOString()})}).catch(()=>{});
+ }
+ await insertActivity(p.accountId,'Payment Promise Paid','Promise payment marked paid: '+money(amount)+'. Receipt '+receipt);
+ await insertAudit('Promise Paid','Promise payment marked paid '+money(amount),'account',p.accountId);
+ await loadAccounts();
+ await loadPromiseDashboard();
+ if(document.getElementById('dailyWorkQueueModal')?.classList.contains('open'))await loadDailyWorkQueue();
+}
 function renderPromiseDashboard(tab='due'){['Due','Overdue','Upcoming','All'].forEach(t=>document.getElementById('promTab'+t)?.classList.toggle('active',tab.toLowerCase()===t.toLowerCase()));let pays=promiseData.payments.filter(unpaidPayment);let dueToday=pays.filter(p=>isTodayISO(p.dueDate));let overdue=pays.filter(p=>isPastISO(p.dueDate));let upcoming=pays.filter(p=>isFutureISO(p.dueDate));document.getElementById('promiseDueToday').textContent=dueToday.length;document.getElementById('promiseOverdue').textContent=overdue.length;document.getElementById('promiseUpcoming').textContent=upcoming.length;document.getElementById('promiseDueAmount').textContent=money([...dueToday,...overdue].reduce((s,p)=>s+moneyNum(p.amountDue)-moneyNum(p.amountPaid),0));document.getElementById('promisePaidAmount').textContent=money(promiseData.payments.reduce((s,p)=>s+moneyNum(p.amountPaid),0));document.getElementById('promiseBroken').textContent=overdue.length;let list=tab==='due'?dueToday:tab==='overdue'?overdue:tab==='upcoming'?upcoming:promiseData.payments;document.getElementById('promiseDashboardList').innerHTML=list.map(p=>promiseCard(p)).join('')||'<div class="powerEmpty">No promises found for this view.</div>'}
 
 function openCallResultModal(){let a=getCurrent();if(!a)return alert('No account selected.');document.getElementById('callResultPhone').value=a.lastContactNumber||phones(a)[0]||'';document.getElementById('callResultStatus').value='No Answer';document.getElementById('callDuration').value='0';document.getElementById('callCallbackDate').value='';document.getElementById('callResultNotes').value='';document.getElementById('callResultModal').classList.add('open')}
@@ -1856,6 +1969,255 @@ async function saveSettlement(){let a=getCurrent();if(!a)return;let row={account
 
 
 /* RESTORED STABLE PAYMENT PLAN ENGINE */
+
+/* PAYMENT LEDGER + BROKEN PROMISE AUTOMATION */
+let paymentLedgerData=[];
+let paymentsDashboardData={ledger:[],broken:[],payments:[],plans:[]};
+
+function ledgerReceiptNo(){
+ return 'RCPT-'+new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14)+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+}
+function ledgerBalanceAfter(balance,amount,type,status){
+ balance=moneyNum(balance); amount=moneyNum(amount);
+ if(status!=='Completed')return balance;
+ if(type==='Payment'||type==='Adjustment Credit')return Math.max(0,Number((balance-amount).toFixed(2)));
+ if(type==='Reversal'||type==='Adjustment Debit')return Number((balance+amount).toFixed(2));
+ return balance;
+}
+function openPaymentLedger(){
+ let a=getCurrent(); if(!a)return alert('No account selected.');
+ document.getElementById('ledgerDate').value=todayISO();
+ document.getElementById('ledgerAmount').value='';
+ document.getElementById('ledgerType').value='Payment';
+ document.getElementById('ledgerStatus').value='Completed';
+ document.getElementById('ledgerMethod').value='Card';
+ document.getElementById('ledgerReceipt').value='';
+ document.getElementById('ledgerApplyPlan').value='auto';
+ document.getElementById('ledgerEnteredBy').value=currentUser.email||'';
+ document.getElementById('ledgerNotes').value='';
+ document.getElementById('paymentLedgerModal').classList.add('open');
+ updateLedgerPreview();
+ loadPaymentLedgerForCurrent();
+}
+function updateLedgerPreview(){
+ let a=getCurrent(); let bal=accountBalance(a); let amt=moneyNum(val('ledgerAmount')); let type=val('ledgerType')||'Payment'; let status=val('ledgerStatus')||'Completed';
+ let after=ledgerBalanceAfter(bal,amt,type,status);
+ let cur=document.getElementById('ledgerCurrentBalance'), pay=document.getElementById('ledgerPaymentAmount'), aft=document.getElementById('ledgerBalanceAfter');
+ if(cur)cur.textContent=money(bal);
+ if(pay)pay.textContent=(type==='Reversal'||type==='Adjustment Debit'?'+':'-')+money(amt);
+ if(aft)aft.textContent=money(after);
+}
+async function loadPaymentLedgerForCurrent(){
+ let a=getCurrent(); if(!a)return;
+ let rows=[];
+ try{rows=(await dbFetch(`/payments_ledger?account_id=eq.${a.id}&select=*&order=payment_date.desc,created_at.desc&limit=500`)).map(toCamel)}catch(e){rows=[]}
+ paymentLedgerData=rows;
+ let body=document.getElementById('ledgerHistoryBody'); if(!body)return;
+ body.innerHTML=rows.map(r=>`<tr>
+   <td>${esc(r.paymentDate||String(r.createdAt||'').slice(0,10))}</td>
+   <td><span class="ledgerPill ${r.paymentType==='Payment'||r.paymentType==='Adjustment Credit'?'green':'red'}">${esc(r.paymentType||'Payment')}</span></td>
+   <td><b>${money(r.amount)}</b></td>
+   <td>${esc(r.paymentMethod||'')}</td>
+   <td>${esc(r.status||'')}</td>
+   <td>${money(r.balanceBefore)}</td>
+   <td>${money(r.balanceAfter)}</td>
+   <td>${esc(r.receiptNumber||'')}</td>
+   <td>${esc(r.createdByEmail||'')}</td>
+   <td>${esc(r.notes||'')}</td>
+ </tr>`).join('')||'<tr><td colspan="10"><div class="powerEmpty">No payment ledger entries yet.</div></td></tr>';
+}
+async function applyLedgerPaymentToPlan(accountId,amount){
+ amount=moneyNum(amount);
+ if(amount<=0)return null;
+ let plan=await loadPaymentPlanForAccount(accountId,true);
+ if(!plan)return null;
+ let payments=(plan.payments||[]).filter(p=>!['Paid','Cancelled'].includes(p.status) && moneyNum(p.amountDue)>moneyNum(p.amountPaid)).sort((a,b)=>String(a.dueDate||'').localeCompare(String(b.dueDate||'')));
+ let remainingToApply=amount, applied=[];
+ for(let p of payments){
+   if(remainingToApply<=0)break;
+   let dueLeft=Math.max(0,moneyNum(p.amountDue)-moneyNum(p.amountPaid));
+   let apply=Math.min(dueLeft,remainingToApply);
+   let newPaid=Number((moneyNum(p.amountPaid)+apply).toFixed(2));
+   let newStatus=newPaid+0.01>=moneyNum(p.amountDue)?'Paid':'Partial';
+   await dbFetch(`/payment_plan_payments?id=eq.${p.id}`,{method:'PATCH',body:JSON.stringify({amount_paid:newPaid,paid_date:newStatus==='Paid'?todayISO():(p.paidDate||null),status:newStatus,updated_at:new Date().toISOString()})});
+   remainingToApply=Number((remainingToApply-apply).toFixed(2));
+   applied.push({paymentId:p.id,applied:apply,status:newStatus});
+ }
+ if(applied.length){
+   let paidNow=applied.reduce((s,x)=>s+x.applied,0);
+   let newRemaining=Math.max(0,moneyNum(plan.remainingAmount)-paidNow);
+   await dbFetch(`/payment_plans?id=eq.${plan.id}`,{method:'PATCH',body:JSON.stringify({remaining_amount:newRemaining,status:newRemaining<=0?'Paid':'Active',updated_at:new Date().toISOString()})}).catch(()=>{});
+   delete paymentPlanCache[accountId];
+ }
+ return applied;
+}
+async function saveLedgerPayment(){
+ let a=getCurrent(); if(!a)return alert('No account selected.');
+ let amount=moneyNum(val('ledgerAmount'));
+ let type=val('ledgerType')||'Payment';
+ let status=val('ledgerStatus')||'Completed';
+ let method=val('ledgerMethod')||'Other';
+ let paymentDate=val('ledgerDate')||todayISO();
+ let balBefore=accountBalance(a);
+ if(amount<=0)return alert('Enter a payment amount greater than zero.');
+ if((type==='Payment'||type==='Adjustment Credit') && status==='Completed' && amount>balBefore+0.01)return alert('Payment cannot be more than current balance of '+money(balBefore)+'.');
+ let balAfter=ledgerBalanceAfter(balBefore,amount,type,status);
+ let receipt=val('ledgerReceipt')||ledgerReceiptNo();
+ let row={
+   account_id:a.id,
+   payment_date:paymentDate,
+   amount,
+   payment_type:type,
+   payment_method:method,
+   status,
+   receipt_number:receipt,
+   balance_before:balBefore,
+   balance_after:balAfter,
+   notes:val('ledgerNotes'),
+   created_by_email:currentUser.email
+ };
+ let saved=(await dbFetch('/payments_ledger',{method:'POST',body:JSON.stringify([row])}))[0];
+ let applied=null;
+ if(status==='Completed' && (type==='Payment'||type==='Adjustment Credit') && val('ledgerApplyPlan')==='auto'){
+   applied=await applyLedgerPaymentToPlan(a.id,amount);
+ }
+ if(status==='Completed'){
+   let accountPatch={current_balance:balAfter,updated_at:new Date().toISOString()};
+   if(balAfter<=0){accountPatch.status='Settled';accountPatch.disposition='Settled'}
+   await dbFetch(`/accounts?id=eq.${a.id}`,{method:'PATCH',body:JSON.stringify(accountPatch)});
+ }
+ let appliedText=applied&&applied.length?` Applied to ${applied.length} scheduled payment(s).`:'';
+ await insertActivity(a.id,'Payment Ledger',`${type} ${money(amount)} via ${method}. Balance ${money(balBefore)} → ${money(balAfter)}. Receipt ${receipt}.${appliedText}`);
+ if(typeof insertAudit==='function')await insertAudit('Payment Ledger',`${type} ${money(amount)} on ${nameOf(a)}. Balance ${money(balBefore)} to ${money(balAfter)}`,'account',a.id);
+ await loadAccounts();
+ currentAccountId=a.id;
+ await loadPaymentLedgerForCurrent();
+ await renderPaymentPlanSummary(a.id).catch(()=>{});
+ updateLedgerPreview();
+ alert('Payment saved. New account balance: '+money(balAfter));
+}
+
+/* Payments dashboard */
+async function openPaymentsDashboard(){
+ document.getElementById('paymentsDashboardModal').classList.add('open');
+ await loadPaymentsDashboard();
+}
+async function loadPaymentsDashboard(){
+ let ledger=[],payments=[],plans=[];
+ try{ledger=(await dbFetch('/payments_ledger?select=*&order=payment_date.desc,created_at.desc&limit=10000')).map(toCamel)}catch(e){ledger=[]}
+ try{payments=(await dbFetch('/payment_plan_payments?select=*&order=due_date.asc&limit=10000')).map(toCamel)}catch(e){payments=[]}
+ try{plans=(await dbFetch('/payment_plans?select=*&order=created_at.desc&limit=10000')).map(toCamel)}catch(e){plans=[]}
+ if(!currentUser.isAdmin){
+   let ids=new Set(accounts.map(a=>String(a.id)));
+   ledger=ledger.filter(r=>ids.has(String(r.accountId)));
+   payments=payments.filter(p=>ids.has(String(p.accountId)));
+   plans=plans.filter(p=>ids.has(String(p.accountId)));
+ }
+ let broken=payments.filter(p=>String(p.status||'')==='Broken Promise'||(unpaidPayment(p)&&isPastISO(p.dueDate)));
+ paymentsDashboardData={ledger,broken,payments,plans};
+ renderPaymentsDashboard('recent');
+}
+function paymentLedgerRow(r){
+ let a=accountById(r.accountId);
+ let cls=r.paymentType==='Payment'||r.paymentType==='Adjustment Credit'?'green':r.paymentType==='Reversal'||r.paymentType==='Adjustment Debit'?'red':'gray';
+ return `<tr>
+   <td>${esc(r.paymentDate||String(r.createdAt||'').slice(0,10))}</td>
+   <td>${esc(a?acctNo(a):r.accountId||'')}</td>
+   <td>${esc(a?nameOf(a):'Unknown')}</td>
+   <td><span class="ledgerPill ${cls}">${esc(r.paymentType||'Payment')}</span></td>
+   <td><b>${money(r.amount)}</b></td>
+   <td>${esc(r.paymentMethod||'')}</td>
+   <td>${esc(r.status||'')}</td>
+   <td>${money(r.balanceAfter)}</td>
+   <td>${esc(r.createdByEmail||'')}</td>
+   <td>${a?`<button class="outline" onclick="setAccountFromModal('${a.id}','paymentsDashboardModal')">Open</button>`:''}</td>
+ </tr>`;
+}
+function brokenPromiseRow(p){
+ let a=accountById(p.accountId);
+ let owed=Math.max(0,moneyNum(p.amountDue)-moneyNum(p.amountPaid));
+ return `<tr class="brokenRow">
+   <td>${esc(p.dueDate||'')}</td>
+   <td>${esc(a?acctNo(a):p.accountId||'')}</td>
+   <td>${esc(a?nameOf(a):'Unknown')}</td>
+   <td><span class="ledgerPill red">Broken Promise</span></td>
+   <td><b>${money(owed)}</b></td>
+   <td>${esc(a?.assignedToEmail||'')}</td>
+   <td>${esc(p.status||'Scheduled')}</td>
+   <td>${a?money(accountBalance(a)):'—'}</td>
+   <td>${esc(p.createdByEmail||'')}</td>
+   <td>${a?`<button class="outline" onclick="setAccountFromModal('${a.id}','paymentsDashboardModal')">Open</button>`:''}</td>
+ </tr>`;
+}
+function renderPaymentsDashboard(tab='recent'){
+ ['Recent','Today','Broken'].forEach(t=>document.getElementById('payTab'+t)?.classList.toggle('active',tab.toLowerCase()===t.toLowerCase()));
+ let ledger=paymentsDashboardData.ledger||[];
+ let today=todayISO();
+ let month=today.slice(0,7);
+ let completed=ledger.filter(r=>r.status==='Completed');
+ let payments=completed.filter(r=>r.paymentType==='Payment'||r.paymentType==='Adjustment Credit');
+ let reversals=completed.filter(r=>r.paymentType==='Reversal'||r.paymentType==='Adjustment Debit');
+ document.getElementById('payStatToday').textContent=money(payments.filter(r=>String(r.paymentDate)===today).reduce((s,r)=>s+moneyNum(r.amount),0));
+ document.getElementById('payStatMonth').textContent=money(payments.filter(r=>String(r.paymentDate||'').slice(0,7)===month).reduce((s,r)=>s+moneyNum(r.amount),0));
+ document.getElementById('payStatTotal').textContent=money(payments.reduce((s,r)=>s+moneyNum(r.amount),0));
+ document.getElementById('payStatPending').textContent=money(ledger.filter(r=>r.status==='Pending').reduce((s,r)=>s+moneyNum(r.amount),0));
+ document.getElementById('payStatReversals').textContent=money(reversals.reduce((s,r)=>s+moneyNum(r.amount),0));
+ document.getElementById('payStatBroken').textContent=(paymentsDashboardData.broken||[]).length;
+ let body=document.getElementById('paymentsDashboardBody');
+ if(tab==='broken'){
+   body.innerHTML=(paymentsDashboardData.broken||[]).map(brokenPromiseRow).join('')||'<tr><td colspan="10"><div class="powerEmpty">No broken promises found.</div></td></tr>';
+   return;
+ }
+ let rows=tab==='today'?ledger.filter(r=>String(r.paymentDate)===today):ledger;
+ body.innerHTML=rows.map(paymentLedgerRow).join('')||'<tr><td colspan="10"><div class="powerEmpty">No payment ledger records yet.</div></td></tr>';
+}
+function exportPaymentLedgerCSV(){
+ let rows=paymentsDashboardData.ledger||[];
+ let csv=['date,account,name,type,amount,method,status,balance_before,balance_after,receipt,entered_by,notes'];
+ rows.forEach(r=>{
+   let a=accountById(r.accountId);
+   csv.push([r.paymentDate,a?acctNo(a):r.accountId,a?nameOf(a):'',r.paymentType,r.amount,r.paymentMethod,r.status,r.balanceBefore,r.balanceAfter,r.receiptNumber,r.createdByEmail,r.notes].map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(','));
+ });
+ download('payment_ledger_export.csv',csv.join('\n'),'text/csv');
+ if(typeof insertAudit==='function')insertAudit('Export Payment Ledger','Exported '+rows.length+' payment ledger rows','payments_ledger','');
+}
+
+/* Broken promise automation */
+async function runBrokenPromiseAutomation(showAlert=false){
+ let today=todayISO();
+ let lastKey='brokenPromiseCheck:'+today+':'+(currentUser.email||'');
+ if(!showAlert && sessionStorage.getItem(lastKey))return;
+ let rows=[];
+ try{rows=(await dbFetch(`/payment_plan_payments?select=*&due_date=lt.${today}&limit=10000`)).map(toCamel)}catch(e){rows=[]}
+ rows=rows.filter(p=>!['Paid','Cancelled','Broken Promise'].includes(p.status||'') && moneyNum(p.amountDue)>moneyNum(p.amountPaid));
+ if(!currentUser.isAdmin){
+   let allowed=new Set(accounts.map(a=>String(a.id)));
+   rows=rows.filter(p=>allowed.has(String(p.accountId)));
+ }
+ let accountIds=[...new Set(rows.map(p=>p.accountId).filter(Boolean))];
+ let planIds=[...new Set(rows.map(p=>p.planId).filter(Boolean))];
+ for(let p of rows){
+   await dbFetch(`/payment_plan_payments?id=eq.${p.id}`,{method:'PATCH',body:JSON.stringify({status:'Broken Promise',updated_at:new Date().toISOString()})}).catch(()=>{});
+ }
+ for(let pid of planIds){
+   await dbFetch(`/payment_plans?id=eq.${pid}`,{method:'PATCH',body:JSON.stringify({status:'Broken Promise',updated_at:new Date().toISOString()})}).catch(()=>{});
+ }
+ for(let aid of accountIds){
+   await dbFetch(`/accounts?id=eq.${aid}`,{method:'PATCH',body:JSON.stringify({status:'Broken Promise',disposition:'Broken Promise',updated_at:new Date().toISOString()})}).catch(()=>{});
+   await insertActivity(aid,'Broken Promise','Missed promise payment automatically flagged. Follow-up required.').catch(()=>{});
+   await dbFetch('/follow_ups',{method:'POST',body:JSON.stringify([{account_id:aid,follow_up_type:'Broken Promise Follow-Up',due_date:today,status:'Open',assigned_to_email:(accountById(aid)?.assignedToEmail||currentUser.email||''),reason:'Missed payment promise',notes:'Automatically created from broken promise automation.',created_by_email:currentUser.email}])}).catch(()=>{});
+ }
+ sessionStorage.setItem(lastKey,'1');
+ if(rows.length){
+   if(typeof insertAudit==='function')await insertAudit('Broken Promise Automation','Flagged '+rows.length+' missed payment(s) across '+accountIds.length+' account(s)','payment_plan_payments','');
+   await loadAccounts();
+   if(document.getElementById('paymentsDashboardModal')?.classList.contains('open'))await loadPaymentsDashboard();
+   if(document.getElementById('promiseDashboardModal')?.classList.contains('open'))await loadPromiseDashboard();
+   if(document.getElementById('dailyWorkQueueModal')?.classList.contains('open'))await loadDailyWorkQueue();
+ }
+ if(showAlert)alert(rows.length?('Broken promise check complete. Flagged '+rows.length+' missed payment(s).'):'No broken promises found.');
+}
+
 let paymentPlanCache={};
 let paymentScheduleDraft=[];
 function todayISO(){return new Date().toISOString().slice(0,10)}

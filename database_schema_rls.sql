@@ -817,3 +817,54 @@ values
 ('collector','can_import',false),('collector','can_export',false),('collector','can_see_ssn',true),('collector','can_see_bank',true),('collector','can_assign',false),('collector','can_remove_employees',false),('collector','can_view_reports',false),('collector','can_edit_payment_plans',true),('collector','can_clear_accounts',false),
 ('manager','can_import',false),('manager','can_export',false),('manager','can_see_ssn',true),('manager','can_see_bank',true),('manager','can_assign',true),('manager','can_remove_employees',false),('manager','can_view_reports',true),('manager','can_edit_payment_plans',true),('manager','can_clear_accounts',false)
 on conflict(role, permission_key) do nothing;
+
+
+-- PAYMENT LEDGER + BROKEN PROMISE AUTOMATION
+
+create table if not exists payments_ledger (
+  id uuid primary key default gen_random_uuid(),
+  account_id uuid references accounts(id) on delete cascade,
+  payment_date date default current_date,
+  amount numeric default 0,
+  payment_type text default 'Payment',
+  payment_method text,
+  status text default 'Completed',
+  receipt_number text,
+  balance_before numeric default 0,
+  balance_after numeric default 0,
+  plan_payment_id uuid,
+  notes text,
+  created_by_email text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+alter table payments_ledger enable row level security;
+
+drop policy if exists "payments_ledger_access" on payments_ledger;
+
+create policy "payments_ledger_access" on payments_ledger for all to authenticated
+using (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(coalesce(created_by_email,'')) = lower(auth.jwt() ->> 'email')
+  or exists (
+    select 1 from accounts
+    where accounts.id = payments_ledger.account_id
+      and lower(coalesce(accounts.assigned_to_email,'')) = lower(auth.jwt() ->> 'email')
+  )
+)
+with check (
+  lower(auth.jwt() ->> 'email') = 'afinch2678@gmail.com'
+  or lower(coalesce(created_by_email,'')) = lower(auth.jwt() ->> 'email')
+  or exists (
+    select 1 from accounts
+    where accounts.id = payments_ledger.account_id
+      and lower(coalesce(accounts.assigned_to_email,'')) = lower(auth.jwt() ->> 'email')
+  )
+);
+
+create index if not exists idx_payments_ledger_account on payments_ledger(account_id, payment_date desc);
+create index if not exists idx_payments_ledger_date on payments_ledger(payment_date desc);
+create index if not exists idx_payments_ledger_user on payments_ledger(lower(created_by_email));
+create index if not exists idx_payments_ledger_status on payments_ledger(status);
+create index if not exists idx_payment_plan_payments_due_status on payment_plan_payments(due_date, status);
