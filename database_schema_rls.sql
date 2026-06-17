@@ -629,3 +629,20 @@ create index if not exists idx_account_notes_created_by_email on account_notes(l
 create index if not exists idx_account_notes_created_at on account_notes(created_at);
 create index if not exists idx_payment_plans_created_by_email on payment_plans(lower(created_by_email));
 create index if not exists idx_payment_plans_created_at on payment_plans(created_at);
+
+
+-- FIRED / REMOVED EMPLOYEE WORKFLOW
+alter table app_users add column if not exists removed_at timestamptz;
+alter table app_users add column if not exists removed_by_email text;
+alter table app_users add column if not exists removal_reason text;
+
+create index if not exists idx_app_users_removed_at on app_users(removed_at);
+create index if not exists idx_app_users_removed_by_email on app_users(lower(removed_by_email));
+
+-- Make sure removed/fired employees cannot access the app.
+update app_users
+set is_approved=false,
+    is_active=false,
+    updated_at=now()
+where approval_status='removed'
+  and lower(email) <> 'afinch2678@gmail.com';

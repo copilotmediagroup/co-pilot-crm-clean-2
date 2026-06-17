@@ -332,6 +332,13 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 @media(max-width:1450px){.monitorStats{grid-template-columns:repeat(3,1fr)}.monitorFilters{grid-template-columns:repeat(2,1fr)}.monitorGrid{grid-template-columns:1fr}}
 @media(max-width:850px){.monitorStats,.monitorFilters{grid-template-columns:1fr}}
 
+
+/* FIRED / REMOVED EMPLOYEE WORKFLOW */
+.statusRemoved{background:#111827;color:#fff}
+.removedEmployeeRow{opacity:.72;background:#f8fafc}
+.fireWarning{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;border-radius:12px;padding:10px;font-size:12px;font-weight:900;margin:10px 0}
+.fireNote{font-size:11px;color:#64748b;margin-top:4px;line-height:1.35}
+
 </style>
 </head>
 <body>
@@ -373,7 +380,7 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">ADMIN EMPLOYEE MONITOR READY — track assigned accounts, calls, statuses, notes, and employee performance.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">FIRED EMPLOYEE REMOVAL READY — admin can remove employees, block access, and unassign their accounts.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search accounts..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray adminOnly hidden" onclick="openEmployeeMonitorModal()">📊 Monitor Employees</button>
@@ -702,7 +709,7 @@ header.topbar{height:66px;background:linear-gradient(90deg,#05225f,#07379a,#0b45
     <div class="employeeAdminTop">
       <div>
         <b>Employee Approval</b>
-        <div class="hint">Employees can sign up, but they cannot access the app until admin approves them.</div>
+        <div class="hint">Employees can sign up, but they cannot access the app until admin approves them. Fired employees can be removed, blocked from access, hidden from assignment, and their accounts returned to the unassigned queue.</div>
       </div>
       <div class="employeeAdminStats">
         <span class="employeeAdminStat" id="empStatAll">0 users</span>
@@ -1423,19 +1430,22 @@ async function loadEmployeeAdminList(){
  if(!body)return;
  let users=appUsers.slice().sort((a,b)=>{
    let sa=userApprovalStatus(a), sb=userApprovalStatus(b);
-   let order={pending:0,approved:1,rejected:2,admin:3};
+   let order={pending:0,approved:1,rejected:2,removed:3,admin:4};
    return (order[sa]??9)-(order[sb]??9)||String(a.email||'').localeCompare(String(b.email||''));
  });
  let pending=users.filter(u=>userApprovalStatus(u)==='pending').length;
  let approved=users.filter(u=>userApprovalStatus(u)==='approved').length;
+ let removed=users.filter(u=>userApprovalStatus(u)==='removed').length;
  document.getElementById('empStatAll').textContent=users.length+' users';
  document.getElementById('empStatPending').textContent=pending+' pending';
- document.getElementById('empStatApproved').textContent=approved+' approved';
+ document.getElementById('empStatApproved').textContent=approved+' approved'+(removed?` / ${removed} removed`:'');
  body.innerHTML=users.map(u=>{
    let email=(u.email||'').toLowerCase();
    let status=userApprovalStatus(u);
-   let statusClass=status==='approved'?'statusApproved':status==='admin'?'statusAdmin':status==='rejected'?'statusRejected':'statusPending';
+   let statusClass=status==='approved'?'statusApproved':status==='admin'?'statusAdmin':status==='rejected'?'statusRejected':status==='removed'?'statusRemoved':'statusPending';
    let active=(u.isActive!==false && u.is_active!==false);
+   let assignedCount=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===email).length;
+   let removedInfo=status==='removed'?`<div class="fireNote">Removed by: ${esc(u.removedByEmail||u.removed_by_email||'—')}<br>Removed at: ${esc(String(u.removedAt||u.removed_at||'').slice(0,19)||'—')}</div>`:'';
    let actions=email===ADMIN_EMAIL
      ? '<span class="muted">Admin account</span>'
      : `<div class="empActions">
@@ -1443,14 +1453,15 @@ async function loadEmployeeAdminList(){
           <button class="gray" onclick="setEmployeeApproval('${esc(email)}','pending')">Pending</button>
           <button class="red" onclick="setEmployeeApproval('${esc(email)}','rejected')">Reject</button>
           <button class="outline" onclick="toggleEmployeeActive('${esc(email)}',${active?'false':'true'})">${active?'Deactivate':'Activate'}</button>
+          <button class="red" onclick="removeEmployeeFromSoftware('${esc(email)}')">Remove / Fired</button>
         </div>`;
-   return `<tr>
-     <td><b>${esc(email)}</b></td>
+   return `<tr class="${status==='removed'?'removedEmployeeRow':''}">
+     <td><b>${esc(email)}</b>${removedInfo}</td>
      <td>${esc(u.role||'employee')}</td>
      <td><span class="employeeStatus ${statusClass}">${esc(status)}</span></td>
      <td>${active?'Yes':'No'}</td>
      <td>${esc(String(u.createdAt||u.created_at||'').slice(0,19))}</td>
-     <td>${esc(String(u.lastSeenAt||u.last_seen_at||'').slice(0,19))}</td>
+     <td>${esc(String(u.lastSeenAt||u.last_seen_at||'').slice(0,19))}<div class="fireNote">Assigned accounts: ${assignedCount}</div></td>
      <td>${actions}</td>
    </tr>`;
  }).join('')||'<tr><td colspan="7">No signed-up users yet.</td></tr>';
@@ -1461,7 +1472,17 @@ async function setEmployeeApproval(email,status){
  if(!currentUser.isAdmin)return alert('Admin only');
  email=String(email||'').toLowerCase();
  if(email===ADMIN_EMAIL)return alert('Cannot change admin approval.');
- let body={approval_status:status,is_approved:status==='approved',is_active:status==='approved',updated_at:new Date().toISOString()};
+ let body={
+   approval_status:status,
+   is_approved:status==='approved',
+   is_active:status==='approved',
+   updated_at:new Date().toISOString()
+ };
+ if(status!=='removed'){
+   body.removed_at=null;
+   body.removed_by_email=null;
+   body.removal_reason=null;
+ }
  await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{method:'PATCH',body:JSON.stringify(body)});
  await loadEmployeeAdminList();
 }
@@ -1472,6 +1493,46 @@ async function toggleEmployeeActive(email,active){
  await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{method:'PATCH',body:JSON.stringify({is_active:active,updated_at:new Date().toISOString()})});
  await loadEmployeeAdminList();
 }
+
+async function removeEmployeeFromSoftware(email){
+ if(!currentUser.isAdmin)return alert('Admin only');
+ email=String(email||'').toLowerCase();
+ if(email===ADMIN_EMAIL)return alert('You cannot remove the admin account.');
+ let assigned=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===email);
+ let msg='Remove '+email+' from the software?\n\nThis will:\n- Block this employee from logging into the CRM\n- Remove them from assignment dropdowns\n- Mark them as Removed / Fired\n- Return '+assigned.length+' assigned account(s) back to unassigned queue';
+ if(!confirm(msg))return;
+ let reason=prompt('Optional removal reason:', 'Fired / no longer with company')||'Fired / removed';
+ await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{
+   method:'PATCH',
+   body:JSON.stringify({
+     approval_status:'removed',
+     is_approved:false,
+     is_active:false,
+     removed_at:new Date().toISOString(),
+     removed_by_email:currentUser.email,
+     removal_reason:reason,
+     updated_at:new Date().toISOString()
+   })
+ });
+ if(assigned.length){
+   await dbFetch('/accounts?assigned_to_email=eq.'+encodeURIComponent(email),{
+     method:'PATCH',
+     body:JSON.stringify({
+       assigned_to_email:null,
+       assigned_by_email:currentUser.email,
+       assigned_at:null,
+       assignment_method:'employee_removed',
+       assignment_group_id:null,
+       updated_at:new Date().toISOString()
+     })
+   });
+ }
+ alert(email+' was removed. '+assigned.length+' account(s) returned to unassigned queue.');
+ await loadAccounts();
+ await loadEmployeeAdminList();
+ if(document.getElementById('employeeMonitorModal')?.classList.contains('open'))await loadEmployeeMonitor();
+}
+
 
 
 let monitorData={activities:[],notes:[],plans:[],rows:[],lastRows:[]};
