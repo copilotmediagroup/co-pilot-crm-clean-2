@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 <head>
+<!-- LIVE_CHAT_IDENTITY_CLARITY_MARKER: chat identity labels fix -->
 <!-- LIVE_CHAT_ONLINE_COMPLETE_MARKER: centered badge + self-fix + online presence -->
 <!-- LIVE_CHAT_CENTER_BADGE_COMPLETE_MARKER: centered message unread badge + previous chat fixes -->
 <!-- LIVE_CHAT_BADGE_SELF_FIX_MARKER: unread badge self-message fix -->
@@ -3228,10 +3229,43 @@ main.center > *,
 }
 .chatPresenceBanner b{font-weight:1000}
 
+
+/* CHAT IDENTITY CLARITY FIX */
+.chatSignedInLine{
+  font-size:11px;
+  font-weight:900;
+  color:#dbeafe;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  max-width:360px;
+}
+.chatSignedInLine b{
+  color:#fff;
+  font-weight:1000;
+}
+.chatActiveTitle .chattingWithLabel{
+  color:#64748b;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  font-weight:1000;
+  display:block;
+  margin-bottom:1px;
+}
+.chatSendAsBar{
+  font-size:11px;
+  font-weight:900;
+  color:#475569;
+  background:#f8fafc;
+  border-top:1px solid #e2e8f0;
+  padding:6px 12px;
+}
+.chatSendAsBar b{
+  color:#0f172a;
+}
+
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -3295,7 +3329,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">LIVE CHAT ONLINE COMPLETE — centered badge, self-fix, and reliable green online status.</p></div></div>
+    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">LIVE CHAT IDENTITY CLARITY READY — chat shows signed-in user vs selected contact clearly.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="handleSearchInput('global')"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
@@ -9566,6 +9600,107 @@ renderChatConversation = function(){
 };
 
 startPresenceHeartbeat();
+
+
+/* CHAT IDENTITY CLARITY FIX — shows who you are and who you are chatting with */
+function chatCurrentRoleLabel(){
+  return currentUser.isAdmin ? 'Admin' : 'Employee';
+}
+function chatEnsureSignedInLine(){
+  let brand=document.querySelector('.chatBrandText');
+  if(!brand)return;
+  let line=document.getElementById('chatSignedInLine');
+  if(!line){
+    line=document.createElement('span');
+    line.id='chatSignedInLine';
+    line.className='chatSignedInLine';
+    brand.appendChild(line);
+  }
+  line.innerHTML=`You are signed in as <b>${esc(currentUser.email||'')}</b> (${esc(chatCurrentRoleLabel())})`;
+}
+function chatEnsureSendAsBar(){
+  let inputBar=document.querySelector('.chatInputBar');
+  if(!inputBar)return;
+  let bar=document.getElementById('chatSendAsBar');
+  if(!bar){
+    bar=document.createElement('div');
+    bar.id='chatSendAsBar';
+    bar.className='chatSendAsBar';
+    inputBar.insertAdjacentElement('beforebegin',bar);
+  }
+  let target=chatActiveEmail ? chatName(chatActiveEmail) : 'no one selected';
+  bar.innerHTML=`Sending as <b>${esc(currentUser.email||'')}</b> → Chatting with <b>${esc(target)}</b>`;
+}
+chatMessageBubble = function(m){
+  let mine=String(m.fromEmail||m.from_email||'').toLowerCase().trim()===chatMe();
+  let seen=mine && (m.readAt||m.read_at);
+  let a=m.accountId?accountById(m.accountId):null;
+  let attach=a?` • ${esc(nameOf(a))}`:(m.accountName?` • ${esc(m.accountName)}`:'');
+  let who=mine?'You':chatName(m.fromEmail||m.from_email||chatActiveEmail);
+  return `<div class="chatBubbleWrap ${mine?'mine':'theirs'}">
+    <div class="chatBubble">${esc(m.body||'')}</div>
+    <div class="chatMetaLine">${esc(who)} • ${new Date(m.createdAt||m.created_at||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}${attach}${seen?' • Seen':''}</div>
+  </div>`;
+};
+renderChatConversation = function(){
+  let msgs=activeChatMessages();
+  let box=document.getElementById('chatMessages');
+  let nameEl=document.getElementById('chatActiveName');
+  let statusEl=document.getElementById('chatActiveStatus');
+  let av=document.getElementById('chatActiveAvatar');
+  let btn=document.getElementById('chatSendBtn');
+  chatEnsureSignedInLine();
+  chatEnsureSendAsBar();
+  if(!box)return;
+  if(!chatActiveEmail){
+    box.innerHTML='<div class="chatEmpty">Pick a person to start a direct chat.</div>';
+    if(btn)btn.disabled=true;
+    if(nameEl)nameEl.innerHTML='<span class="chattingWithLabel">Chatting with</span>Select someone';
+    if(statusEl)statusEl.textContent=`You are signed in as ${currentUser.email||''}`;
+    return;
+  }
+  if(btn)btn.disabled=false;
+  if(nameEl)nameEl.innerHTML=`<span class="chattingWithLabel">Chatting with</span>${esc(chatName(chatActiveEmail))}`;
+  let online=(typeof presenceIsOnlineEmail==='function') ? presenceIsOnlineEmail(chatActiveEmail) : false;
+  let attached=chatAttachedAccountId?accountById(chatAttachedAccountId):null;
+  if(statusEl)statusEl.innerHTML=`${chatContactRole(chatActiveEmail)} • <span class="${online?'onlineText':'offlineText'}">${online?'Online':'Offline'}</span>${attached?' • Attached: '+esc(nameOf(attached)):''}<br><span style="font-size:10px;color:#64748b;font-weight:900;">You: ${esc(currentUser.email||'')} (${esc(chatCurrentRoleLabel())})</span>`;
+  if(av){
+    av.innerHTML=`${esc(chatInitials(chatActiveEmail))}<span class="chatOnlineDot ${online?'live':'off'}"></span>`;
+  }
+  box.innerHTML=msgs.map(m=>chatMessageBubble(m)).join('')||'<div class="chatEmpty">No messages yet. Type below to start the conversation.</div>';
+  box.scrollTop=box.scrollHeight;
+  loadTypingStatus();
+  chatEnsureSendAsBar();
+};
+openChatDock = async function(){
+  let dock=document.getElementById('chatDock');
+  if(!dock)return alert('Chat dock not found. Republish the latest package.');
+  dock.classList.add('open');
+  chatEnsureSignedInLine();
+  chatEnsureSendAsBar();
+  if(!chatAttachedAccountId && getCurrent()?.id)chatAttachedAccountId=getCurrent().id;
+  await chatRefreshAll(false);
+  if(typeof chatIsSelf==='function' && chatIsSelf(chatActiveEmail))chatActiveEmail='';
+  if(!chatActiveEmail && chatContactsData[0])await selectChatContact(chatContactsData[0].email);
+  startChatPolling();
+  chatEnsureSignedInLine();
+  chatEnsureSendAsBar();
+};
+selectChatContact = async function(email){
+  email=String(email||'').toLowerCase().trim();
+  if(!email || (typeof chatIsSelf==='function' && chatIsSelf(email))){
+    alert('You cannot message yourself. Choose another employee or admin.');
+    return;
+  }
+  chatActiveEmail=email;
+  renderChatContacts();
+  renderChatConversation();
+  await markActiveChatRead();
+  updateChatUnreadBadge();
+  chatEnsureSignedInLine();
+  chatEnsureSendAsBar();
+  document.getElementById('chatInput')?.focus();
+};
 
 boot();
 </script>
