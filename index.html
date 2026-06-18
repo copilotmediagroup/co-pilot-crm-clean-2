@@ -2061,10 +2061,20 @@ main.center > *,
   .brandSettingsGrid{grid-template-columns:1fr}
 }
 
+
+/* BRAND BACKUP BUTTON ALIGNMENT */
+.brandSettingsForm .fileBtn input{
+  display:none!important;
+}
+.brandButtonRow .fileBtn{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:38px!important;
+  cursor:pointer!important;
+}
+
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -2128,7 +2138,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">BRANDING SETTINGS READY — admin can edit app name, subtitle, and navigation logo.</p></div></div>
+    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">BRANDING BACKUP READY — admin can download and restore app branding safely.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
@@ -2517,6 +2527,8 @@ main.center > *,
         </div>
         <div class="brandButtonRow">
           <button class="green" onclick="saveAppBrandSettings()">Save Branding</button>
+          <button class="outline" onclick="downloadAppBrandBackup()">Download Current Brand</button>
+          <label class="fileBtn gray">Restore Brand Backup<input type="file" accept=".json,application/json" onchange="restoreAppBrandBackup(event)"></label>
           <button class="outline" onclick="resetAppBrandDefaults()">Reset Defaults</button>
         </div>
         <div id="brandSaveStatus" class="saveStatus"></div>
@@ -2530,7 +2542,7 @@ main.center > *,
             <div class="brandPreviewSub" id="brandPreviewSub">Private Collections CRM</div>
           </div>
         </div>
-        <div class="brandPreviewNote">This is what clients/employees see in the top-left of the software.</div>
+        <div class="brandPreviewNote">This is what clients/employees see in the top-left of the software. Download a brand backup before testing changes.</div>
       </div>
     </div>
   </div>
@@ -3085,6 +3097,67 @@ function resetAppBrandDefaults(){
   appBrandSettings.height=0;
   applyAppBranding();
 }
+
+function safeFileNamePart(s){
+  return String(s||'brand').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50)||'brand';
+}
+function downloadAppBrandBackup(){
+  try{
+    appBrandSettings.name=(document.getElementById('brandNameInput')?.value||appBrandSettings.name||'Co Pilot Collections Manager').trim();
+    appBrandSettings.subtitle=(document.getElementById('brandSubInput')?.value||appBrandSettings.subtitle||'Private Collections CRM').trim();
+    applyAppBranding();
+
+    let backup={
+      backupType:'co_pilot_collections_app_branding',
+      version:1,
+      exportedAt:new Date().toISOString(),
+      appBrandName:appBrandSettings.name,
+      appBrandSubtitle:appBrandSettings.subtitle,
+      appBrandLogoDataUrl:appBrandSettings.logoDataUrl||'',
+      appBrandLogoWidth:appBrandSettings.width||0,
+      appBrandLogoHeight:appBrandSettings.height||0
+    };
+    let filename='brand-backup-'+safeFileNamePart(appBrandSettings.name)+'-'+todayISO()+'.json';
+    download(filename,JSON.stringify(backup,null,2),'application/json');
+
+    let st=document.getElementById('brandSaveStatus');
+    if(st){st.className='saveStatus ok';st.textContent='Brand backup downloaded. You can restore it later.';}
+  }catch(e){
+    alert('Download brand backup failed: '+(e.message||String(e)));
+  }
+}
+function restoreAppBrandBackup(event){
+  let file=event.target.files&&event.target.files[0];
+  if(!file)return;
+  let reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      let data=JSON.parse(String(reader.result||'{}'));
+      if(data.backupType!=='co_pilot_collections_app_branding'){
+        throw new Error('This does not look like a Co Pilot branding backup file.');
+      }
+      appBrandSettings.name=data.appBrandName||'Co Pilot Collections Manager';
+      appBrandSettings.subtitle=data.appBrandSubtitle||'Private Collections CRM';
+      appBrandSettings.logoDataUrl=data.appBrandLogoDataUrl||'';
+      appBrandSettings.width=Number(data.appBrandLogoWidth||0);
+      appBrandSettings.height=Number(data.appBrandLogoHeight||0);
+
+      applyAppBranding();
+
+      let st=document.getElementById('brandSaveStatus');
+      if(st){st.className='saveStatus busy';st.textContent='Brand backup loaded into preview. Click Save Branding to make it permanent.';}
+      alert('Brand backup restored into the preview. Click Save Branding to save it to the app.');
+    }catch(e){
+      alert('Restore brand backup failed: '+(e.message||String(e)));
+    }finally{
+      if(event&&event.target)event.target.value='';
+    }
+  };
+  reader.onerror=()=>alert('Could not read the backup file.');
+  reader.readAsText(file);
+}
+
+
 async function saveAppBrandSettings(){
   let st=document.getElementById('brandSaveStatus');
   function status(msg,cls=''){if(st){st.className='saveStatus '+cls;st.textContent=msg;}}
