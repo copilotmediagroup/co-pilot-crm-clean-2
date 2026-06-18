@@ -2181,10 +2181,138 @@ main.center > *,
   border-color:#115e59!important;
 }
 
+
+/* QA HEALTH CHECK */
+.qaBtn{
+  background:#7c3aed!important;
+  color:#fff!important;
+  border-color:#6d28d9!important;
+  font-weight:1000!important;
+}
+.qaHealthBox{
+  max-width:1120px!important;
+}
+.qaHero{
+  display:flex!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  align-items:center!important;
+  border:1px solid #ddd6fe!important;
+  background:#f5f3ff!important;
+  border-radius:16px!important;
+  padding:14px!important;
+  margin-bottom:12px!important;
+}
+.qaHero b{
+  display:block!important;
+  color:#3b0764!important;
+  font-size:15px!important;
+}
+.qaHero span{
+  display:block!important;
+  color:#5b21b6!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  margin-top:3px!important;
+}
+.qaStats{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin-bottom:12px!important;
+}
+.qaStat{
+  border:1px solid #e2e8f0!important;
+  background:#f8fafc!important;
+  border-radius:14px!important;
+  padding:10px!important;
+}
+.qaStat span{
+  display:block!important;
+  color:#64748b!important;
+  font-size:10px!important;
+  font-weight:1000!important;
+  text-transform:uppercase!important;
+}
+.qaStat b{
+  display:block!important;
+  color:#0f172a!important;
+  font-size:24px!important;
+  margin-top:3px!important;
+}
+.qaStat.ok{background:#f0fdf4!important;border-color:#bbf7d0!important}
+.qaStat.ok b{color:#15803d!important}
+.qaStat.warn{background:#fffbeb!important;border-color:#fde68a!important}
+.qaStat.warn b{color:#92400e!important}
+.qaStat.fail{background:#fef2f2!important;border-color:#fecaca!important}
+.qaStat.fail b{color:#b91c1c!important}
+.qaSummary{
+  border:1px solid #e2e8f0!important;
+  background:#fff!important;
+  border-radius:12px!important;
+  padding:10px 12px!important;
+  color:#334155!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  margin-bottom:10px!important;
+}
+.qaSummary.ok{background:#f0fdf4!important;border-color:#bbf7d0!important;color:#166534!important}
+.qaSummary.warn{background:#fffbeb!important;border-color:#fde68a!important;color:#92400e!important}
+.qaSummary.fail{background:#fef2f2!important;border-color:#fecaca!important;color:#991b1b!important}
+.qaActions{
+  display:flex!important;
+  gap:10px!important;
+  flex-wrap:wrap!important;
+  margin-bottom:12px!important;
+}
+.qaTableWrap{
+  max-height:58vh!important;
+  overflow:auto!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:14px!important;
+  background:#fff!important;
+}
+.qaTable{
+  width:100%!important;
+  border-collapse:collapse!important;
+  font-size:12px!important;
+}
+.qaTable th{
+  position:sticky!important;
+  top:0!important;
+  background:#f8fafc!important;
+  color:#334155!important;
+  text-align:left!important;
+  padding:10px!important;
+  border-bottom:1px solid #e2e8f0!important;
+  font-size:10px!important;
+  text-transform:uppercase!important;
+  font-weight:1000!important;
+}
+.qaTable td{
+  padding:9px 10px!important;
+  border-bottom:1px solid #edf2f8!important;
+  vertical-align:top!important;
+  color:#334155!important;
+  font-weight:750!important;
+}
+.qaPill{
+  display:inline-block!important;
+  border-radius:999px!important;
+  padding:4px 8px!important;
+  font-size:10px!important;
+  font-weight:1000!important;
+  white-space:nowrap!important;
+}
+.qaPill.pass{background:#dcfce7!important;color:#166534!important}
+.qaPill.warn{background:#fef3c7!important;color:#92400e!important}
+.qaPill.fail{background:#fee2e2!important;color:#991b1b!important}
+@media(max-width:800px){
+  .qaHero{align-items:flex-start!important;flex-direction:column!important}
+  .qaStats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -2248,12 +2376,13 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">FORCED LETTER SETTINGS FIX READY — ignores old email default and opens body editor from top bar.</p></div></div>
+    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">QA HEALTH CHECK READY — admin can audit tables, settings, UI modules, and download a test report.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="handleSearchInput('global')"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
       <button class="gray adminOnly hidden" onclick="openLetterBodyEditor()">Bodies</button>
+      <button class="gray adminOnly hidden qaBtn" onclick="openQaHealthModal()">QA</button>
       <button class="gray todayBtn" onclick="openTodayDashboard()">Today</button>
       <button class="gray" onclick="openPaymentsDashboard()">Pay</button>
       <button class="gray" onclick="runBrokenPromiseAutomation(true)">Broken</button>
@@ -2655,6 +2784,45 @@ main.center > *,
         </div>
         <div class="brandPreviewNote">This is what clients/employees see in the top-left of the software. Download a brand backup before testing changes.</div>
       </div>
+    </div>
+  </div>
+</div></div>
+
+
+<div id="qaHealthModal" class="modal"><div class="modalbox qaHealthBox">
+  <div class="modalhead">
+    <h2>System QA / Health Check</h2>
+    <button class="gray" onclick="closeModal('qaHealthModal')">Close</button>
+  </div>
+  <div class="modalbody">
+    <div class="qaHero">
+      <div>
+        <b>Run this before demoing or selling the app.</b>
+        <span>Checks UI modules, database tables, permissions, branding, letter settings, and common broken states.</span>
+      </div>
+      <button class="green" onclick="runQaHealthCheck()">Run Health Check</button>
+    </div>
+
+    <div class="qaStats">
+      <div class="qaStat"><span>Total</span><b id="qaTotal">0</b></div>
+      <div class="qaStat ok"><span>Pass</span><b id="qaPass">0</b></div>
+      <div class="qaStat warn"><span>Warnings</span><b id="qaWarn">0</b></div>
+      <div class="qaStat fail"><span>Fail</span><b id="qaFail">0</b></div>
+    </div>
+
+    <div id="qaSummary" class="qaSummary">Health check not run yet.</div>
+
+    <div class="qaActions">
+      <button class="outline" onclick="downloadQaReport()">Download QA Report</button>
+      <button class="outline" onclick="downloadQaChecklist()">Download Manual Checklist</button>
+      <button class="gray" onclick="clearBadLetterLocalCache()">Clear Bad Letter Cache</button>
+    </div>
+
+    <div class="qaTableWrap">
+      <table class="qaTable">
+        <thead><tr><th>Status</th><th>Area</th><th>Check</th><th>Result / Fix</th></tr></thead>
+        <tbody id="qaHealthBody"><tr><td colspan="4">Click Run Health Check.</td></tr></tbody>
+      </table>
     </div>
   </div>
 </div></div>
@@ -6994,6 +7162,255 @@ async function clearAllAccounts(){
 }
 
 function exportCSV(){if(!currentUser.isAdmin)return alert('Admin only');let headers=FIELDS,rows=[headers.join(',')].concat(accounts.map(a=>headers.map(h=>`"${String(a[h]??'').replaceAll('"','""')}"`).join(',')));insertAudit('Export CSV','Exported '+accounts.length+' accounts','accounts','');download('co-pilot-accounts-export.csv',rows.join('\n'),'text/csv')}function downloadTemplate(){let headers=FIELDS,sample=['PlainGreen LLC','PlainGreen LLC','36972835','13242556','36972835','John','','Doe','John Doe','123-45-6789','01/01/1980','123 Main St','','Las Vegas','NV','89101','Employer','email@example.com','PlainGreen LLC','installment loan','','',1000,'01/01/2020','','','02/01/2020','','','0','','','702-555-1111','','','','','','New'];download('co-pilot-import-template.csv',headers.join(',')+'\n'+sample.map(v=>`"${String(v).replaceAll('"','""')}"`).join(','),'text/csv')}function download(name,text,type){let blob=new Blob([text],{type}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+
+let qaLastReport=[];
+
+function openQaHealthModal(){
+  if(!currentUser.isAdmin)return alert('Admin only');
+  document.getElementById('qaHealthModal').classList.add('open');
+}
+function qaPush(list,status,area,check,result){
+  list.push({status,area,check,result,checkedAt:new Date().toISOString()});
+}
+function qaDomExists(id){return !!document.getElementById(id)}
+async function qaDbTableCheck(table, label, list){
+  try{
+    await dbFetch('/'+table+'?select=*&limit=1');
+    qaPush(list,'pass','Database',label||table,'Table is readable.');
+  }catch(e){
+    qaPush(list,'fail','Database',label||table,'Cannot read table: '+(e.message||String(e)));
+  }
+}
+async function qaCompanySettingCheck(key, label, list, validator=null){
+  try{
+    let rows=await dbFetch('/company_settings?select=setting_key,setting_value&setting_key=eq.'+encodeURIComponent(key)+'&limit=1');
+    if(!rows||!rows.length){
+      qaPush(list,'warn','Settings',label, 'Missing setting. It may be created after admin saves it.');
+      return;
+    }
+    let value=rows[0].setting_value||rows[0].settingValue||'';
+    if(validator){
+      let v=validator(value);
+      qaPush(list,v.ok?'pass':'fail','Settings',label,v.message);
+    }else{
+      qaPush(list,'pass','Settings',label,'Found.');
+    }
+  }catch(e){
+    qaPush(list,'fail','Settings',label,'Could not check setting: '+(e.message||String(e)));
+  }
+}
+async function runQaHealthCheck(){
+  let list=[];
+  qaPush(list,'pass','App','Current user',currentUser.email||'Unknown');
+  qaPush(list,currentUser.isAdmin?'pass':'fail','Permissions','Admin login',currentUser.isAdmin?'Logged in as admin.':'Not logged in as admin.');
+  qaPush(list,accounts.length?'pass':'warn','Data','Loaded accounts',accounts.length+' account(s) loaded in browser.');
+
+  // UI modules
+  [
+    ['loginScreen','Landing / Login page'],
+    ['globalSearch','Top search box'],
+    ['search','Queue search box'],
+    ['queueList','Queue list'],
+    ['documentGeneratorModal','Letter / PDF generator'],
+    ['letterBodyEditorModal','Letter body editor'],
+    ['todayDashboardModal','Today dashboard'],
+    ['followUpModal','Follow-up modal'],
+    ['paymentLedgerModal','Payment ledger'],
+    ['paymentPlanModal','Payment plan modal'],
+    ['employeeAdminModal','Manage employees'],
+    ['employeeMonitorModal','Employee monitor'],
+    ['brandingSettingsModal','Branding settings'],
+    ['qaHealthModal','QA health modal']
+  ].forEach(([id,label])=>{
+    qaPush(list,qaDomExists(id)?'pass':'fail','UI Module',label,qaDomExists(id)?'Found.':'Missing DOM element #'+id);
+  });
+
+  // Critical functions
+  [
+    ['openDocumentGenerator','Letters open function'],
+    ['openLetterBodyEditor','Letter body editor function'],
+    ['openTodayDashboard','Today dashboard function'],
+    ['saveFollowUp','Follow-up save function'],
+    ['saveAppBrandSettings','Branding save function'],
+    ['savePdfAuthorizedByDefault','Authorized By save function'],
+    ['queue','Queue/search function'],
+    ['handleSearchInput','Debounced search handler']
+  ].forEach(([fn,label])=>{
+    qaPush(list,typeof window[fn]==='function'?'pass':'fail','Code Function',label,typeof window[fn]==='function'?'Function exists.':'Missing function '+fn);
+  });
+
+  // Search/letter local cache checks
+  let authLocal=localStorage.getItem('pdfAuthorizedByDefault')||'';
+  qaPush(list,/@/.test(authLocal)?'fail':'pass','Local Cache','Authorized By cache',/@/.test(authLocal)?'Bad cached email found. Click Clear Bad Letter Cache.':'No email found in local Authorized By cache.');
+  let templateLocal=localStorage.getItem('pdfLetterTemplatesJson')||'{}';
+  try{JSON.parse(templateLocal);qaPush(list,'pass','Local Cache','Letter templates JSON','Valid JSON.')}catch(e){qaPush(list,'fail','Local Cache','Letter templates JSON','Invalid JSON. Click Clear Bad Letter Cache.')}
+
+  // Database tables
+  let tables=[
+    ['accounts','Accounts'],
+    ['account_notes','Notes'],
+    ['activity_logs','Activity logs'],
+    ['payment_plans','Payment plans'],
+    ['payment_plan_payments','Plan payments'],
+    ['payments_ledger','Payment ledger'],
+    ['account_docs','Generated document records'],
+    ['follow_ups','Follow-ups / callbacks'],
+    ['call_results','Call results'],
+    ['app_users','App users / employee approval'],
+    ['company_settings','Company settings / branding / letters']
+  ];
+  for(const [table,label] of tables){
+    await qaDbTableCheck(table,label,list);
+  }
+
+  // Settings
+  await qaCompanySettingCheck('app_brand_name','App branding name',list);
+  await qaCompanySettingCheck('pdf_authorized_by_default','Authorized By default',list,(v)=>{
+    if(!v||String(v).trim()==='')return {ok:false,message:'Blank value. Run RUN_THIS_FORCE_LETTER_SETTINGS_SQL.sql.'};
+    if(/@/.test(String(v)))return {ok:false,message:'Bad email value in database: '+v+'. Run RUN_THIS_FORCE_LETTER_SETTINGS_SQL.sql.'};
+    return {ok:true,message:'Value: '+v};
+  });
+  await qaCompanySettingCheck('pdf_letter_templates_json','Letter body templates',list,(v)=>{
+    try{JSON.parse(v||'{}');return {ok:true,message:'Valid JSON template storage.'}}catch(e){return {ok:false,message:'Invalid JSON in template storage.'}}
+  });
+
+  // Light feature logic checks
+  try{
+    let q=queue();
+    qaPush(list,'pass','Search','Queue function test','Returned '+q.length+' result(s).');
+  }catch(e){
+    qaPush(list,'fail','Search','Queue function test','Queue failed: '+(e.message||String(e)));
+  }
+
+  try{
+    let d=getPdfAuthorizedByDefault();
+    qaPush(list,/@/.test(d)?'fail':'pass','Letters','Authorized By default test',/@/.test(d)?'Still returning email: '+d:'Using: '+d);
+  }catch(e){
+    qaPush(list,'fail','Letters','Authorized By default test','Failed: '+(e.message||String(e)));
+  }
+
+  qaLastReport=list;
+  renderQaReport(list);
+}
+function renderQaReport(list){
+  let pass=list.filter(x=>x.status==='pass').length;
+  let warn=list.filter(x=>x.status==='warn').length;
+  let fail=list.filter(x=>x.status==='fail').length;
+  document.getElementById('qaTotal').textContent=list.length;
+  document.getElementById('qaPass').textContent=pass;
+  document.getElementById('qaWarn').textContent=warn;
+  document.getElementById('qaFail').textContent=fail;
+
+  let summary=document.getElementById('qaSummary');
+  summary.className='qaSummary '+(fail?'fail':warn?'warn':'ok');
+  summary.textContent=fail
+    ? `Health check found ${fail} failure(s). Fix those before demoing.`
+    : warn
+      ? `Health check passed with ${warn} warning(s). Review before demoing.`
+      : 'Health check passed. App is ready for a controlled demo.';
+
+  document.getElementById('qaHealthBody').innerHTML=list.map(r=>`<tr>
+    <td><span class="qaPill ${r.status}">${r.status.toUpperCase()}</span></td>
+    <td>${esc(r.area)}</td>
+    <td>${esc(r.check)}</td>
+    <td>${esc(r.result)}</td>
+  </tr>`).join('');
+}
+function downloadQaReport(){
+  if(!qaLastReport.length)return alert('Run the health check first.');
+  let payload={
+    app:'Co Pilot Collections Manager',
+    reportType:'QA Health Check',
+    generatedAt:new Date().toISOString(),
+    user:currentUser.email||'',
+    accountCount:accounts.length,
+    results:qaLastReport
+  };
+  download('co-pilot-qa-health-check-'+todayISO()+'.json',JSON.stringify(payload,null,2),'application/json');
+}
+function downloadQaChecklist(){
+  let text=`CO PILOT COLLECTIONS MANAGER - MANUAL QA CHECKLIST
+
+Run this after every update before demoing or selling.
+
+LOGIN / ROLES
+[ ] Admin can log in.
+[ ] Employee can request access.
+[ ] Pending employee cannot access app before approval.
+[ ] Admin can approve employee.
+[ ] Employee can log in after approval.
+[ ] Fired/removed employee cannot access app.
+
+IMPORT / DATA
+[ ] Admin can import demo CSV.
+[ ] Mapping works.
+[ ] Accounts display in queue.
+[ ] Clear Accounts works.
+[ ] Re-import works after clear.
+[ ] Phone-first search works.
+[ ] Name search works.
+[ ] SSN search works.
+[ ] Address search works.
+
+COLLECTOR WORKFLOW
+[ ] Open one account.
+[ ] Phone numbers display.
+[ ] Add note.
+[ ] Change status.
+[ ] Log call result.
+[ ] Schedule callback/follow-up.
+[ ] Save Follow-Up works.
+[ ] Today dashboard shows callback/follow-up.
+
+PAYMENTS
+[ ] Create payment plan.
+[ ] Payment plan does not exceed balance.
+[ ] Mark scheduled payment paid.
+[ ] Balance updates correctly.
+[ ] Broken promise shows when overdue.
+[ ] Payment ledger records payment.
+
+ADMIN
+[ ] Assign accounts to employee.
+[ ] Employee monitor shows account counts/statuses.
+[ ] Manage employees works.
+[ ] Audit log opens.
+[ ] Branding settings save.
+[ ] Brand backup download works.
+[ ] Brand restore works.
+
+LETTERS
+[ ] Authorized By defaults to Co Pilot Collections Manager.
+[ ] Authorized By can save default.
+[ ] Bodies button opens.
+[ ] Admin can edit Demand Letter body.
+[ ] Edited body appears in preview/PDF.
+[ ] Letter watermark logo appears.
+[ ] File/account number uses debtor account number.
+[ ] PDF spacing looks professional.
+
+DEMO
+[ ] No real debtor data is used.
+[ ] Demo logo uploaded.
+[ ] Demo admin login works.
+[ ] Demo employee login works.
+[ ] Help page opens.
+[ ] QA Health Check passes or warnings are understood.
+`;
+  download('co-pilot-manual-qa-checklist.txt',text,'text/plain');
+}
+function clearBadLetterLocalCache(){
+  localStorage.removeItem('pdfAuthorizedByDefault');
+  localStorage.removeItem('pdfLetterTemplatesJson');
+  if(typeof pdfLetterSettings!=='undefined'){
+    pdfLetterSettings.loaded=false;
+    pdfLetterSettings.authorizedByDefault='Co Pilot Collections Manager';
+    pdfLetterSettings.templates={};
+  }
+  alert('Bad local letter cache cleared. Refresh the app, then open Letters again.');
+}
+
+
 boot();
 </script>
 </body>

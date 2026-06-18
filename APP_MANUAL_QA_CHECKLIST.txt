@@ -1,0 +1,44 @@
+CO PILOT COLLECTIONS MANAGER - MANUAL QA CHECKLIST
+
+LOGIN / ROLES
+[ ] Admin login works
+[ ] Employee request access works
+[ ] Employee approval works
+[ ] Fired employee removal works
+
+IMPORT / SEARCH
+[ ] Import CSV works
+[ ] Mapping works
+[ ] Clear accounts works
+[ ] Re-import works
+[ ] Phone search works without glitch
+[ ] Name/SSN/address search works
+
+COLLECTOR WORKFLOW
+[ ] Account page loads
+[ ] Notes save
+[ ] Status saves
+[ ] Call result saves
+[ ] Follow-up saves
+[ ] Today Dashboard updates
+
+PAYMENTS
+[ ] Payment plan creates
+[ ] Plan cannot exceed balance
+[ ] Payment paid updates balance
+[ ] Broken promise appears
+[ ] Ledger records payment
+
+ADMIN
+[ ] Assign accounts works
+[ ] Monitor employees works
+[ ] Manage employees works
+[ ] Audit log works
+[ ] Branding save/restore works
+
+LETTERS
+[ ] Authorized By is not email
+[ ] Bodies editor opens
+[ ] Body edits save
+[ ] PDF downloads
+[ ] Watermark logo appears
