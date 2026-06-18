@@ -1717,37 +1717,208 @@ main.center > *,
 .saveStatus.err{color:#b91c1c}
 .saveStatus.busy{color:#1d4ed8}
 
+
+/* FINAL POLISH + LANDING PAGE */
+.loginScreen{
+  background:radial-gradient(circle at 15% 20%,rgba(37,99,235,.35),transparent 35%),
+             radial-gradient(circle at 85% 15%,rgba(14,165,233,.22),transparent 32%),
+             linear-gradient(135deg,#020617,#0f172a 45%,#172554)!important;
+  padding:22px!important;
+}
+.landingShell{
+  width:min(1180px,100%);
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) 430px;
+  gap:24px;
+  align-items:stretch;
+}
+.landingHero{
+  background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:28px;
+  padding:34px;
+  color:white;
+  box-shadow:0 30px 90px rgba(0,0,0,.35);
+  overflow:hidden;
+  position:relative;
+}
+.landingHero:before{
+  content:"";
+  position:absolute;
+  inset:auto -120px -160px auto;
+  width:360px;height:360px;
+  background:rgba(37,99,235,.30);
+  border-radius:999px;
+  filter:blur(12px);
+}
+.landingBrand,.loginMiniBrand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.landingLogo{
+  width:48px;height:48px;border-radius:14px;
+  display:grid;place-items:center;
+  background:white;color:#1d4ed8;
+  font-weight:1000;font-style:italic;font-size:32px;
+  box-shadow:0 15px 45px rgba(0,0,0,.25);
+}
+.landingBrand b{display:block;font-size:18px}
+.landingBrand span{display:block;color:#bfdbfe;font-size:12px;font-weight:800;margin-top:2px}
+.landingHero h1{
+  font-size:42px;line-height:1.02;letter-spacing:-.04em;
+  margin:34px 0 14px;max-width:820px;
+}
+.landingLead{
+  font-size:16px;line-height:1.6;color:#dbeafe;
+  max-width:760px;font-weight:700;
+}
+.landingFeatures{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;margin-top:24px;
+}
+.landingFeatures div{
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:16px;padding:13px;
+}
+.landingFeatures b{display:block;font-size:13px}
+.landingFeatures span{display:block;color:#cbd5e1;font-size:12px;line-height:1.35;margin-top:5px;font-weight:700}
+.landingDemoBox{
+  margin-top:22px;
+  border:1px solid rgba(125,211,252,.35);
+  background:rgba(14,165,233,.12);
+  border-radius:16px;padding:14px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  position:relative;z-index:2;
+}
+.landingDemoBox b{font-size:13px}
+.landingDemoBox span{color:#dbeafe;font-size:12px;font-weight:800;flex:1;min-width:240px}
+.landingLoginCard{
+  width:100%!important;
+  align-self:center;
+  padding:26px!important;
+}
+.loginMiniBrand{margin-bottom:18px}
+.loginMiniBrand h2{margin:0!important}
+.loginMiniBrand p{margin:2px 0 0!important;font-size:12px!important}
+.landingLoginCard label{display:block;margin-top:12px}
+.landingLoginCard input{height:44px}
+.loginActions{display:flex;gap:10px;margin-top:16px}
+.loginActions button{flex:1}
+.loginStatus{min-height:18px;margin-top:10px;font-size:12px;font-weight:900;color:#2563eb}
+.cleanNotice{font-weight:750}
+.globalBusy{
+  position:fixed;inset:0;z-index:40;
+  background:rgba(15,23,42,.45);
+  display:flex;align-items:center;justify-content:center;
+}
+.globalBusy.hidden{display:none}
+.globalBusyCard{
+  background:white;border:1px solid #dbe3ef;border-radius:18px;
+  padding:16px 18px;display:flex;align-items:center;gap:14px;
+  box-shadow:0 25px 80px rgba(0,0,0,.25);
+  min-width:300px;
+}
+.globalBusyCard b{display:block;color:#0f172a}
+.globalBusyCard span{display:block;color:#64748b;font-size:12px;margin-top:2px;font-weight:800}
+.spinner{
+  width:28px;height:28px;border-radius:999px;
+  border:3px solid #dbeafe;border-top-color:#2563eb;
+  animation:spin .9s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.helpBtn{background:#0ea5e9!important;color:#fff!important;border-color:#0284c7!important}
+.helpBox{max-width:980px!important}
+.helpHero{
+  border:1px solid #bfdbfe;background:#eff6ff;border-radius:16px;
+  padding:14px;margin-bottom:14px;color:#1e3a8a;
+}
+.helpHero b{display:block;font-size:16px}
+.helpHero span{display:block;margin-top:4px;font-size:13px;font-weight:800}
+.helpGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.helpCard{border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;padding:13px}
+.helpCard b{color:#0f172a}
+.helpCard p{margin:6px 0 0;color:#475569;font-size:12px;line-height:1.45;font-weight:760}
+.helpChecklist{
+  margin-top:14px;border:1px solid #e2e8f0;border-radius:14px;padding:14px;background:white;
+  display:grid;gap:8px;
+}
+.helpChecklist b{color:#0f172a}
+.helpChecklist label{font-size:13px;color:#334155;font-weight:850;display:flex;gap:8px;align-items:center}
+.helpActions{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.emptyMain{
+  border:1px dashed #bfdbfe;
+  background:#eff6ff;
+  color:#1e3a8a;
+  border-radius:16px;
+  padding:22px;
+  text-align:center;
+  font-weight:900;
+}
+.emptyMain b{display:block;font-size:18px;margin-bottom:6px}
+.emptyMain span{display:block;font-size:13px;color:#475569;font-weight:800}
+.emptyQueue{
+  border:1px dashed #cbd5e1;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:14px;
+  color:#475569;
+  font-weight:850;
+  line-height:1.45;
+}
+@media(max-width:1000px){
+  .landingShell{grid-template-columns:1fr}
+  .landingFeatures{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .landingHero{padding:24px}
+  .landingHero h1{font-size:31px}
+  .landingFeatures,.helpGrid{grid-template-columns:1fr}
+}
+
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
-  <div class="loginBox">
-    <h2>Co Pilot Login</h2>
-    <p>Enter your employee or admin login.</p>
-    <div id="loginError" class="error hidden"></div>
-    <div id="connectionNotice" class="notice hidden"></div>
+  <div class="landingShell">
+    <section class="landingHero">
+      <div class="landingBrand"><div class="landingLogo">b</div><div><b>Co Pilot Collections Manager</b><span>Private CRM for collection teams</span></div></div>
+      <h1>Work accounts, track promises, collect payments, and monitor your team from one clean system.</h1>
+      <p class="landingLead">Built for small collection teams that need a simple collector workflow: import accounts, assign employees, work one debtor at a time, schedule callbacks, manage payment plans, generate branded letters, and track activity.</p>
+      <div class="landingFeatures">
+        <div><b>📥 Import</b><span>Upload CSV portfolios and map headers.</span></div>
+        <div><b>☎ Work Queue</b><span>Phone-first search, notes, calls, and statuses.</span></div>
+        <div><b>💳 Promises</b><span>Payment plans, due dashboard, broken promises.</span></div>
+        <div><b>📄 Letters</b><span>Professional debtor PDFs with logo watermark.</span></div>
+        <div><b>👥 Staff</b><span>Approve employees, assign accounts, monitor work.</span></div>
+        <div><b>🧾 Audit</b><span>Track activity, payments, notes, and changes.</span></div>
+      </div>
+      <div class="landingDemoBox">
+        <b>Demo tip</b>
+        <span>Use fake/demo accounts only when showing prospects. Never demo with real debtor data.</span>
+        <button class="outline" onclick="downloadDemoCSV()">Download Demo CSV</button>
+      </div>
+    </section>
 
-    <label>Email</label>
-    <input id="loginEmail" autocomplete="email">
-
-    <br><br>
-
-    <label>Password</label>
-    <input id="loginPassword" type="password" autocomplete="current-password">
-
-    <br><br>
-
-    <div style="display:flex;gap:10px">
-      <button onclick="login()">Login</button>
-      <button class="gray" onclick="signup()">Sign Up</button>
-    </div>
-
-    <div class="notice" style="margin-top:16px">
-      New employees can sign up here. Admin approval/settings are handled separately.
-    </div>
+    <aside class="loginBox landingLoginCard">
+      <div class="loginMiniBrand"><div class="logo">b</div><div><h2>Login</h2><p>Admin or approved employee access.</p></div></div>
+      <div id="loginError" class="error hidden"></div>
+      <div id="connectionNotice" class="notice hidden"></div>
+      <label>Email</label>
+      <input id="loginEmail" autocomplete="email" placeholder="you@company.com">
+      <label>Password</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Password">
+      <div class="loginActions">
+        <button id="loginBtn" onclick="login()">Login</button>
+        <button id="signupBtn" class="gray" onclick="signup()">Request Access</button>
+      </div>
+      <div id="loginStatus" class="loginStatus"></div>
+      <div class="notice cleanNotice">
+        New employees can request access here. Admin must approve the account before login is allowed.
+      </div>
+    </aside>
   </div>
 </div>
 
@@ -1759,11 +1930,22 @@ main.center > *,
   <div class="progressText" id="importProgressText">0%</div>
 </div>
 
+<div id="globalBusy" class="globalBusy hidden">
+  <div class="globalBusyCard">
+    <div class="spinner"></div>
+    <div>
+      <b id="globalBusyTitle">Working...</b>
+      <span id="globalBusyText">Please wait.</span>
+    </div>
+  </div>
+</div>
+
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">FOLLOW-UP SAVE FIX READY — Save Follow-Up shows progress, errors, and refreshes Today Dashboard.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">FINAL POLISH READY — landing page, cleaner login, help guide, empty states, and loading messages.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
+      <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
       <button class="gray" onclick="openDocumentGenerator()">Letters</button>
       <button class="gray todayBtn" onclick="openTodayDashboard()">Today</button>
       <button class="gray" onclick="openPaymentsDashboard()">Pay</button>
@@ -2100,6 +2282,36 @@ main.center > *,
   </div>
 </div></div>
 
+
+
+<div id="helpModal" class="modal"><div class="modalbox helpBox">
+  <div class="modalhead"><h2>How to Use Co Pilot Collections Manager</h2><button class="gray" onclick="closeModal('helpModal')">Close</button></div>
+  <div class="modalbody">
+    <div class="helpHero">
+      <b>Simple daily workflow</b>
+      <span>Keep collectors focused: search, call, status, note, promise, follow-up, next account.</span>
+    </div>
+    <div class="helpGrid">
+      <div class="helpCard"><b>1. Import accounts</b><p>Admin imports a CSV, maps columns, checks the account list, then assigns accounts to employees.</p></div>
+      <div class="helpCard"><b>2. Work the queue</b><p>Collectors open their queue, search primarily by phone number, click a debtor, call, status, and notate.</p></div>
+      <div class="helpCard"><b>3. Use Today</b><p>The Today Dashboard shows callbacks, promises due, overdue payments, and broken promises.</p></div>
+      <div class="helpCard"><b>4. Payment plans</b><p>Create payment plans tied to the current balance. Record payments so balances and plan totals update.</p></div>
+      <div class="helpCard"><b>5. Generate letters</b><p>Create debtor letters/PDFs with the company logo watermark. Use fake data for demos.</p></div>
+      <div class="helpCard"><b>6. Manage staff</b><p>Admin approves employees, assigns accounts, monitors activity, and removes fired employees.</p></div>
+    </div>
+    <div class="helpChecklist">
+      <b>Before showing a prospect</b>
+      <label><input type="checkbox"> Use demo/fake debtor data only</label>
+      <label><input type="checkbox"> Upload company/demo logo</label>
+      <label><input type="checkbox"> Confirm admin login and employee login</label>
+      <label><input type="checkbox"> Test import, search, notes, status, payment plan, Today Dashboard, and one letter</label>
+    </div>
+    <div class="helpActions">
+      <button class="outline" onclick="downloadDemoCSV()">Download Demo CSV</button>
+      <button class="gray" onclick="openTodayDashboard();closeModal('helpModal')">Open Today Dashboard</button>
+    </div>
+  </div>
+</div></div>
 
 <div id="pendingScreen" class="modal"><div class="modalbox">
   <div class="modalbody pendingScreenContent">
@@ -2529,7 +2741,63 @@ function applyRoleUI(){
   document.querySelectorAll('.adminOnly').forEach(el=>el.classList.toggle('hidden',!currentUser.isAdmin));
 }
 
-async function login(){try{clearLoginError();let email=val('loginEmail').trim().toLowerCase(),password=val('loginPassword');if(!email||!password)throw new Error('Enter email and password.');let data=await authFetch('/auth/v1/token?grant_type=password',{email,password});storeSession(data);await boot()}catch(e){showLoginError(e.message||String(e))}}
+
+function setGlobalBusy(show,title='Working...',text='Please wait.'){
+ let box=document.getElementById('globalBusy');
+ if(!box)return;
+ document.getElementById('globalBusyTitle').textContent=title;
+ document.getElementById('globalBusyText').textContent=text;
+ box.classList.toggle('hidden',!show);
+}
+function setLoginBusy(show,msg=''){
+ let lb=document.getElementById('loginBtn'), sb=document.getElementById('signupBtn'), st=document.getElementById('loginStatus');
+ if(lb)lb.disabled=!!show;
+ if(sb)sb.disabled=!!show;
+ if(st)st.textContent=msg||'';
+}
+function friendlyError(msg){
+ msg=String(msg||'');
+ if(/invalid login credentials/i.test(msg))return 'Email or password is incorrect.';
+ if(/email not confirmed/i.test(msg))return 'Check your email and confirm your account before logging in.';
+ if(/expired|jwt|token|session/i.test(msg))return 'Your login session expired. Please log in again.';
+ if(/failed to fetch|network/i.test(msg))return 'Connection failed. Check internet/Supabase config, then try again.';
+ if(/row-level security|policy|permission|violates/i.test(msg))return 'Database permission blocked this action. Admin should run the latest SQL file, reload, and try again.';
+ return msg;
+}
+function openHelpModal(){
+ document.getElementById('helpModal').classList.add('open');
+}
+function downloadDemoCSV(){
+ let rows=[
+  ['account_number','original_creditor','first_name','last_name','ssn','dob','address','city','state','zip','email','home_phone','cell_phone','phones','original_balance','current_balance','charge_off_date','account_open_date','description'],
+  ['DEMO-1001','THE CASH STORE','Susan','Moore','371-78-1465','08/22/1982',"1295 O'Brien Rd",'Mayville','MI','48744','susan.moore@example.com','9896703795','5866460637','3154500758;9896735564','704.66','704.66','03/20/2025','07/14/2017','Payday Loan'],
+  ['DEMO-1002','JCP Credit Card','Roy','Bryant','434-41-2336','12/29/1977','2990 Rocky Hollow Rd','Jacksonville','AL','36265','roy.bryant@example.com','6008896302','2055551188','2055551189','728.34','728.34','02/26/2013','11/20/2011','Credit Card'],
+  ['DEMO-1003','Walmart Credit Card','Doris','Davidson','418-58-6683','01/25/1944','1808 Linthicum Ln','Birmingham','AL','35217','doris.davidson@example.com','6032203513','2055552244','2055552255','966.73','966.73','02/20/2013','12/20/2010','Credit Card']
+ ];
+ let csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+ let blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+ let a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='co_pilot_demo_accounts.csv';
+ a.click();
+ URL.revokeObjectURL(a.href);
+}
+
+async function login(){
+ try{
+   clearLoginError();
+   setLoginBusy(true,'Logging in...');
+   let email=val('loginEmail').trim().toLowerCase(),password=val('loginPassword');
+   if(!email||!password)throw new Error('Enter email and password.');
+   let data=await authFetch('/auth/v1/token?grant_type=password',{email,password});
+   storeSession(data);
+   await boot();
+ }catch(e){
+   showLoginError(friendlyError(e.message||String(e)));
+ }finally{
+   setLoginBusy(false,'');
+ }
+}
 
 window.applyRoleUI = window.applyRoleUI || applyRoleUI;
 
@@ -2548,8 +2816,10 @@ window.addEventListener('focus', async ()=>{
 async function signup(){
  try{
    clearLoginError();
-   let email=val('loginEmail').toLowerCase(), password=val('loginPassword');
+   setLoginBusy(true,'Creating access request...');
+   let email=val('loginEmail').toLowerCase().trim(), password=val('loginPassword');
    if(!email||!password)throw new Error('Enter email and password.');
+   if(password.length<6)throw new Error('Password must be at least 6 characters.');
    let data=await authFetch('/auth/v1/signup',{email,password});
    currentUser={email,isAdmin:email===ADMIN_EMAIL};
 
@@ -2568,7 +2838,11 @@ async function signup(){
      document.getElementById('loginScreen').classList.remove('open');
      document.getElementById('pendingScreen').classList.add('open');
    }
- }catch(e){showLoginError(e.message)}
+ }catch(e){
+   showLoginError(friendlyError(e.message||String(e)));
+ }finally{
+   setLoginBusy(false,'');
+ }
 }
 
 function storeSession(data){
@@ -2626,8 +2900,18 @@ async function ensureFreshToken(){
    await refreshSession();
  }
 }
-function showLoginError(msg){let el=document.getElementById('loginError');if(!el)return alert(msg);el.textContent=msg;el.classList.remove('hidden')}
-function clearLoginError(){let el=document.getElementById('loginError');if(el){el.textContent='';el.classList.add('hidden')}}
+function showLoginError(msg){
+ let el=document.getElementById('loginError');
+ if(!el)return alert(msg);
+ el.textContent=friendlyError(msg);
+ el.classList.remove('hidden');
+}
+function clearLoginError(){
+ let el=document.getElementById('loginError');
+ if(el){el.textContent='';el.classList.add('hidden')}
+ let st=document.getElementById('loginStatus');
+ if(st)st.textContent='';
+}
 
 async function getUser(){
  await ensureFreshToken();
@@ -2721,7 +3005,7 @@ async function boot(){
      clearSession();
      msg='Your login session expired. Please log in again.';
    }
-   showLoginError(msg);
+   showLoginError(friendlyError(msg));
    document.getElementById('pendingScreen').classList.remove('open');
    document.getElementById('loginScreen').classList.add('open');
  }
@@ -2748,12 +3032,22 @@ function snakeToCamel(k){return String(k).replace(/_([a-z])/g,(_,c)=>c.toUpperCa
 function toRow(a){let r={};Object.entries(map).forEach(([k,v])=>{if(a[k]!==undefined)r[v]=numKey(k)?num(a[k]):a[k]});r.full_name=r.full_name||[r.first_name,r.middle_name,r.last_name].filter(Boolean).join(' ');r.account_number=r.account_number||r.client_account_number||r.source_account_id||'';r.portfolio=r.portfolio||r.issuer_name||r.account_description||r.original_creditor||'Imported Portfolio';r.original_creditor=r.original_creditor||r.issuer_name||r.account_description||r.portfolio;r.status=r.status||'New';r.updated_at=new Date().toISOString();r.created_by_email=currentUser.email;return r}
 function numKey(k){return ['originalBalance','principal','currentBalance','lastPaymentAmount','origPrincipalBalance','origOriginalLoanAmount','origChargeOffBalance','origPrincipalLoanAmount','origInterestAmount','origReturnFee'].includes(k)}function num(v){if(v===''||v==null)return null;let n=Number(String(v).replace(/[$,]/g,''));return Number.isFinite(n)?n:null}
 async function loadAccounts(){
- accounts=(await dbFetch('/accounts?select=*&order=created_at.asc&limit=20000')).map(toCamel);
- if(!currentUser.isAdmin)accounts=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===currentUser.email);
- if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;
- if(currentAccountId&&!accounts.some(a=>a.id===currentAccountId))currentAccountId=accounts[0]?.id||'';
- if(typeof runBrokenPromiseAutomation==='function')runBrokenPromiseAutomation(false).catch(()=>{});
- render()
+ try{
+   setGlobalBusy(true,'Loading accounts','Refreshing queue and dashboards...');
+   accounts=(await dbFetch('/accounts?select=*&order=created_at.asc&limit=20000')).map(toCamel);
+   if(!currentUser.isAdmin)accounts=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===currentUser.email);
+   if(!currentAccountId&&accounts[0])currentAccountId=accounts[0].id;
+   if(currentAccountId&&!accounts.some(a=>a.id===currentAccountId))currentAccountId=accounts[0]?.id||'';
+   if(typeof runBrokenPromiseAutomation==='function')runBrokenPromiseAutomation(false).catch(()=>{});
+   render();
+ }catch(e){
+   alert('Could not load accounts:\n\n'+friendlyError(e.message||String(e)));
+   accounts=[];
+   currentAccountId='';
+   render();
+ }finally{
+   setGlobalBusy(false);
+ }
 }
 function queue(){
  let q=(document.getElementById('search')?.value||'').trim();
@@ -3037,24 +3331,56 @@ function renderMappedFields(a){
    return `<div class="mappedItem ${type==='raw'?'rawMapped':''}"><div class="mappedKey">${esc(label)}</div><div class="mappedVal">${shown}</div></div>`;
  }).join('')||'<div class="muted">No mapped fields found. If you imported before this fix, run SQL, clear accounts, and re-import.</div>';
 }
-function render(){let q=queue(),cur=getCurrent();updatePortfolioFilter(accounts);renderQueue(q,cur);renderCurrent(cur,q);renderDispos(cur);if(cur)loadHistory(cur.id)}
+function render(){
+ let q=queue(),cur=getCurrent();
+ updatePortfolioFilter(accounts);
+ renderQueue(q,cur);
+ renderCurrent(cur,q);
+ if(cur)renderDispos(cur);
+ if(cur)loadHistory(cur.id);
+}
 function updatePortfolioFilter(all){let sel=document.getElementById('portfolioFilter'),v=sel.value,names=[...new Set(all.map(a=>a.portfolio||a.accountDescription).filter(Boolean))].sort();sel.innerHTML='<option value="">All Portfolios</option>'+names.map(n=>`<option>${esc(n)}</option>`).join('');sel.value=names.includes(v)?v:''}
 function renderQueue(q,cur){
  let idx=q.findIndex(a=>a.id===cur?.id);if(idx<0)idx=0;
  let start=Math.max(0,idx-1),next=q.slice(start,start+5);
  let searchValue=document.getElementById('search')?.value||'';
  let searchDigits=normPhone(searchValue);
+ if(!accounts.length){
+   document.getElementById('queueList').innerHTML='<div class="emptyQueue"><b>No accounts loaded.</b><br>Admin can import a CSV, or use Help → Download Demo CSV for a safe demo file.</div>';
+   document.getElementById('remainingText').textContent='No accounts loaded';
+   return;
+ }
  document.getElementById('queueList').innerHTML=next.map((a,i)=>{
    let assigned=currentUser.isAdmin?(a.assignedToEmail?`<span class="assignedPill">Assigned: ${esc(a.assignedToEmail)}</span>`:`<span class="unassignedPill">Unassigned</span>`):'';
    let hit=bestPhoneHit(a,searchValue);
    let phoneLine=(searchDigits.length>=3 && hit)?`<div class="qPhoneHit">☎ ${esc(fmtPhone(hit))}<span class="searchModePill">PHONE</span></div>`:'';
    return `<div class="qItem ${a.id===cur?.id?'active':''}" onclick="setCurrent('${a.id}')"><div class="qNum">${start+i+1}</div><div><div class="qName">${esc(nameOf(a))}</div>${phoneLine}<div class="qAcct">${esc(acctNo(a))} <span class="badge">${esc(a.disposition||a.status||'New')}</span></div>${assigned}</div><div class="qBal">${money(a.currentBalance||a.principal||a.originalBalance)}</div></div>`;
- }).join('')||'<div class="muted" style="padding:12px">No accounts in queue.</div>';
+ }).join('')||'<div class="emptyQueue"><b>No matching accounts.</b><br>Try a different phone number, name, SSN, address, status, or portfolio.</div>';
  let mode=searchDigits.length>=3?' — phone search first':'';
  document.getElementById('remainingText').textContent=`Showing ${next.length} of ${q.length} matching accounts${mode}`;
 }
 function renderCurrent(a,q){
- if(!a)return;
+ if(!a){
+   let total=accounts.length||0;
+   let cpt=document.getElementById('centerProgressTitle'); if(cpt)cpt.textContent=`0 of ${total} accounts`;
+   let cpf=document.getElementById('centerProgressFill'); if(cpf)cpf.style.width='0%';
+   document.getElementById('avatar').textContent='--';
+   document.getElementById('accountName').innerHTML='No Account Loaded <span class="badge">Ready</span>';
+   document.getElementById('accountNumber').textContent='—';
+   document.getElementById('state').textContent='—';
+   document.getElementById('creditor').textContent='—';
+   document.getElementById('ssn').textContent='—';
+   document.getElementById('balance').textContent=money(0);
+   document.getElementById('statusDisplay').innerHTML='<span class="badge">—</span>';
+   document.getElementById('email').textContent='—';
+   renderAllImportedFields(null);
+   let pp=document.getElementById('paymentPlanSummary'); if(pp)pp.innerHTML='<div class="emptyMain"><b>No accounts yet</b><span>Import a CSV or download the demo CSV from Help to test the workflow.</span></div>';
+   let pg=document.getElementById('phoneGrid'); if(pg)pg.innerHTML='<div class="muted">No phone numbers until an account is selected.</div>';
+   let dg=document.getElementById('dispoGrid'); if(dg)dg.innerHTML='';
+   let sd=document.getElementById('selectedDisposition'); if(sd)sd.textContent='Select one';
+   let hist=document.getElementById('historyList'); if(hist)hist.innerHTML='No activity yet.';
+   return;
+ }
  let idx=q.findIndex(x=>x.id===a.id)+1,total=q.length;
  let pct=total?Math.round((idx/total)*100):0;
  let progressText=`${idx||1} of ${total} accounts`;
