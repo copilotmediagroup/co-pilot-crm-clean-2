@@ -1878,10 +1878,83 @@ main.center > *,
   .landingFeatures,.helpGrid{grid-template-columns:1fr}
 }
 
+
+/* HELP MODAL ALIGNMENT FIX */
+.helpBox{
+  max-width:980px!important;
+}
+.helpBox .modalbody{
+  padding:22px!important;
+}
+.helpGrid{
+  align-items:stretch!important;
+}
+.helpCard{
+  min-height:112px!important;
+}
+.helpChecklist{
+  display:block!important;
+  margin-top:14px!important;
+  border:1px solid #e2e8f0!important;
+  border-radius:14px!important;
+  padding:14px!important;
+  background:#fff!important;
+}
+.helpChecklist > b{
+  display:block!important;
+  margin-bottom:10px!important;
+  color:#0f172a!important;
+  font-size:14px!important;
+  font-weight:1000!important;
+}
+.helpCheckRow{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+  width:100%!important;
+  padding:7px 0!important;
+  margin:0!important;
+}
+.helpCheckRow input[type="checkbox"]{
+  flex:0 0 auto!important;
+  width:16px!important;
+  height:16px!important;
+  margin:1px 0 0 0!important;
+  position:static!important;
+  transform:none!important;
+}
+.helpCheckRow label{
+  display:block!important;
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  color:#334155!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+  font-weight:850!important;
+  white-space:normal!important;
+}
+.helpActions{
+  justify-content:flex-start!important;
+  align-items:center!important;
+}
+.helpActions button{
+  min-height:38px!important;
+}
+@media(max-width:760px){
+  .helpBox .modalbody{
+    padding:16px!important;
+  }
+  .helpGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
-  <meta property="og:image" content="https://bolt.new/static/og_default.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -1945,7 +2018,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">FINAL POLISH READY — landing page, cleaner login, help guide, empty states, and loading messages.</p></div></div>
+    <div class="brand"><div class="logo">b</div><div><h1>Co Pilot Collections Manager</h1><p class="sub">HELP ALIGNMENT FIX READY — checklist, modal spacing, and help buttons aligned cleanly.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="document.getElementById('search').value=this.value;onQueueFilterChange()"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
@@ -2304,10 +2377,10 @@ main.center > *,
     </div>
     <div class="helpChecklist">
       <b>Before showing a prospect</b>
-      <label><input type="checkbox"> Use demo/fake debtor data only</label>
-      <label><input type="checkbox"> Upload company/demo logo</label>
-      <label><input type="checkbox"> Confirm admin login and employee login</label>
-      <label><input type="checkbox"> Test import, search, notes, status, payment plan, Today Dashboard, and one letter</label>
+      <div class="helpCheckRow"><input type="checkbox" id="demoCheck1"><label for="demoCheck1">Use demo/fake debtor data only</label></div>
+      <div class="helpCheckRow"><input type="checkbox" id="demoCheck2"><label for="demoCheck2">Upload company/demo logo</label></div>
+      <div class="helpCheckRow"><input type="checkbox" id="demoCheck3"><label for="demoCheck3">Confirm admin login and employee login</label></div>
+      <div class="helpCheckRow"><input type="checkbox" id="demoCheck4"><label for="demoCheck4">Test import, search, notes, status, payment plan, Today Dashboard, and one letter</label></div>
     </div>
     <div class="helpActions">
       <button class="outline" onclick="downloadDemoCSV()">Download Demo CSV</button>
