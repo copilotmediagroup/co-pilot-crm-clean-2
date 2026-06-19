@@ -3322,6 +3322,117 @@ main.center > *,
 </head>
 <body>
   <script>
+/* CO_PILOT_RINGCENTRAL_EXTENSION_TEL_LINK_V4 */
+(function () {
+  window.CO_PILOT_RINGCENTRAL_EXTENSION_TEL_LINK_V4 = true;
+
+  function cleanPhone(value) {
+    var n = String(value || "").replace(/\D/g, "");
+    if (n.length === 10) n = "1" + n;
+    if (n.length === 11 && n[0] === "1") return "+" + n;
+    return n ? "+" + n : "";
+  }
+
+  function getPhoneFromElement(el) {
+    if (!el) return "";
+    var num = el.querySelector(".phoneNum");
+    return cleanPhone(num ? num.textContent : el.textContent);
+  }
+
+  function setStatus(number) {
+    var msg = "Opening RingCentral extension for " + number;
+    var last = document.getElementById("lastDialed");
+    if (last) last.textContent = msg;
+
+    var rc = document.getElementById("rcLiveStatus");
+    if (rc) rc.textContent = "RingCentral extension mode. Using real tel: phone links.";
+
+    var callNumber = document.getElementById("callNumber");
+    if (callNumber) callNumber.textContent = number;
+  }
+
+  function forceTel(number) {
+    number = cleanPhone(number);
+
+    if (!number) {
+      alert("No phone number found.");
+      return;
+    }
+
+    window.rcSelectedNumber = number;
+    setStatus(number);
+
+    try {
+      navigator.clipboard.writeText(number);
+    } catch (e) {}
+
+    var a = document.createElement("a");
+    a.href = "tel:" + number;
+    a.style.display = "none";
+    a.textContent = number;
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(function () {
+      try {
+        document.body.removeChild(a);
+      } catch (e) {}
+    }, 1000);
+  }
+
+  window.rcDialNumber = forceTel;
+
+  window.rcDialSelected = function () {
+    var number = window.rcSelectedNumber || "";
+    if (!number) {
+      var first = document.querySelector(".phoneChip .phoneNum") || document.querySelector(".phoneNum");
+      number = first ? first.textContent : "";
+    }
+    forceTel(number);
+  };
+
+  window.callPrimary = function () {
+    var first = document.querySelector(".phoneChip .phoneNum") || document.querySelector(".phoneNum");
+    forceTel(first ? first.textContent : "");
+  };
+
+  function rewire() {
+    document.querySelectorAll(".phoneChip").forEach(function (chip) {
+      var number = getPhoneFromElement(chip);
+      if (!number) return;
+
+      chip.setAttribute("href", "tel:" + number);
+      chip.setAttribute("data-ringcentral-tel", number);
+      chip.style.cursor = "pointer";
+
+      chip.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        forceTel(number);
+      };
+    });
+
+    var greenCall = Array.from(document.querySelectorAll("button")).find(function (btn) {
+      return String(btn.textContent || "").trim().toLowerCase() === "call";
+    });
+
+    if (greenCall) {
+      greenCall.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.callPrimary();
+      };
+    }
+
+    var rc = document.getElementById("rcLiveStatus");
+    if (rc) rc.textContent = "RingCentral extension mode. Phone buttons now use real tel: links.";
+  }
+
+  document.addEventListener("DOMContentLoaded", rewire);
+  setInterval(rewire, 1000);
+})();
+</script>
+  <script>
 /* CO_PILOT_RINGCENTRAL_AUDIO_FIX_V2 - TRUE WEBPHONE DIAL */
 (function () {
   window.CO_PILOT_RINGCENTRAL_AUDIO_FIX_V2 = true;
