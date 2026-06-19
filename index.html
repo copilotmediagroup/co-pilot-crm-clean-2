@@ -3321,6 +3321,170 @@ main.center > *,
 </style>
 </head>
 <body>
+  <script>
+/* CO_PILOT_RINGCENTRAL_AUDIO_FIX_V2 - TRUE WEBPHONE DIAL */
+(function () {
+  window.CO_PILOT_RINGCENTRAL_AUDIO_FIX_V2 = true;
+
+  function rcCleanNumber(value) {
+    var n = String(value || "").replace(/\D/g, "");
+    if (n.length === 11 && n[0] === "1") n = n.slice(1);
+    return n;
+  }
+
+  function rcStatus(message) {
+    var status = document.getElementById("rcLiveStatus");
+    if (status) status.textContent = message;
+
+    var last = document.getElementById("lastDialed");
+    if (last) last.textContent = message;
+
+    var callNumber = document.getElementById("callNumber");
+    if (callNumber && window.rcSelectedNumber) callNumber.textContent = window.rcSelectedNumber;
+  }
+
+  function rcEnsureOpen() {
+    try {
+      if (typeof openRingCentralPhone === "function") {
+        openRingCentralPhone();
+      }
+    } catch (e) {}
+
+    try {
+      if (window.RCAdapter && typeof window.RCAdapter.show === "function") {
+        window.RCAdapter.show();
+      }
+    } catch (e) {}
+
+    try {
+      if (window.RCAdapter && typeof window.RCAdapter.open === "function") {
+        window.RCAdapter.open();
+      }
+    } catch (e) {}
+  }
+
+  function rcFindFrame() {
+    return (
+      document.querySelector("#rc-widget-adapter-frame") ||
+      document.querySelector('iframe[src*="ringcentral"]') ||
+      document.querySelector('iframe[id*="rc"]')
+    );
+  }
+
+  window.rcDialNumber = function (rawNumber) {
+    var number = rcCleanNumber(rawNumber);
+
+    if (!number) {
+      alert("No phone number found.");
+      return;
+    }
+
+    window.rcSelectedNumber = number;
+    rcStatus("Opening RingCentral for " + number + "...");
+
+    rcEnsureOpen();
+
+    setTimeout(function () {
+      var sent = false;
+
+      try {
+        if (window.RCAdapter && typeof window.RCAdapter.clickToCall === "function") {
+          window.RCAdapter.clickToCall(number);
+          sent = true;
+          rcStatus("RingCentral call command sent to " + number + ".");
+        }
+      } catch (e) {
+        console.warn("RCAdapter clickToCall failed:", e);
+      }
+
+      try {
+        var frame = rcFindFrame();
+
+        if (frame && frame.contentWindow) {
+          frame.contentWindow.postMessage(
+            {
+              type: "rc-adapter-new-call",
+              phoneNumber: number,
+              toCall: true
+            },
+            "*"
+          );
+
+          sent = true;
+          rcStatus("RingCentral webphone dialing " + number + ".");
+        }
+      } catch (e) {
+        console.warn("RingCentral postMessage call failed:", e);
+      }
+
+      if (!sent) {
+        rcStatus("RingCentral phone did not accept the call command yet. Click Open Phone, then Dial Selected.");
+        alert("RingCentral is open but did not accept the call command yet. Click Open Phone, sign in, then press Dial Selected.");
+      }
+    }, 1500);
+  };
+
+  window.rcDialSelected = function () {
+    var number = window.rcSelectedNumber || "";
+
+    if (!number) {
+      var firstPhone = document.querySelector(".phoneNum");
+      number = firstPhone ? firstPhone.textContent : "";
+    }
+
+    window.rcDialNumber(number);
+  };
+
+  window.callPrimary = function () {
+    var firstPhone = document.querySelector(".phoneNum");
+    window.rcDialNumber(firstPhone ? firstPhone.textContent : "");
+  };
+
+  window.endCall = function () {
+    try {
+      var frame = rcFindFrame();
+
+      if (frame && frame.contentWindow) {
+        frame.contentWindow.postMessage(
+          {
+            type: "rc-adapter-control-call",
+            callAction: "hangup"
+          },
+          "*"
+        );
+      }
+    } catch (e) {}
+
+    rcStatus("Hangup command sent.");
+  };
+
+  function rcRewirePhoneButtons() {
+    document.querySelectorAll(".phoneChip").forEach(function (chip) {
+      chip.style.cursor = "pointer";
+
+      chip.onclick = function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.rcDialNumber(chip.textContent);
+      };
+    });
+
+    var greenCall = Array.from(document.querySelectorAll("button")).find(function (button) {
+      return String(button.textContent || "").trim().toLowerCase() === "call";
+    });
+
+    if (greenCall) {
+      greenCall.onclick = function (event) {
+        event.preventDefault();
+        window.callPrimary();
+      };
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", rcRewirePhoneButtons);
+  setInterval(rcRewirePhoneButtons, 1500);
+})();
+</script>
 <div id="loginScreen" class="loginScreen open">
   <div class="landingShell">
     <section class="landingHero">
