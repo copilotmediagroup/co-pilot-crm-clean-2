@@ -1,7 +1,6 @@
 <!doctype html>
 <html>
 <head>
-<!-- LIVE_NAMES_SIGNED_NOTES_MARKER: display names, signed notes, admin note delete -->
 <!-- LIVE_CHAT_PRO_CLEAN_UI_MARKER: professional messenger cleanup -->
 <!-- LIVE_CHAT_IDENTITY_CLARITY_MARKER: chat identity labels fix -->
 <!-- LIVE_CHAT_ONLINE_COMPLETE_MARKER: centered badge + self-fix + online presence -->
@@ -3298,20 +3297,10 @@ main.center > *,
 .chatEmpty{font-size:12px!important}
 @media(max-width:780px){.chatDock{width:100vw!important;height:82vh!important}.chatContactName{max-width:110px!important}}
 
-
-/* DISPLAY NAMES + SIGNED NOTES + ADMIN NOTE DELETE */
-#loginName{width:100%}
-.profileNameBtn{min-width:58px!important}
-.event.noteEvent{border-left-color:#7c3aed;background:#fbf8ff}
-.eventHeaderLine{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.eventSigner{color:#334155;font-size:12px;font-weight:900;margin-top:2px}
-.noteSignature{margin-top:7px;color:#475569;font-size:11px;font-weight:850;background:rgba(255,255,255,.7);border:1px solid #e2e8f0;border-radius:9px;padding:6px 8px}
-.noteDeleteBtn{background:#fee2e2!important;color:#991b1b!important;border:1px solid #fecaca!important;padding:6px 8px!important;border-radius:8px!important;font-size:11px!important;font-weight:1000!important}
-.userNameLine{font-weight:1000;color:#0f172a}
-.userEmailLine{color:#64748b;font-size:11px;margin-top:2px;word-break:break-all}
-.nameHintLine{font-size:11px;color:#64748b;margin-top:4px;font-weight:800}
-
 </style>
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
 </head>
 <body>
 <div id="loginScreen" class="loginScreen open">
@@ -3339,9 +3328,6 @@ main.center > *,
       <div class="loginMiniBrand"><div class="logo appBrandLogoSmall" id="loginBrandLogo">b</div><div><h2>Login</h2><p>Admin or approved employee access.</p></div></div>
       <div id="loginError" class="error hidden"></div>
       <div id="connectionNotice" class="notice hidden"></div>
-      <label>Employee/Admin Name</label>
-      <input id="loginName" autocomplete="name" placeholder="Full name shown on notes and messenger">
-      <div class="nameHintLine">This name appears globally on notes, staff pages, and messenger.</div>
       <label>Email</label>
       <input id="loginEmail" autocomplete="email" placeholder="you@company.com">
       <label>Password</label>
@@ -3378,7 +3364,7 @@ main.center > *,
 
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">LIVE NAMES + SIGNED NOTES READY — employee names, signed notes, admin note delete.</p></div></div>
+    <div class="brand"><div class="logo appBrandLogo" id="appBrandLogo">b</div><div><h1 id="appBrandName">Co Pilot Collections Manager</h1><p class="sub" id="appBrandSub">LIVE CHAT PRO CLEAN UI READY — cleaner messenger layout, less text, professional spacing.</p></div></div>
     <div class="headerSearch"><span class="mag">⌕</span><input id="globalSearch" placeholder="Search phone, name, SSN, address..." oninput="handleSearchInput('global')"><span class="hotkey">⌘ K</span></div>
     <div class="topActions">
       <button class="gray helpBtn" onclick="openHelpModal()">Help</button>
@@ -9898,345 +9884,6 @@ selectChatContact = async function(email){
   chatEnsureSendAsBar();
   document.getElementById('chatInput')?.focus();
 };
-
-
-/* DISPLAY NAMES + SIGNED NOTES + ADMIN NOTE DELETE */
-if(!window.CO_PILOT_NAMES_SIGNED_NOTES_PATCH){
-  window.CO_PILOT_NAMES_SIGNED_NOTES_PATCH=true;
-  const CP_PENDING_NAME_KEY='coPilotPendingDisplayName';
-
-  function cpCleanName(v){
-    return String(v||'').replace(/\s+/g,' ').trim().slice(0,80);
-  }
-
-  window.cpNameFromEmail = function(email){
-    email=String(email||'').toLowerCase().trim();
-    
-    if(email==='afinch2678@gmail.com')return 'Admin';
-    let local=(email.split('@')[0]||email).replace(/[._-]+/g,' ').trim();
-    if(!local)return email||'User';
-    return local.split(' ').map(w=>w?w[0].toUpperCase()+w.slice(1):'').join(' ');
-  };
-
-  window.cpDisplayNameForEmail = function(email){
-    email=String(email||'').toLowerCase().trim();
-    let u=(appUsers||[]).find(x=>String(x.email||'').toLowerCase().trim()===email);
-    let n=cpCleanName(u?.displayName||u?.display_name||u?.fullName||u?.full_name||u?.name);
-    if(n)return n;
-    if(email===String(currentUser.email||'').toLowerCase().trim()){
-      let cn=cpCleanName(currentUser.displayName||currentUser.display_name||currentUser.fullName||currentUser.full_name);
-      if(cn)return cn;
-    }
-    return cpNameFromEmail(email);
-  };
-
-  window.cpCurrentDisplayName = function(){
-    return cpDisplayNameForEmail(currentUser.email||'');
-  };
-
-  function cpSetLoginNameValue(){
-    let el=document.getElementById('loginName');
-    if(!el)return;
-    let pending=localStorage.getItem(CP_PENDING_NAME_KEY)||'';
-    if(pending && !el.value)el.value=pending;
-  }
-
-  window.editMyDisplayName = async function(){
-    if(!currentUser.email)return alert('Log in first.');
-    let old=cpCurrentDisplayName();
-    let name=prompt('Enter your name as it should appear on notes, staff pages, and messenger:',old);
-    name=cpCleanName(name);
-    if(!name)return;
-    await cpSaveDisplayName(name,true);
-  };
-
-  async function cpSaveDisplayName(name,showAlert=false){
-    name=cpCleanName(name);
-    if(!currentUser.email||!name)return '';
-    currentUser.displayName=name;
-    localStorage.setItem('coPilotDisplayName:'+String(currentUser.email||'').toLowerCase(),name);
-    try{
-      await dbFetch('/app_users?email=eq.'+encodeURIComponent(currentUser.email),{
-        method:'PATCH',
-        body:JSON.stringify({display_name:name,full_name:name,updated_at:new Date().toISOString()})
-      });
-    }catch(e){
-      console.warn('Display name save failed. Run RUN_THIS_DISPLAY_NAMES_SIGNED_NOTES_SQL.sql.',e);
-    }
-    try{await loadAppUsers()}catch(e){}
-    try{applyRoleUI()}catch(e){}
-    try{render()}catch(e){}
-    try{if(typeof renderChatContacts==='function')renderChatContacts(); if(typeof renderChatConversation==='function')renderChatConversation();}catch(e){}
-    if(showAlert)alert('Name saved.');
-    return name;
-  }
-
-  async function cpEnsureCurrentDisplayName(promptIfMissing=true){
-    if(!currentUser.email)return '';
-    let typed=cpCleanName(document.getElementById('loginName')?.value||'') || cpCleanName(localStorage.getItem(CP_PENDING_NAME_KEY)||'');
-    let local=cpCleanName(localStorage.getItem('coPilotDisplayName:'+String(currentUser.email||'').toLowerCase())||'');
-    try{
-      let rows=await dbFetch('/app_users?email=eq.'+encodeURIComponent(currentUser.email)+'&select=*').catch(()=>[]);
-      let p=rows&&rows[0]?toCamel(rows[0]):null;
-      let existing=cpCleanName(p?.displayName||p?.display_name||p?.fullName||p?.full_name||p?.name);
-      if(existing){
-        currentUser.displayName=existing;
-        return existing;
-      }
-    }catch(e){}
-    let name=typed||local;
-    if(!name && promptIfMissing){
-      name=cpCleanName(prompt('Enter your name for notes and messenger:',cpNameFromEmail(currentUser.email))||'');
-    }
-    if(name)return await cpSaveDisplayName(name,false);
-    currentUser.displayName=cpNameFromEmail(currentUser.email);
-    return currentUser.displayName;
-  }
-
-  function cpEnsureProfileButton(){
-    let badge=document.getElementById('roleBadge');
-    if(!badge||document.getElementById('profileNameBtn'))return;
-    let btn=document.createElement('button');
-    btn.id='profileNameBtn';
-    btn.className='gray profileNameBtn';
-    btn.textContent='Name';
-    btn.onclick=editMyDisplayName;
-    badge.parentElement.insertBefore(btn,badge);
-  }
-
-  const cpOriginalApplyRoleUI=applyRoleUI;
-  applyRoleUI=function(){
-    cpOriginalApplyRoleUI();
-    cpEnsureProfileButton();
-    let badge=document.getElementById('roleBadge');
-    if(badge){
-      let role=currentUser.isAdmin?'Admin':'Employee';
-      let name=cpCurrentDisplayName();
-      badge.textContent=`${name} • ${role}`;
-      badge.title=(currentUser.email||'')+' | '+role;
-    }
-  };
-  window.applyRoleUI=applyRoleUI;
-
-  const cpOriginalLogin=login;
-  login=async function(){
-    let name=cpCleanName(document.getElementById('loginName')?.value||'');
-    if(name)localStorage.setItem(CP_PENDING_NAME_KEY,name);
-    await cpOriginalLogin();
-    if(token()&&currentUser.email)await cpEnsureCurrentDisplayName(true);
-  };
-
-  const cpOriginalSignup=signup;
-  signup=async function(){
-    let name=cpCleanName(document.getElementById('loginName')?.value||'');
-    if(!name)return alert('Enter employee/admin name before requesting access.');
-    localStorage.setItem(CP_PENDING_NAME_KEY,name);
-    await cpOriginalSignup();
-    if(token()&&currentUser.email)await cpEnsureCurrentDisplayName(false);
-  };
-
-  const cpOriginalBoot=boot;
-  boot=async function(){
-    await cpOriginalBoot();
-    if(token()&&currentUser.email){
-      await cpEnsureCurrentDisplayName(true);
-      try{await loadAppUsers()}catch(e){}
-      try{applyRoleUI()}catch(e){}
-      try{if(typeof renderChatContacts==='function')renderChatContacts(); if(typeof renderChatConversation==='function')renderChatConversation();}catch(e){}
-    }
-  };
-
-  if(typeof fillDemoLogin==='function'){
-    const cpOriginalFillDemoLogin=fillDemoLogin;
-    fillDemoLogin=function(role){
-      cpOriginalFillDemoLogin(role);
-      let el=document.getElementById('loginName');
-      if(el)el.value=role==='admin'?'Demo Admin':'Demo Employee';
-      localStorage.setItem(CP_PENDING_NAME_KEY,role==='admin'?'Demo Admin':'Demo Employee');
-    };
-  }
-
-  chatProPrettyName=function(email){return cpDisplayNameForEmail(email);};
-  chatName=function(email){return cpDisplayNameForEmail(email);};
-
-  function cpSignedLine(name,email,date){
-    return `Electronically signed by ${name} (${email}) on ${new Date(date||Date.now()).toLocaleString()}`;
-  }
-
-  saveCurrent=async function(){
-    let a=getCurrent();
-    if(!a)return;
-    let note=document.getElementById('agentNote').value.trim();
-    if(note){
-      let signer=await cpEnsureCurrentDisplayName(true);
-      let signedAt=new Date().toISOString();
-      let signature=cpSignedLine(signer,currentUser.email,signedAt);
-      let row={account_id:a.id,note,created_by_email:currentUser.email,created_by_name:signer,digital_signature:signature,created_at:signedAt};
-      try{
-        await dbFetch('/account_notes',{method:'POST',body:JSON.stringify([row])});
-      }catch(e){
-        console.warn('Signed note insert failed; retrying legacy note insert. Run RUN_THIS_DISPLAY_NAMES_SIGNED_NOTES_SQL.sql.',e);
-        await dbFetch('/account_notes',{method:'POST',body:JSON.stringify([{account_id:a.id,note,created_by_email:currentUser.email,created_at:signedAt}])});
-      }
-      await insertActivity(a.id,'Note',`${signer}: ${note}`);
-      await insertAudit('Signed Note Created',`Note signed by ${signer} for ${nameOf(a)}`,'account',a.id);
-    }
-    document.getElementById('agentNote').value='';
-    let c=document.getElementById('noteCounter');
-    if(c)c.textContent='0 / 2000';
-    await loadAccounts();
-    if(getCurrent())await loadHistory(getCurrent().id);
-  };
-
-  saveAndNext=async function(){await saveCurrent();nextAccount();};
-
-  deleteAccountNote=async function(id){
-    if(!currentUser.isAdmin)return alert('Admin only.');
-    if(!id)return;
-    if(!confirm('Delete this note? This action removes the note from the account timeline.'))return;
-    try{
-      await dbFetch('/account_notes?id=eq.'+encodeURIComponent(id),{method:'DELETE'});
-      await insertAudit('Note Deleted','Admin deleted note '+id,'account_notes',id);
-      let a=getCurrent();
-      if(a)await loadHistory(a.id);
-      alert('Note deleted.');
-    }catch(e){
-      alert('Could not delete note. Run RUN_THIS_DISPLAY_NAMES_SIGNED_NOTES_SQL.sql, reload, and try again.\\n\\n'+(e.message||String(e)));
-    }
-  };
-
-  loadHistory=async function(id){
-    if(!id)return;
-    try{
-      let notes=await dbFetch(`/account_notes?account_id=eq.${id}&select=*&order=created_at.desc&limit=25`).catch(()=>[]);
-      let acts=await dbFetch(`/activity_logs?account_id=eq.${id}&select=*&order=created_at.desc&limit=25`).catch(()=>[]);
-      notes=(notes||[]).filter(n=>!(n.is_deleted||n.deleted_at));
-      let noteEvents=notes.map(x=>{
-        let n=toCamel(x);
-        let email=(n.createdByEmail||n.created_by_email||'').toLowerCase();
-        let name=cpCleanName(n.createdByName||n.created_by_name)||cpDisplayNameForEmail(email);
-        return {isNote:true,id:n.id||x.id,date:n.createdAt||n.created_at,type:'Signed Note',text:n.note||'',email,name,signature:n.digitalSignature||n.digital_signature||cpSignedLine(name,email,n.createdAt||n.created_at)};
-      });
-      let actEvents=(acts||[]).map(x=>{
-        let a=toCamel(x);
-        let email=(a.createdByEmail||a.created_by_email||'').toLowerCase();
-        return {isNote:false,date:a.createdAt||a.created_at,type:a.actionType||a.action_type||'Activity',text:a.actionText||a.action_text||'',email,name:email?cpDisplayNameForEmail(email):''};
-      });
-      let events=[...actEvents,...noteEvents].sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,12);
-      let box=document.getElementById('activityList');
-      box.innerHTML=events.map(e=>{
-        let when=e.date?new Date(e.date).toLocaleString():'';
-        if(e.isNote){
-          return `<div class="event noteEvent">
-            <div class="eventHeaderLine">
-              <div><div class="eventTitle">${esc(e.type)}</div><div class="eventSigner">By ${esc(e.name||'Unknown')}</div></div>
-              ${currentUser.isAdmin?`<button class="noteDeleteBtn" onclick="deleteAccountNote('${esc(e.id)}')">Delete</button>`:''}
-            </div>
-            <div>${esc(e.text)}</div>
-            <div class="noteSignature">✍ ${esc(e.signature||'Electronically signed')}</div>
-            <div class="eventMeta">${esc(when)}</div>
-          </div>`;
-        }
-        return `<div class="event"><div class="eventTitle">${esc(e.type)}</div><div>${esc(e.text)}</div><div class="eventMeta">${esc(when)}${e.name?' • '+esc(e.name):''}</div></div>`;
-      }).join('')||'<div class="muted">No activity yet.</div>';
-    }catch(e){console.warn('History load failed',e);}
-  };
-
-  populateEmployeeSelect=function(){
-    let sel=document.getElementById('assignEmployeeSelect'), notice=document.getElementById('employeeEmptyNotice');
-    if(!sel)return;
-    let previous=new Set([...sel.selectedOptions].map(o=>o.value));
-    let employees=employeeSuggestions();
-    sel.innerHTML=employees.map(email=>{
-      let u=appUsers.find(x=>(x.email||'').toLowerCase()===email);
-      let name=cpDisplayNameForEmail(email);
-      let last=u?.lastSeenAt?' — last login '+String(u.lastSeenAt).slice(0,10):'';
-      return `<option value="${esc(email)}" ${previous.has(email)?'selected':''}>${esc(name)} (${esc(email)})${esc(last)}</option>`;
-    }).join('');
-    if(notice)notice.classList.toggle('hidden',employees.length>0);
-  };
-
-  fillMonitorFilters=function(){
-    let empSel=document.getElementById('monitorEmployeeFilter');
-    let stSel=document.getElementById('monitorStatusFilter');
-    if(empSel){
-      let keep=empSel.value;
-      let emps=monitorEmployees();
-      empSel.innerHTML='<option value="">All Employees</option>'+emps.map(e=>`<option value="${esc(e)}">${esc(cpDisplayNameForEmail(e))} (${esc(e)})</option>`).join('');
-      empSel.value=emps.includes(keep)?keep:'';
-    }
-    if(stSel){
-      let keep=stSel.value;
-      let statuses=[...new Set(accounts.map(a=>a.disposition||a.status||'New').filter(Boolean))].sort();
-      stSel.innerHTML='<option value="">All Statuses</option>'+statuses.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
-      stSel.value=statuses.includes(keep)?keep:'';
-    }
-  };
-
-  if(typeof loadEmployeeAdminList==='function'){
-    loadEmployeeAdminList=async function(){
-      await loadAppUsers();
-      let body=document.getElementById('employeeAdminBody');
-      if(!body)return;
-      let users=appUsers.slice().sort((a,b)=>{
-        let sa=userApprovalStatus(a), sb=userApprovalStatus(b);
-        let order={pending:0,approved:1,rejected:2,removed:3,admin:4};
-        return (order[sa]??9)-(order[sb]??9)||String(a.email||'').localeCompare(String(b.email||''));
-      });
-      let pending=users.filter(u=>userApprovalStatus(u)==='pending').length;
-      let approved=users.filter(u=>userApprovalStatus(u)==='approved').length;
-      let removed=users.filter(u=>userApprovalStatus(u)==='removed').length;
-      document.getElementById('empStatAll').textContent=users.length+' users';
-      document.getElementById('empStatPending').textContent=pending+' pending';
-      document.getElementById('empStatApproved').textContent=approved+' approved'+(removed?` / ${removed} removed`:'');
-      body.innerHTML=users.map(u=>{
-        let email=(u.email||'').toLowerCase();
-        let name=cpDisplayNameForEmail(email);
-        let status=userApprovalStatus(u);
-        let statusClass=status==='approved'?'statusApproved':status==='admin'?'statusAdmin':status==='rejected'?'statusRejected':status==='removed'?'statusRemoved':'statusPending';
-        let active=(u.isActive!==false && u.is_active!==false);
-        let assignedCount=accounts.filter(a=>(a.assignedToEmail||'').toLowerCase()===email).length;
-        let removedInfo=status==='removed'?`<div class="fireNote">Removed by: ${esc(u.removedByEmail||u.removed_by_email||'—')}<br>Removed at: ${esc(String(u.removedAt||u.removed_at||'').slice(0,19)||'—')}</div>`:'';
-        let actions=isProtectedAdminEmail(email)
-          ? '<span class="muted">Admin account</span>'
-          : `<div class="empActions">
-              <button class="green" onclick="setEmployeeApproval('${esc(email)}','approved')">Approve</button>
-              <button class="gray" onclick="setEmployeeApproval('${esc(email)}','pending')">Pending</button>
-              <button class="red" onclick="setEmployeeApproval('${esc(email)}','rejected')">Reject</button>
-              <button class="outline" onclick="toggleEmployeeActive('${esc(email)}',${active?'false':'true'})">${active?'Deactivate':'Activate'}</button>
-              <button class="outline" onclick="adminSetEmployeeName('${esc(email)}')">Set Name</button>
-              <button class="red" onclick="removeEmployeeFromSoftware('${esc(email)}')">Remove / Fired</button>
-            </div>`;
-        return `<tr class="${status==='removed'?'removedEmployeeRow':''}">
-          <td><div class="userNameLine">${esc(name)}</div><div class="userEmailLine">${esc(email)}</div>${removedInfo}</td>
-          <td>${esc(u.role||'employee')}</td>
-          <td><span class="employeeStatus ${statusClass}">${esc(status)}</span></td>
-          <td>${active?'Yes':'No'}</td>
-          <td>${esc(String(u.createdAt||u.created_at||'').slice(0,19))}</td>
-          <td>${esc(String(u.lastSeenAt||u.last_seen_at||'').slice(0,19))}<div class="fireNote">Assigned accounts: ${assignedCount}</div></td>
-          <td>${actions}</td>
-        </tr>`;
-      }).join('');
-    };
-  }
-
-  window.adminSetEmployeeName=async function(email){
-    if(!currentUser.isAdmin)return alert('Admin only.');
-    let current=cpDisplayNameForEmail(email);
-    let name=cpCleanName(prompt('Employee display name:',current)||'');
-    if(!name)return;
-    try{
-      await dbFetch('/app_users?email=eq.'+encodeURIComponent(email),{method:'PATCH',body:JSON.stringify({display_name:name,full_name:name,updated_at:new Date().toISOString()})});
-      await loadEmployeeAdminList();
-      await loadAppUsers();
-      alert('Employee name updated.');
-    }catch(e){
-      alert('Could not update name. Run RUN_THIS_DISPLAY_NAMES_SIGNED_NOTES_SQL.sql, reload, and try again.\\n\\n'+(e.message||String(e)));
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded',cpSetLoginNameValue);
-}
 
 boot();
 </script>
